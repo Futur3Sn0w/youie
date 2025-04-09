@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../globals.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        #calendar-container {
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            user-select: none;
+        }
+
+        #calendar-header {
+            height: 56px;
+            box-sizing: border-box;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgb(230, 77, 77);
+
+            #today-button {
+                display: none;
+                margin: 0 1rem;
+            }
+
+            button {
+                appearance: none;
+                padding: 5px 10px;
+                border-radius: 100px;
+                border: 1px solid white;
+
+                background-color: #ffffff22;
+                color: white;
+
+                &:hover {
+                    background-color: #ffffff;
+                    color: black;
+                }
+            }
+        }
+
+        #calendar-title {
+            margin: 0;
+            text-align: center;
+            flex-grow: 1;
+            color: white !important;
+        }
+
+        #calendar-table {
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            border-collapse: collapse;
+
+            & th::after {
+                display: none !important;
+            }
+        }
+
+        #calendar-table th,
+        #calendar-table td {
+            padding: 10px 5px;
+            box-sizing: border-box;
+            position: relative;
+
+            &:empty::after {
+                display: none;
+            }
+
+            &::after {
+                content: '';
+
+                background-color: var(--surface-button);
+                border-radius: 10px;
+
+                width: 80%;
+                height: 90%;
+
+                position: absolute;
+                top: 5%;
+                left: 10%;
+                z-index: -1;
+            }
+
+            &:hover::after {
+                background-color: var(--surface-button-highlight);
+            }
+        }
+
+        .today {
+            font-weight: bold;
+
+            &::after {
+                background-color: var(--surface-button-selected) !important;
+                box-shadow: 0 3px 7px #00000022;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="calendar-container">
+        <div id="calendar-header">
+            <button id="prev-month">&#8592;</button>
+            <h2 id="calendar-title"></h2>
+            <button id="today-button">Today</button>
+            <button id="next-month">&#8594;</button>
+        </div>
+        <table id="calendar-table" cellspacing="0" cellpadding="5">
+            <colgroup>
+                <col style="width:14.2857%" span="7" />
+            </colgroup>
+            <thead>
+                <tr>
+                    <th>Sun</th>
+                    <th>Mon</th>
+                    <th>Tue</th>
+                    <th>Wed</th>
+                    <th>Thu</th>
+                    <th>Fri</th>
+                    <th>Sat</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <script>
+        const monthNames = [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ];
+
+        let today = new Date();
+        let currentMonth = today.getMonth();
+        let currentYear = today.getFullYear();
+
+        function generateCalendar(month, year) {
+            $("#calendar-title").text(`${monthNames[month]} ${year}`);
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+            let tbody = "";
+            let date = 1;
+            for (let i = 0; i < 6; i++) {
+                let row = "<tr>";
+                for (let j = 0; j < 7; j++) {
+                    if (i === 0 && j < firstDay) {
+                        row += "<td></td>";
+                    } else if (date > daysInMonth) {
+                        row += "<td></td>";
+                    } else {
+                        const isCurrentView = (month === today.getMonth() && year === today.getFullYear());
+                        if (isCurrentView && date === today.getDate()) {
+                            row += `<td class="today">${date}</td>`;
+                        } else {
+                            row += `<td>${date}</td>`;
+                        }
+                        date++;
+                    }
+                }
+                row += "</tr>";
+                tbody += row;
+                if (date > daysInMonth) break;
+            }
+            $("#calendar-table tbody").html(tbody);
+            $("#today-button").toggle(!(month === today.getMonth() && year === today.getFullYear()));
+        }
+
+        $("#prev-month").on("click", function () {
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            generateCalendar(currentMonth, currentYear);
+        });
+
+        $("#next-month").on("click", function () {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            generateCalendar(currentMonth, currentYear);
+        });
+
+        $("#today-button").on("click", function () {
+            currentMonth = today.getMonth();
+            currentYear = today.getFullYear();
+            generateCalendar(currentMonth, currentYear);
+        });
+
+        $(document).ready(function () {
+            generateCalendar(currentMonth, currentYear);
+        });
+    </script>
+</body>
+
+</html>

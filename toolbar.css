@@ -1,0 +1,122 @@
+.toolbar {
+    width: fit-content;
+    height: 40px;
+
+    border-radius: 100px;
+    background-color: var(--root-back-alpha);
+    backdrop-filter: blur(15px);
+    font-size: 13px;
+
+    box-sizing: border-box;
+    padding: 0 5px;
+
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    transition: .2s;
+
+    position: fixed;
+    top: 5px;
+    right: 5px;
+    z-index: 100;
+
+    &::after {
+        content: '';
+        width: 100%;
+        height: 100%;
+
+        border-radius: inherit;
+        box-sizing: border-box;
+        border: 1px solid var(--root-text);
+        opacity: .05;
+
+        pointer-events: none;
+
+        position: absolute;
+        left: 0;
+    }
+
+    &.toolbar-left {
+        left: 5px;
+        right: auto;
+        transform: none;
+    }
+
+    &.toolbar-center {
+        left: 50%;
+        right: auto;
+        transform: translateX(-50%);
+    }
+
+    &.toolbar-right {
+        right: 5px;
+        left: auto;
+        transform: none;
+    }
+
+    & .links {
+        display: flex;
+        gap: 20px;
+        padding: 0 15px;
+    }
+
+    & a {
+        text-decoration: none;
+        color: var(--root-text);
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+
+    & .sep {
+        width: 2px;
+        height: 15px;
+
+        border-radius: 100px;
+        background-color: var(--root-text);
+        opacity: .5;
+
+        position: relative;
+    }
+
+    & .toolbarBtn {
+        appearance: none;
+        border: none;
+
+        width: fit-content;
+        min-width: 30px;
+        height: 30px;
+
+        background-color: transparent;
+
+        transition: .15s;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        position: relative;
+        z-index: 200;
+        border-radius: 100px;
+
+        i {
+            pointer-events: none;
+            width: 20px;
+            transition: .15s;
+        }
+
+        &::after {
+            content: attr(title);
+            font-size: 12px;
+            margin-right: 5px;
+
+            transition: .2s;
+        }
+
+        &:hover {
+            background-color: var(--surface-button-highlight);
+        }
+    }
+}

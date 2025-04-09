@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="../globals.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.css">
+
+    <style>
+        html {
+            width: 100%;
+            height: 100%;
+        }
+
+        body {
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+
+            width: 100%;
+            height: 100%;
+        }
+
+        .header-bar {
+            position: relative;
+            z-index: 100;
+
+            display: flex;
+            width: 100%;
+
+            box-sizing: border-box;
+            padding: 10px;
+            margin-top: auto;
+
+            & button {
+                appearance: none;
+                padding: 5px 10px;
+                border-radius: 100px;
+                border: 1px solid var(--module-border);
+                color: var(--root-text);
+                margin-left: auto;
+
+                background-color: var(--surface-button);
+
+                &:hover {
+                    background-color: var(--surface-button-highlight);
+                }
+            }
+        }
+
+        #shortcuts {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            list-style: none;
+
+            box-sizing: border-box;
+            padding: 10px;
+            margin: 0;
+
+            width: 100%;
+            height: 100%;
+            overflow-y: scroll;
+
+            position: relative;
+            z-index: 10;
+
+            &:empty::after {
+                content: 'Click below to add a new shortcut';
+                font-size: 12px;
+                opacity: .5;
+                margin: 0 auto;
+                margin-top: auto;
+                text-align: center;
+            }
+
+            & .shortcut {
+                width: 90px;
+                height: 80px;
+                padding: 5px;
+
+                text-align: center;
+                border-radius: 9px;
+                background-color: var(--surface-button);
+
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+
+                &:hover {
+                    background-color: var(--surface-button-highlight);
+                }
+
+                & img {
+                    /* background-color: var(--surface-button); */
+                    border-radius: 6px;
+                    width: 48px;
+                    height: 48px;
+                    display: block;
+                    margin: 0 auto 4px;
+                }
+
+                & p {
+                    font-size: 13px;
+                    color: var(--root-text);
+                    padding: 0;
+                    margin: 0;
+                }
+            }
+        }
+
+        .shortcut-wrapper {
+            position: relative;
+        }
+
+        .delete-btn {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            background-color: red;
+            color: white;
+            border: none;
+            border-radius: 999px;
+            padding: 2px 6px;
+            font-weight: bold;
+            font-size: 12px;
+            display: none;
+            z-index: 10;
+            cursor: pointer;
+        }
+
+        .shortcut.show-delete .delete-btn {
+            display: block;
+        }
+
+        .popup-overlay {
+            position: fixed;
+            z-index: 100;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .popup-content {
+            background: #fff;
+            padding: 20px;
+            border-radius: 6px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
+            text-align: center;
+        }
+
+        .popup-content input {
+            margin: 5px 0;
+        }
+
+        #addShortcut {
+            margin-top: 10px;
+        }
+
+        input[type="text"] {
+            width: 160px;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <ul id="shortcuts"></ul>
+
+    <div class="header-bar">
+        <button id="openAddPopup">New Shortcut</button>
+    </div>
+
+    <div id="addShortcutPopup" class="popup-overlay" style="display:none;">
+        <div class="popup-content">
+            <h3>Add Shortcut</h3>
+            <input type="text" id="newTitle" placeholder="Title"><br>
+            <input type="text" id="newURL" placeholder="URL"><br>
+            <button id="addBtn">Add</button>
+            <button id="closePopup">Cancel</button>
+        </div>
+    </div>
+
+    <div id="confirmDeletePopup" class="popup-overlay" style="display:none;">
+        <div class="popup-content">
+            <p>Are you sure you want to delete this shortcut?</p>
+            <button id="confirmDeleteBtn">Yes</button>
+            <button id="cancelDeleteBtn">No</button>
+        </div>
+    </div>
+
+    <script>
+        const LOCAL_KEY = 'customShortcuts';
+
+        function getFavicon(url) {
+            try {
+                const u = new URL(url);
+                return `https://www.google.com/s2/favicons?domain=${u.hostname}&sz=64`;
+            } catch {
+                return '';
+            }
+        }
+
+        function normalizeURL(url) {
+            try {
+                let input = url.trim();
+                if (!/^https?:\/\//i.test(input)) {
+                    input = 'https://' + input;
+                }
+                const u = new URL(input);
+                if (!u.hostname.includes('.')) throw new Error();
+                return u.href;
+            } catch {
+                return null;
+            }
+        }
+
+        function renderShortcuts(shortcuts) {
+            const $list = $('#shortcuts').empty();
+            shortcuts.forEach((sc, i) => {
+                const $li = $(`
+                    <li class="shortcut-wrapper" data-index="${i}">
+                        <div class="shortcut" title="${sc.url}">
+                            <button class="delete-btn">×</button>
+                            <a href="${sc.url}" target="_blank">
+                                <img src="${getFavicon(sc.url)}" alt="favicon">
+                                <p class="title">${sc.title}</p>
+                            </a>
+                        </div>
+                    </li>
+                `);
+                $list.append($li);
+            });
+        }
+
+        function loadShortcuts() {
+            const data = localStorage.getItem(LOCAL_KEY);
+            return data ? JSON.parse(data) : [];
+        }
+
+        function saveShortcuts(shortcuts) {
+            localStorage.setItem(LOCAL_KEY, JSON.stringify(shortcuts));
+        }
+
+        $(function () {
+            let shortcuts = loadShortcuts();
+            renderShortcuts(shortcuts);
+            let deleteIndex = null;
+
+            $('#openAddPopup').click(() => {
+                $('#addShortcutPopup').show();
+                $('#newTitle').focus();
+            });
+
+            $('#closePopup').click(() => {
+                $('#newTitle, #newURL').val('');
+                $('#addShortcutPopup').hide();
+            });
+
+            $('#addShortcutPopup').on('click', function (e) {
+                if (!$(e.target).closest('.popup-content').length) {
+                    $('#newTitle, #newURL').val('');
+                    $(this).hide();
+                }
+            });
+
+            $('#addBtn').click(() => {
+                const title = $('#newTitle').val().trim();
+                let url = $('#newURL').val().trim();
+                const validURL = normalizeURL(url);
+                if (title && validURL) {
+                    shortcuts.push({ title, url: validURL });
+                    saveShortcuts(shortcuts);
+                    renderShortcuts(shortcuts);
+                    $('#newTitle, #newURL').val('');
+                    $('#addShortcutPopup').hide();
+                } else {
+                    alert('Please enter a valid URL.');
+                }
+            });
+
+            $('#newTitle, #newURL').on('keydown', function (e) {
+                if (e.key === 'Enter') {
+                    $('#addBtn').click();
+                }
+            });
+
+            $('#shortcuts').sortable({
+                update: function () {
+                    const reordered = $(this).children().map(function () {
+                        return shortcuts[$(this).data('index')];
+                    }).get();
+                    shortcuts = reordered;
+                    saveShortcuts(shortcuts);
+                    renderShortcuts(shortcuts);
+                }
+            });
+
+            $('#shortcuts').on('contextmenu', '.shortcut-wrapper', function (e) {
+                e.preventDefault();
+                $('.shortcut').removeClass('show-delete');
+                $(this).find('.shortcut').addClass('show-delete');
+            });
+
+            $('#shortcuts').on('click', '.delete-btn', function (e) {
+                e.preventDefault();
+                deleteIndex = $(this).closest('.shortcut-wrapper').data('index');
+                $('#confirmDeletePopup').show();
+            });
+
+            $('#confirmDeleteBtn').click(function () {
+                if (deleteIndex !== null) {
+                    shortcuts.splice(deleteIndex, 1);
+                    saveShortcuts(shortcuts);
+                    renderShortcuts(shortcuts);
+                    deleteIndex = null;
+                    $('#confirmDeletePopup').hide();
+                }
+            });
+
+            $('#cancelDeleteBtn').click(function () {
+                deleteIndex = null;
+                $('#confirmDeletePopup').hide();
+            });
+
+            $(document).click(function (e) {
+                if (!$(e.target).closest('.shortcut').length) {
+                    $('.shortcut').removeClass('show-delete');
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

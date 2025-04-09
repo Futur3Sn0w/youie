@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="../globals.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.css">
+
+    <style>
+        ul {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            list-style: none;
+
+            box-sizing: border-box;
+
+            margin: 0;
+            padding: 10px;
+
+            li {
+                display: flex;
+                align-items: center;
+
+                padding: 5px 10px;
+                background-color: var(--surface-button);
+                border-radius: 8px;
+
+                transition: .15s;
+                cursor: pointer;
+
+                position: relative;
+                overflow: hidden;
+
+                & a {
+                    width: 100%;
+                    height: 100%;
+
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                    z-index: 100;
+                }
+
+                & i {
+                    position: relative;
+                    z-index: 50;
+                    display: inline-block;
+                    width: 24px;
+                    height: 24px;
+                    background-size: contain;
+                    background-position: center;
+                    background-repeat: no-repeat;
+                    vertical-align: middle;
+                    margin-left: -3px;
+
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+
+                &::after {
+                    content: attr(title);
+                    margin-left: 5px;
+                    font-weight: bold;
+                }
+
+                &:hover {
+                    background-color: var(--surface-button-highlight);
+                }
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <ul>
+        <li title="Yahoo News" url="https://news.yahoo.com/"></li>
+        <li title="A Frugal Chick" url="https://www.afrugalchick.com/"></li>
+        <li title="The Virginian Pilot" url="https://www.pilotonline.com/"></li>
+        <li title="Huffington Post" url="https://www.huffpost.com/"></li>
+        <li title="BleepingComputer" url="https://www.bleepingcomputer.com/"></li>
+        <li title="MakeUseOf" url="https://www.makeuseof.com/"></li>
+    </ul>
+
+    <script>
+        $(document).ready(function () {
+            $('li[title]').each(function () {
+                const siteUrl = $(this).attr('url');
+                const faviconUrl = `https://www.google.com/s2/favicons?sz=64&domain_url=${encodeURIComponent(siteUrl)}`;
+                const icon = $('<i>').css({
+                    'background-image': `url(${faviconUrl})`
+                });
+                $(this).prepend(icon);
+            });
+
+            $('li').on('click', function () {
+                let url = $(this).attr('url');
+                window.open(url, "_blank");
+            })
+        });
+    </script>
+</body>
+
+</html>

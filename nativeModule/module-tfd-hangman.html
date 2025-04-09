@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+        }
+
+        #Hangman {
+            border: none;
+            background-color: transparent;
+            margin-bottom: -40px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <script>
+        const updateHangmanURL = () => {
+            const iframe = document.getElementById('Hangman');
+            const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+            if (isDarkMode) {
+                iframe.src = "https://www.thefreedictionary.com/_/WoD/hangman.aspx?#x00000000,xFFFFFF,x00FFFF,10pt,'',_blank"; // URL for dark mode
+            } else {
+                iframe.src = "https://www.thefreedictionary.com/_/WoD/hangman.aspx?#x00000000,x000000,x0000FF,10pt,'',_blank"; // URL for light mode
+            }
+        };
+
+        // Initial update on page load
+        updateHangmanURL();
+
+        // Update when the color scheme changes
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateHangmanURL);
+    </script>
+
+    <div style="width:100%;position:relative;background-color:transparent;padding:4px">
+        <iframe id="Hangman"
+            src="https://www.thefreedictionary.com/_/WoD/hangman.aspx?#x00000000,x000000,x0000FF,10pt,'',_blank"
+            width="100%" scrolling="no" frameborder="0"></iframe>
+    </div>
+
+</body>
+
+</html>

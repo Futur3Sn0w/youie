@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../globals.css">
+
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.css">
+
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        .googApps {
+            width: 100%;
+            height: 100%;
+
+            overflow-y: scroll;
+            scrollbar-width: 8px;
+
+            position: relative;
+            z-index: 200;
+
+            padding: 11px;
+
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+
+            background-color: var(--gmenu-a);
+        }
+
+        .apps {
+            width: 100%;
+            height: fit-content;
+
+            padding: 12px 10px;
+            box-sizing: border-box;
+            margin: 0;
+
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 5px 10px;
+
+            background-color: var(--gmenu-b);
+            border-radius: 8px;
+        }
+
+        .gApp:not(.moreGoogle) {
+            width: 88px;
+            height: 88px;
+            padding: 6px;
+
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            list-style-type: none;
+            position: relative;
+            border: 2px solid transparent;
+
+            border-radius: 16px;
+
+            &:hover {
+                background-color: var(--gmenu-a);
+            }
+
+            &::after {
+                content: attr(id);
+                font-size: 14px;
+                line-height: 18px;
+
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                margin-top: auto;
+            }
+
+            & .icn {
+                width: 57px;
+                height: 57px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 50%;
+                /* background-color: var(--module-back); */
+                /* aspect-ratio: 1/1; */
+
+                & span {
+                    width: 53px;
+                    height: 53px;
+                    display: inline-block;
+                    background-image: url(https://ssl.gstatic.com/gb/images/sprites/p_1x_7725e9c78408.png);
+                    background-size: 53px 2547px;
+                    /* background-position: 0 -2378px; */
+                    background-repeat: no-repeat;
+                }
+            }
+
+            &.sortable-placeholder {
+                pointer-events: none;
+                border: 2px dashed #aaa;
+            }
+        }
+
+        .moreGoogle {
+            width: max-content;
+            height: 40px;
+
+            display: inline-block;
+
+            color: var(--text-b);
+            border-radius: 100px;
+            border: 1px solid #8e918f;
+
+            font-size: 14px;
+            font-weight: 500;
+            text-align: center;
+
+            margin: 15px 0;
+            margin-top: 20px;
+            box-sizing: border-box;
+            padding: 10px 24px;
+
+            position: relative;
+
+            cursor: pointer;
+
+            &:before {
+                content: " ";
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                opacity: 0;
+                border-radius: 100px;
+                background: #a8c7fa;
+                background: var(--gm3-sys-color-primary, #a8c7fa);
+                transition: opacity .5s ease-out;
+            }
+
+            &:hover::before {
+                opacity: .08;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="googApps">
+        <div class="apps"></div>
+        <div class="moreGoogle gApp" target="https://about.google/products">More from Google</div>
+    </div>
+
+    <script>
+        $.getJSON("../gapps.json", function (appsData) {
+            // Append all apps first
+            appsData.forEach(app => {
+                $(".apps").append(`
+                <li class="${app.class}" id="${app.id}" target="${app.target}">
+                    <div class="icn">
+                        <span style="${app.style}"></span>
+                    </div>
+                </li>
+            `);
+            });
+
+            // Restore saved order from localStorage AFTER adding elements to the DOM
+            const savedOrder = localStorage.getItem("gAppOrder");
+            if (savedOrder) {
+                const orderArray = savedOrder.split(",");
+                orderArray.forEach(function (id) {
+                    if (id) {
+                        $(".googApps .apps").append($("#" + id));
+                    }
+                });
+            }
+
+            // Make the apps sortable (after restoring order)
+            $(".googApps .apps").sortable({
+                containment: "parent",
+                distance: 3,
+                tolerance: "pointer",
+                delay: 100,
+                items: ".gApp",
+                placeholder: "sortable-placeholder gApp",
+                stop: function () {
+                    const order = $(".gApp").map(function () {
+                        return this.id;
+                    }).get();
+                    localStorage.setItem("gAppOrder", order.join(","));
+                }
+            });
+
+            // Add click event to open target attribute in a new tab
+            $(".apps").on("click", ".gApp", function () {
+                const targetUrl = $(this).attr("target");
+                if (targetUrl) {
+                    window.open(targetUrl, "_blank"); // Open the URL in a new tab
+                }
+            });
+        }).fail(function () {
+            console.error("Failed to load apps.json");
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,128 @@
+{
+    "modules": [
+        {
+            "name": "Match Up",
+            "description": "Match Up game from TheFreeDictionary",
+            "mode": "external",
+            "id": "module-tfd-matchup",
+            "icon": "fas fa-puzzle-piece",
+            "externalLink": "https://www.thefreedictionary.com/",
+            "contentType": "html"
+        },
+        {
+            "name": "Weather",
+            "description": "Lively, animated weather widget; Provided by WeatherWidget.org",
+            "mode": "external",
+            "id": "module-weather",
+            "icon": "fas fa-cloud-sun",
+            "height": "254px",
+            "externalLink": "https://www.accuweather.com/",
+            "contentType": "iframe"
+        },
+        {
+            "name": "Calendar",
+            "description": "Simple monthly calendar for quick viewing",
+            "mode": "internal",
+            "id": "module-calendar",
+            "icon": "fas fa-calendar",
+            "height": "343px",
+            "externalLink": "https://calendar.google.com/",
+            "contentType": "iframe"
+        },
+        {
+            "name": "Word of the Day",
+            "description": "Word of the Day from TheFreeDictionary",
+            "mode": "external",
+            "id": "module-tfd-wotd",
+            "icon": "fas fa-hashtag",
+            "externalLink": "https://www.thefreedictionary.com/",
+            "contentType": "html"
+        },
+        {
+            "name": "Hangman",
+            "description": "Hangman game from TheFreeDictionary",
+            "mode": "external",
+            "id": "module-tfd-hangman",
+            "icon": "fa-solid fa-spell-check",
+            "height": "170px",
+            "externalLink": "https://www.thefreedictionary.com/",
+            "contentType": "iframe"
+        },
+        {
+            "name": "Google",
+            "description": "A grid of Google apps; Drag to order",
+            "mode": "internal",
+            "id": "module-google-apps",
+            "icon": "fa-solid fa-g",
+            "height": "400px",
+            "externalLink": "https://www.google.com/",
+            "contentType": "iframe"
+        },
+        {
+            "name": "Calculator",
+            "description": "A simple calculator widget",
+            "mode": "internal",
+            "id": "module-calculator",
+            "icon": "fa-solid fa-calculator",
+            "height": "400px",
+            "contentType": "iframe"
+        },
+        {
+            "name": "Today in History",
+            "description": "Today in History from TheFreeDictionary",
+            "mode": "external",
+            "id": "module-tfd-tdih",
+            "icon": "fa-solid fa-history",
+            "height": "350",
+            "externalLink": "https://www.thefreedictionary.com/",
+            "contentType": "html"
+        },
+        {
+            "name": "Daily Horoscope",
+            "description": "Daily horoscope created by TheAlbinoSheep",
+            "mode": "external",
+            "id": "module-horoscope",
+            "icon": "fa-solid fa-moon",
+            "height": "540",
+            "externalLink": "https://www.horoscopes.com/",
+            "contentType": "iframe"
+        },
+        {
+            "name": "Example",
+            "description": "Simple HTML example (for debugging/testing)",
+            "mode": "internal",
+            "noShow": true,
+            "id": "module-simple-html",
+            "icon": "fab fa-html5",
+            "height": "200",
+            "contentType": "html"
+        },
+        {
+            "name": "NYT Games",
+            "description": "Quick-links to New York Times' games",
+            "mode": "internal",
+            "id": "module-nyt-games",
+            "icon": "fa-solid fa-icons",
+            "externalLink": "https://www.nyt.com/games",
+            "contentType": "html"
+        },
+        {
+            "name": "News",
+            "description": "Quick-links to various news sources around the web",
+            "mode": "internal",
+            "id": "module-thenews",
+            "icon": "fa-solid fa-newspaper",
+            "height": "285",
+            "contentType": "iframe"
+        },
+        {
+            "name": "Shortcuts",
+            "description": "Custom shortcuts for quick access",
+            "mode": "internal",
+            "id": "module-shortcuts",
+            "icon": "fas fa-grip",
+            "height": "300",
+            "contentType": "iframe"
+        }
+    ]
+}

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../globals.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .calculator {
+            width: 100%;
+            height: fit-content;
+            overflow: hidden;
+        }
+
+        form input {
+            width: 100%;
+            height: 70px;
+            border: none;
+            border-radius: 12px;
+            font-size: 2rem;
+            padding: 1rem;
+            background: var(--module-back);
+            text-align: right;
+            pointer-events: none;
+        }
+
+        .button {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            padding: 15px;
+        }
+
+        button {
+            flex: 0 0 22%;
+            margin: 5px 0;
+            border: none;
+            width: 40px;
+            height: 42px;
+            font-size: 22px;
+            font-weight: 600;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn-yellow {
+            background: rgb(245, 146, 62);
+            color: #fff;
+        }
+
+
+        .btn-invis {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .btn-grey {
+            background: rgb(224, 224, 224);
+            color: #000;
+        }
+
+        .btn-equal {
+            background: green;
+            color: #fff;
+        }
+
+        .btn-clear {
+            background: red;
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body>
+    <section class="calculator">
+        <form>
+            <input type="text" class="screen" readonly>
+        </form>
+        <div class="button">
+
+            <button type="button" class="btn btn-grey" data-num="7">7</button>
+            <button type="button" class="btn btn-grey" data-num="8">8</button>
+            <button type="button" class="btn btn-grey" data-num="9">9</button>
+            <button type="button" class="btn btn-yellow" data-num="*">*</button>
+
+            <button type="button" class="btn btn-grey" data-num="4">4</button>
+            <button type="button" class="btn btn-grey" data-num="5">5</button>
+            <button type="button" class="btn btn-grey" data-num="6">6</button>
+            <button type="button" class="btn btn-yellow" data-num="/">/</button>
+
+            <button type="button" class="btn btn-grey" data-num="1">1</button>
+            <button type="button" class="btn btn-grey" data-num="2">2</button>
+            <button type="button" class="btn btn-grey" data-num="3">3</button>
+            <button type="button" class="btn btn-yellow" data-num="-">-</button>
+
+            <button type="button" class="btn btn-invis" data-num=""></button>
+            <button type="button" class="btn btn-grey" data-num="0">0</button>
+            <button type="button" class="btn btn-grey" data-num=".">.</button>
+            <button type="button" class="btn btn-yellow" data-num="+">+</button>
+
+            <button type="button" class="btn btn-clear">C</button>
+            <button type="button" class="btn btn-equal">=</button>
+        </div>
+    </section>
+    <script>
+        (function () {
+            let screen = document.querySelector('.screen');
+            let buttons = document.querySelectorAll('.btn');
+            let clear = document.querySelector('.btn-clear');
+            let equal = document.querySelector('.btn-equal');
+
+            let lastExpression = '';
+            let lastOperator = '';
+            let lastOperand = '';
+
+            buttons.forEach(function (button) {
+                button.addEventListener('click', function (e) {
+                    let value = e.target.dataset.num;
+                    if (value !== undefined) {
+                        screen.value += value;
+                    }
+                });
+            });
+
+            equal.addEventListener('click', function () {
+                if (screen.value === '') {
+                    screen.value = "Please enter";
+                } else {
+                    try {
+                        let expression = screen.value;
+                        let result;
+
+                        if (lastExpression && expression === lastExpression && lastOperator && lastOperand) {
+                            // Reuse last operator and operand for repeated evaluation
+                            result = eval(`${expression}${lastOperator}${lastOperand}`);
+                            screen.value = result;
+                            lastExpression = `${expression}${lastOperator}${lastOperand}`;
+                        } else {
+                            result = eval(expression);
+                            screen.value = result;
+                            // Extract last operator and operand
+                            const match = expression.match(/([+\-*/])(\d+(\.\d+)?)\s*$/);
+                            if (match) {
+                                lastOperator = match[1];
+                                lastOperand = match[2];
+                                lastExpression = expression;
+                            } else {
+                                lastOperator = '';
+                                lastOperand = '';
+                                lastExpression = '';
+                            }
+                        }
+                    } catch (error) {
+                        screen.value = "Error";
+                        lastExpression = '';
+                        lastOperator = '';
+                        lastOperand = '';
+                    }
+                }
+            });
+
+            clear.addEventListener('click', function () {
+                screen.value = "";
+                lastExpression = '';
+                lastOperator = '';
+                lastOperand = '';
+            });
+        })();
+    </script>
+</body>
+
+</html>

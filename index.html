@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Youie - Home</title>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.js"></script>
+
+    <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="globals.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="settings.css">
+    <link rel="stylesheet" href="toolbar.css">
+</head>
+
+<body>
+    <div class="toolbar">
+        <div class="links">
+            <a href="https://mail.google.com" class="cbLink">Gmail</a>
+            <a href="https://images.google.com" class="cbLink">Images</a>
+        </div>
+        <div class="sep"></div>
+        <button class="settingsBtn editModulesBtn toolbarBtn" title="Settings">
+            <i class="fa-solid fa-gear"></i>
+        </button>
+    </div>
+    <img class="backImg">
+    <div class="main-header">
+        <input type="text" class="searchTxt" placeholder="type to search..." id="searchBox">
+    </div>
+
+    <div class="settingsWindow">
+        <!-- <img class="backImg"> -->
+        <button class="actionBtn cancel">✕</button>
+        <button class="actionBtn save">Save</button>
+        <div class="module-selector-popup tab selected" tab="Modules" icon="fa-table-list"></div>
+        <div class="wallpaperTab tab" tab="Wallpaper" icon="fa-image">
+            <div class="optGroup" title="Wallpaper source">
+                <label><input type="radio" name="wallpaperSource" value="upload" checked> Upload</label>
+                <label><input type="radio" name="wallpaperSource" value="bing"> Bing</label>
+                <button id="refreshBingBtn" style="display:none;">Refresh Bing Image</button>
+            </div>
+            <input type="file" id="fileInput" accept="image/*">
+            <img id="imageDisplay" src="" alt="Selected Image">
+        </div>
+
+        <div class="appearanceTab tab" tab="Appearance" icon="fa-palette">
+            <div class="optGroup" title="Toolbar position">
+                <label>
+                    <input type="radio" name="toolbar-position" value="left"> Left
+                </label>
+                <label>
+                    <input type="radio" name="toolbar-position" value="center"> Center
+                </label>
+                <label>
+                    <input type="radio" name="toolbar-position" value="right" checked> Right
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="scroller">
+        <div id="autocompleteResults"></div>
+        <div class="container">
+            <!-- <div class="module" title="New Module"></div> -->
+        </div>
+    </div>
+
+
+    <script src="js.js"></script>
+</body>
+
+</html>

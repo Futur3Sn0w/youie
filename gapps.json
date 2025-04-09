@@ -1,0 +1,92 @@
+[
+    {
+        "class": "gApp ga1",
+        "id": "Search",
+        "target": "https://google.com",
+        "style": "background-position: 0 -1392px;"
+    },
+    {
+        "class": "gApp ga2",
+        "id": "YouTube",
+        "target": "https://youtube.com",
+        "style": "background-position: 0 -2378px;"
+    },
+    {
+        "class": "gApp ga15",
+        "id": "Messages",
+        "target": "https://messages.google.com/web",
+        "style": "background-position: center; background-size: 43px 43px; background-image: url(https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Google_Messages_icon_%282022%29.svg/2048px-Google_Messages_icon_%282022%29.svg.png);"
+    },
+    {
+        "class": "gApp ga14",
+        "id": "Music",
+        "target": "https://music.youtube.com",
+        "style": "background-position: center; background-size: 43px 43px; background-image: url(https://s2.googleusercontent.com/s2/favicons?sz=64&domain_url=https://music.youtube.com);"
+    },
+    {
+        "class": "gApp ga3",
+        "id": "Maps",
+        "target": "https://maps.google.com",
+        "style": "background-position: 0 -1044px;"
+    },
+    {
+        "class": "gApp ga4",
+        "id": "Play",
+        "target": "https://play.google.com",
+        "style": "background-position: 0 -290px;"
+    },
+    {
+        "class": "gApp ga5",
+        "id": "News",
+        "target": "https://news.google.com",
+        "style": "background-position: 0 -1334px;"
+    },
+    {
+        "class": "gApp ga6",
+        "id": "Gmail",
+        "target": "https://mail.google.com",
+        "style": "background-position: 0 -2436px;"
+    },
+    {
+        "class": "gApp ga7",
+        "id": "Meet",
+        "target": "https://meet.google.com",
+        "style": "background-position: 0 -348px;"
+    },
+    {
+        "class": "gApp ga8",
+        "id": "Chat",
+        "target": "https://chat.google.com",
+        "style": "background-position: 0 -580px;"
+    },
+    {
+        "class": "gApp ga9",
+        "id": "Contacts",
+        "target": "https://contacts.google.com",
+        "style": "background-position: 0 -1624px;"
+    },
+    {
+        "class": "gApp ga10",
+        "id": "Drive",
+        "target": "https://drive.google.com",
+        "style": "background-position: 0 -116px;"
+    },
+    {
+        "class": "gApp ga11",
+        "id": "Calendar",
+        "target": "https://calendar.google.com",
+        "style": "background-position: 0 -1276px;"
+    },
+    {
+        "class": "gApp ga12",
+        "id": "Translate",
+        "target": "https://translate.google.com",
+        "style": "background-position: 0 -1682px;"
+    },
+    {
+        "class": "gApp ga13",
+        "id": "Photos",
+        "target": "https://photos.google.com",
+        "style": "background-position: 0 -870px;"
+    }
+]
