@@ -126,7 +126,7 @@ $(document).ready(function () {
 // Wallpaper
 
 $(document).ready(function () {
-    const defaultImagePath = '/resc/default.png'; // Changed to relative path
+    const defaultImagePath = 'resc/default.png'; // Changed to relative path
     const $imageDisplay = $('#imageDisplay');
     const $backImg = $('.backImg');
 
