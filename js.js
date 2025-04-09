@@ -147,28 +147,27 @@ $(document).ready(function () {
     }
 
     $('input[name="wallpaperSource"]').on('change', async function () {
+        localStorage.setItem('wallpaperSource', $(this).val());
         const selectedSource = $(this).val();
         if (selectedSource === 'upload') {
             $('#fileInput').show();
             $('#refreshBingBtn').hide();
-            const storedImage = localStorage.getItem('uploadedImage');
-            if (storedImage) {
-                $imageDisplay.attr('src', storedImage);
-                $backImg.attr('src', storedImage);
+            const uploadedImage = localStorage.getItem('uploadedImage');
+            if (uploadedImage) {
+                $imageDisplay.attr('src', uploadedImage);
+                $backImg.attr('src', uploadedImage);
+            } else {
+                // fallback if no image uploaded yet
+                $imageDisplay.attr('src', defaultImagePath);
+                $backImg.attr('src', defaultImagePath);
             }
         } else if (selectedSource === 'bing') {
             $('#fileInput').hide();
             $('#refreshBingBtn').show();
-            try {
-                const imageUrl = 'https://picsum.photos/1920/1080?random=' + Date.now();
-                const base64Image = await loadImageOntoCanvas(imageUrl);
-                localStorage.setItem('backgroundImage', base64Image);
-                $imageDisplay.attr('src', base64Image);
-                $backImg.attr('src', base64Image);
-            } catch (error) {
-                console.error('Failed to fetch Bing wallpaper:', error);
-                alert('Could not load Bing image.');
-            }
+            const imageUrl = 'https://picsum.photos/1920/1080?random=' + Date.now();
+            localStorage.setItem('backgroundImage', imageUrl);
+            $imageDisplay.attr('src', imageUrl);
+            $backImg.attr('src', imageUrl);
         }
     });
 
@@ -251,28 +250,24 @@ $(document).ready(function () {
 
     // Auto-load from local storage or default on page load
     async function loadInitialImage() {
-        const storedImage = localStorage.getItem('backgroundImage');
-        if (storedImage) {
-            $imageDisplay.attr('src', storedImage);
-            $backImg.attr('src', storedImage);
-            const uploadedImage = localStorage.getItem('uploadedImage');
-            if (storedImage === uploadedImage) {
-                $('input[name="wallpaperSource"][value="upload"]').prop('checked', true);
-            } else {
-                $('input[name="wallpaperSource"][value="bing"]').prop('checked', true);
-            }
-            $('input[name="wallpaperSource"]:checked').trigger('change');
-        } else {
-            // Load the default image onto the canvas and display it
-            try {
-                const defaultBase64 = await loadImageOntoCanvas(defaultImagePath);
-                localStorage.setItem('backgroundImage', defaultBase64);
-                $imageDisplay.attr('src', defaultImagePath);
-                $backImg.attr('src', defaultBase64);
-                $('input[name="wallpaperSource"]:checked').trigger('change');
-            } catch (error) {
-                console.error('Error loading default image:', error);
-                alert('Failed to load the default image from ' + defaultImagePath);
+        const savedSource = localStorage.getItem('wallpaperSource') || 'upload';
+        const uploadedImage = localStorage.getItem('uploadedImage');
+        const backgroundImage = localStorage.getItem('backgroundImage');
+
+        if (savedSource === 'upload') {
+            $('input[name="wallpaperSource"][value="upload"]').prop('checked', true);
+            $('#fileInput').show();
+            $('#refreshBingBtn').hide();
+            const image = uploadedImage || defaultImagePath;
+            $imageDisplay.attr('src', image);
+            $backImg.attr('src', image);
+        } else if (savedSource === 'bing') {
+            $('input[name="wallpaperSource"][value="bing"]').prop('checked', true);
+            $('#fileInput').hide();
+            $('#refreshBingBtn').show();
+            if (backgroundImage) {
+                $imageDisplay.attr('src', backgroundImage);
+                $backImg.attr('src', backgroundImage);
             }
         }
     }
@@ -813,15 +808,12 @@ function openSettingsWindow(modules) {
         }
     });
 }
+
 $('#refreshBingBtn').on('click', async function () {
-    try {
-        const imageUrl = 'https://picsum.photos/1920/1080?random=' + Date.now();
-        const base64Image = await loadImageOntoCanvas(imageUrl);
-        localStorage.setItem('backgroundImage', base64Image);
-        $imageDisplay.attr('src', base64Image);
-        $backImg.attr('src', base64Image);
-    } catch (error) {
-        console.error('Failed to refresh Bing wallpaper:', error);
-        alert('Could not load a new Bing image.');
-    }
+    const imageUrl = 'https://picsum.photos/1920/1080?random=' + Date.now();
+    const $imageDisplay = $('#imageDisplay');
+    const $backImg = $('.backImg');
+    localStorage.setItem('backgroundImage', imageUrl);
+    $imageDisplay.attr('src', imageUrl);
+    $backImg.attr('src', imageUrl);
 });
