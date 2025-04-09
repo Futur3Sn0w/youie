@@ -116,9 +116,12 @@ $(document).ready(function () {
             $(this).attr('hoverTxt', 'Minimize');
         }
         $module.one('transitionend', function () {
-            saveWidgetStates();
-            markOverflowingElements();
-            refreshMasonryLayout();
+            setTimeout(() => {
+                saveWidgetStates();
+                markOverflowingElements();
+                refreshMasonryLayout();
+                $module.children('.refresh-icon').click();
+            }, 100);
         });
     });
 });
@@ -130,8 +133,6 @@ $(document).ready(function () {
     const $imageDisplay = $('#imageDisplay');
     const $backImg = $('.backImg');
 
-
-
     async function fetchBingWallpaper() {
         try {
             const imageUrl = 'https://picsum.photos/1920/1080?random=' + Date.now();
@@ -141,7 +142,7 @@ $(document).ready(function () {
             $backImg.attr('src', base64Image);
         } catch (error) {
             console.error('Failed to fetch Bing wallpaper:', error);
-            alert('Could not load Bing image.');
+            // alert('Could not load Bing image.');
         }
     }
 
@@ -260,6 +261,7 @@ $(document).ready(function () {
             } else {
                 $('input[name="wallpaperSource"][value="bing"]').prop('checked', true);
             }
+            $('input[name="wallpaperSource"]:checked').trigger('change');
         } else {
             // Load the default image onto the canvas and display it
             try {
@@ -267,12 +269,12 @@ $(document).ready(function () {
                 localStorage.setItem('backgroundImage', defaultBase64);
                 $imageDisplay.attr('src', defaultImagePath);
                 $backImg.attr('src', defaultBase64);
+                $('input[name="wallpaperSource"]:checked').trigger('change');
             } catch (error) {
                 console.error('Error loading default image:', error);
                 alert('Failed to load the default image from ' + defaultImagePath);
             }
         }
-        $('input[name="wallpaperSource"]:checked').trigger('change');
     }
 
     loadInitialImage();
@@ -500,8 +502,12 @@ function restoreWidgetStates() {
 
 function refreshMasonryLayout() {
     const $container = $('.container');
-    if ($container.data('masonry')) { // Check if Masonry is initialized
-        $container.masonry('layout');
+    if ($container.hasClass('ui-sortable')) {
+        $container.sortable('refresh');
+    }
+
+    if ($container.data('masonry')) {
+        $container.masonry('reloadItems').masonry('layout');
     }
 }
 

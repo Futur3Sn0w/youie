@@ -152,11 +152,26 @@
         }
 
         .popup-content {
-            background: #fff;
+            background: var(--root-back);
             padding: 20px;
             border-radius: 6px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
             text-align: center;
+
+            button {
+                appearance: none;
+                padding: 5px 10px;
+                border-radius: 100px;
+                border: 1px solid var(--module-border);
+                color: var(--root-text);
+                margin-left: auto;
+
+                background-color: var(--surface-button);
+
+                &:hover {
+                    background-color: var(--surface-button-highlight);
+                }
+            }
         }
 
         .popup-content input {
