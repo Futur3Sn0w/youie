@@ -111,35 +111,41 @@
 
         #editorHeader {
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: space-between;
             padding: 0.5rem;
             background: var(--module-back);
+            position: relative;
+        }
 
-            #noteTitle {
-                font-weight: bold;
+        #editorHeader #noteTitle {
+            font-weight: bold;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            pointer-events: none;
+            width: max-content;
+        }
+
+        button {
+            appearance: none;
+            padding: 5px 10px;
+            border-radius: 100px;
+            border: 1px solid var(--module-border);
+            color: var(--root-text);
+            transition: .15s;
+
+            background-color: var(--surface-button);
+
+            &#saveButton {
+                font-size: 17px;
+                padding: 3px 7px;
             }
 
-            button {
-                appearance: none;
-                padding: 5px 10px;
-                border-radius: 100px;
-                border: 1px solid var(--module-border);
-                color: var(--root-text);
-                transition: .15s;
-
-                background-color: var(--surface-button);
-
-                &#saveButton {
-                    font-size: 17px;
-                    padding: 3px 7px;
-                }
-
-                &:hover {
-                    background-color: white;
-                    color: black;
-                    border-color: transparent;
-                }
+            &:hover {
+                background-color: white;
+                color: black;
+                border-color: transparent;
             }
         }
 
@@ -210,6 +216,7 @@
                     $('#saveButton').show();
                 }
                 unsavedChanges = false;
+                setTimeout(() => $editor.focus(), 0);
             }
 
             function loadNoteList() {
