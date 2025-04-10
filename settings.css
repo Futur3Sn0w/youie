@@ -196,6 +196,41 @@
         opacity: .5;
     }
 
+    & .category-filters {
+        display: flex;
+        gap: 5px;
+
+        width: 100%;
+        box-sizing: border-box;
+        padding: 15px;
+
+        button {
+            appearance: none;
+            padding: 5px 10px;
+            border-radius: 100px;
+            border: 1px solid var(--module-border);
+            color: var(--root-text);
+
+            background-color: var(--surface-button);
+
+            &:hover {
+                background-color: var(--surface-button-highlight);
+            }
+
+            &.clear.selected {
+                pointer-events: none;
+                opacity: .33;
+            }
+
+            &.selected:not(.clear) {
+                background-color: white;
+                border-color: transparent;
+                color: black;
+                font-weight: bold;
+            }
+        }
+    }
+
     & .module-list {
         list-style: none;
         overflow-y: auto;

@@ -738,6 +738,31 @@ function loadModules() {
 function openModuleSelector(modules) {
     const $popup = $('.module-selector-popup');
     const $moduleList = $('<ul>').addClass('module-list');
+    const $filterContainer = $('<div class="category-filters">');
+    const allCategories = [...new Set(modules.flatMap(m => m.category || []))].sort();
+
+    const $clearBtn = $('<button class="filter-btn clear selected" style="order: 999; margin-left: auto;">Clear</button>').on('click', function () {
+        $('.filter-btn').removeClass('selected');
+        $(this).addClass('selected');
+        $moduleList.children().show();
+    });
+    $filterContainer.append($clearBtn);
+
+    allCategories.forEach(category => {
+        const $btn = $(`<button class="filter-btn">${category}</button>`).on('click', function () {
+            // Remove selected class from all filter buttons
+            $('.filter-btn').removeClass('selected');
+            // Add selected class to the clicked button
+            $(this).addClass('selected');
+
+            $moduleList.children().hide().filter((_, el) => {
+                const categories = ($(el).data('categories') || "").split(',');
+                return categories.includes(category);
+            }).show();
+        });
+        $filterContainer.append($btn);
+    });
+
     const $settings = $('.settingsWindow');
 
     const selectedModuleIds = JSON.parse(localStorage.getItem('selectedModules')) || [];
@@ -772,6 +797,7 @@ function openModuleSelector(modules) {
             $listItem.append($icon, $nameText, $description);
 
             $listItem.attr('data-module-id', module.id);
+            $listItem.attr('data-categories', (module.category || []).join(','));
 
             if (selectedModuleIds.includes(module.id)) {
                 $listItem.addClass('selected');
@@ -805,7 +831,7 @@ function openModuleSelector(modules) {
     });
 
     $popup.empty();
-    $popup.append($moduleList);
+    $popup.append($filterContainer, $moduleList);
 
     $settings.addClass('visible');
 }

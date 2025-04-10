@@ -3,6 +3,11 @@
         {
             "name": "Match Up",
             "description": "Match Up game from TheFreeDictionary",
+            "category": [
+                "Stock",
+                "Web",
+                "Games"
+            ],
             "mode": "external",
             "id": "module-tfd-matchup",
             "icon": "fas fa-puzzle-piece",
@@ -12,6 +17,10 @@
         {
             "name": "Weather",
             "description": "Lively, animated weather widget; Provided by WeatherWidget.org",
+            "category": [
+                "Stock",
+                "Web"
+            ],
             "mode": "external",
             "id": "module-weather",
             "icon": "fas fa-cloud-sun",
@@ -22,6 +31,10 @@
         {
             "name": "Calendar",
             "description": "Simple monthly calendar for quick viewing",
+            "category": [
+                "Stock",
+                "Tools"
+            ],
             "mode": "internal",
             "id": "module-calendar",
             "icon": "fas fa-calendar",
@@ -32,6 +45,10 @@
         {
             "name": "Word of the Day",
             "description": "Word of the Day from TheFreeDictionary",
+            "category": [
+                "Stock",
+                "Web"
+            ],
             "mode": "external",
             "id": "module-tfd-wotd",
             "icon": "fas fa-hashtag",
@@ -41,6 +58,11 @@
         {
             "name": "Hangman",
             "description": "Hangman game from TheFreeDictionary",
+            "category": [
+                "Stock",
+                "Web",
+                "Games"
+            ],
             "mode": "external",
             "id": "module-tfd-hangman",
             "icon": "fa-solid fa-spell-check",
@@ -51,6 +73,10 @@
         {
             "name": "Google",
             "description": "A grid of Google apps; Drag to order",
+            "category": [
+                "Stock",
+                "Web"
+            ],
             "mode": "internal",
             "id": "module-google-apps",
             "icon": "fa-solid fa-g",
@@ -61,6 +87,10 @@
         {
             "name": "Calculator",
             "description": "A simple calculator widget",
+            "category": [
+                "Stock",
+                "Tools"
+            ],
             "mode": "internal",
             "id": "module-calculator",
             "icon": "fa-solid fa-calculator",
@@ -70,6 +100,10 @@
         {
             "name": "Today in History",
             "description": "Today in History from TheFreeDictionary",
+            "category": [
+                "Stock",
+                "Web"
+            ],
             "mode": "external",
             "id": "module-tfd-tdih",
             "icon": "fa-solid fa-history",
@@ -80,6 +114,10 @@
         {
             "name": "Daily Horoscope",
             "description": "Daily horoscope created by TheAlbinoSheep",
+            "category": [
+                "Stock",
+                "Web"
+            ],
             "mode": "external",
             "id": "module-horoscope",
             "icon": "fa-solid fa-moon",
@@ -90,6 +128,9 @@
         {
             "name": "Example",
             "description": "Simple HTML example (for debugging/testing)",
+            "category": [
+                "Stock"
+            ],
             "mode": "internal",
             "noShow": true,
             "id": "module-simple-html",
@@ -100,6 +141,11 @@
         {
             "name": "NYT Games",
             "description": "Quick-links to New York Times' games",
+            "category": [
+                "Stock",
+                "Web",
+                "Games"
+            ],
             "mode": "internal",
             "id": "module-nyt-games",
             "icon": "fa-solid fa-icons",
@@ -109,6 +155,10 @@
         {
             "name": "News",
             "description": "Quick-links to various news sources around the web",
+            "category": [
+                "Stock",
+                "Web"
+            ],
             "mode": "internal",
             "id": "module-thenews",
             "icon": "fa-solid fa-newspaper",
@@ -118,6 +168,10 @@
         {
             "name": "Shortcuts",
             "description": "Custom shortcuts for quick access",
+            "category": [
+                "Stock",
+                "Tools"
+            ],
             "mode": "internal",
             "id": "module-shortcuts",
             "icon": "fas fa-grip",
