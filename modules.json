@@ -177,6 +177,19 @@
             "icon": "fas fa-grip",
             "height": "300",
             "contentType": "iframe"
+        },
+        {
+            "name": "Notes",
+            "description": "A handy notepad to glance at throughout the day",
+            "category": [
+                "Stock",
+                "Tools"
+            ],
+            "mode": "internal",
+            "id": "module-notes",
+            "icon": "fas fa-note-sticky",
+            "height": "300",
+            "contentType": "iframe"
         }
     ]
 }
