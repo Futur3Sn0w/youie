@@ -243,7 +243,7 @@ body>.backImg {
 
         display: flex;
         flex-direction: column;
-        justify-content: start;
+        justify-content: flex-start;
 
         transition: height .2s, box-shadow .2s !important;
 
@@ -356,7 +356,7 @@ body>.backImg {
 
         & .header {
             content: attr(title);
-            width: calc(100% - 2px);
+            width: 100%;
             height: 30px;
             user-select: none;
             overflow: hidden;
