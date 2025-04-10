@@ -236,7 +236,7 @@ body>.backImg {
         border-radius: 15px;
 
         position: relative;
-        overflow: visible;
+        overflow: hidden;
         /* border: 1px solid var(--module-border); */
 
         box-sizing: border-box;
@@ -255,7 +255,7 @@ body>.backImg {
         &::after {
             content: '';
             width: 100%;
-            height: calc(100% - 5px);
+            height: calc(100%);
 
             border-radius: inherit;
             box-sizing: border-box;
@@ -273,16 +273,8 @@ body>.backImg {
         }
 
         &.minimized {
-            height: 34px !important;
+            height: 30px !important;
             margin-bottom: 6px;
-
-            &::after {
-                height: calc(100% - 4px);
-            }
-
-            & .header {
-                border-radius: 17px;
-            }
 
             .minimize-icon {
                 &::before {
@@ -306,13 +298,11 @@ body>.backImg {
 
         & .module-content {
             width: calc(100%);
-            height: calc(100% - 36px);
-            border-radius: 0 0 15px 15px;
+            height: calc(100% - 30px);
 
             background-color: var(--module-back);
 
             position: relative;
-            bottom: 0;
 
             transition: .2s;
 
@@ -327,6 +317,8 @@ body>.backImg {
         }
 
         &.focus {
+            box-shadow: 0 30px 30px #00000022;
+
             & .header {
                 background-color: var(--module-back-focus);
             }
@@ -336,7 +328,6 @@ body>.backImg {
             }
 
             & .module-content {
-                box-shadow: 0 30px 30px #00000022;
                 background-color: var(--module-back-focus);
 
                 &::after {
@@ -364,8 +355,6 @@ body>.backImg {
             align-items: center;
             gap: 7px;
             flex-shrink: 0;
-
-            border-radius: 15px 15px 0 0;
 
             box-sizing: border-box;
             padding-left: 10px;
