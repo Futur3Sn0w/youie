@@ -235,6 +235,9 @@ body>.backImg {
         background-color: transparent !important;
         border-radius: 15px;
 
+        float: none !important;
+        min-height: 0 !important;
+
         position: relative;
         overflow: hidden;
         /* border: 1px solid var(--module-border); */
@@ -245,7 +248,8 @@ body>.backImg {
         flex-direction: column;
         justify-content: flex-start;
 
-        transition: height .2s, box-shadow .2s !important;
+        transition: height .2s,
+            box-shadow .2s !important;
 
         width: 350px;
         height: 300px;

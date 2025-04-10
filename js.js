@@ -116,13 +116,21 @@ $(document).ready(function () {
         } else {
             $(this).attr('hoverTxt', 'Minimize');
         }
+        let fallbackTimer = setTimeout(() => {
+            refreshMasonryLayout();
+            markOverflowingElements();
+            saveWidgetStates();
+        }, 300);
+
         $module.one('transitionend', function () {
-            setTimeout(() => {
-                saveWidgetStates();
-                markOverflowingElements();
-                refreshMasonryLayout();
-                $module.children('.refresh-icon').click();
-            }, 100);
+            clearTimeout(fallbackTimer);
+            requestAnimationFrame(() => {
+                forceRebuildMasonry();
+                setTimeout(() => {
+                    $('.container').masonry('layout');
+                    saveWidgetStates();
+                }, 100);
+            });
         });
     });
 });
@@ -503,6 +511,22 @@ function restoreWidgetStates() {
             console.error("Error restoring widget states:", e);
         }
     }
+}
+
+function forceRebuildMasonry() {
+    const $container = $('.container');
+
+    if ($container.data('masonry')) {
+        $container.masonry('destroy'); // Blow it up
+    }
+
+    // Rebuild it
+    $container.masonry({
+        itemSelector: '.module',
+        fitWidth: true,
+        scroll: false,
+        gutter: 15
+    });
 }
 
 function refreshMasonryLayout() {
