@@ -779,6 +779,15 @@ function openModuleSelector(modules) {
 
             $listItem.on('click', function () {
                 $(this).toggleClass('selected');
+
+                const selectedIds = $moduleList.find('.selected')
+                    .map((_, el) => $(el).data('module-id'))
+                    .get();
+
+                localStorage.setItem('selectedModules', JSON.stringify(selectedIds));
+                loadModules();
+                forceRebuildMasonry();
+                refreshMasonryLayout();
             });
 
             $moduleList.append($listItem);
@@ -787,16 +796,6 @@ function openModuleSelector(modules) {
 
     $popup.addClass('visible');
 
-    const $saveButton = $('.actionBtn.save');
-    $saveButton.off('click').on('click', function () {
-        const selectedIds = $moduleList.find('.selected')
-            .map((_, el) => $(el).data('module-id'))
-            .get();  // Extract the module IDs
-
-        localStorage.setItem('selectedModules', JSON.stringify(selectedIds));
-        loadModules(); // Reload the modules based on the selection
-        window.location.reload();
-    });
 
     const $cancelButton = $('.actionBtn.cancel');
     $cancelButton.off('click').on('click', function () {
