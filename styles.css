@@ -18,6 +18,8 @@ body {
         .toolbar {
             pointer-events: none;
             opacity: .5;
+            filter: blur(10px);
+            transform: translateY(-50px);
         }
 
         .scroller,
@@ -250,6 +252,26 @@ body>.backImg {
 
         margin-bottom: 13px;
 
+        &::after {
+            content: '';
+            width: 100%;
+            height: calc(100% - 5px);
+
+            border-radius: inherit;
+            box-sizing: border-box;
+            border: 1px solid var(--root-text);
+            opacity: .2;
+
+            transition: .2s;
+
+            pointer-events: none;
+
+            position: absolute;
+            left: 0;
+            top: 0;
+            z-index: 1000;
+        }
+
         &.minimized {
             height: 34px !important;
             margin-bottom: 6px;
@@ -275,12 +297,9 @@ body>.backImg {
         }
 
         & .module-content {
-            width: calc(100% - 2px);
-            margin-left: 1px;
+            width: calc(100%);
             height: calc(100% - 36px);
-            margin-top: 6px;
-            margin-bottom: auto;
-            border-radius: 13px;
+            border-radius: 0 0 15px 15px;
             box-shadow: 0 0px 10px #00000022;
 
             background-color: var(--module-back);
@@ -293,25 +312,6 @@ body>.backImg {
             display: flex;
 
             overflow-y: scroll;
-
-            &::after {
-                content: '';
-                width: 100%;
-                height: 100%;
-
-                border-radius: inherit;
-                box-sizing: border-box;
-                border: 1px solid var(--root-text);
-                opacity: .1;
-
-                transition: .2s;
-
-                pointer-events: none;
-
-                position: absolute;
-                left: 0;
-                top: 0;
-            }
 
             & iframe {
                 width: 100%;
@@ -358,21 +358,16 @@ body>.backImg {
             gap: 7px;
             flex-shrink: 0;
 
-            border-radius: 17px;
+            border-radius: 15px 15px 0 0;
 
             box-sizing: border-box;
             padding-left: 10px;
 
             transition: .2s;
-            box-shadow:
-                inset 0 0 0 1px #ffffff55,
-                inset 0 0 0 1px #00000055;
             background: linear-gradient(to right, var(--module-border), transparent);
             background-color: transparent;
 
             position: relative;
-            top: 1px;
-            left: 1px;
 
             .icon {
                 font-size: 14px;
@@ -403,8 +398,6 @@ body>.backImg {
                 min-width: 25px;
                 height: calc(100% - 2px);
 
-                background-color: var(--surface-button-selected);
-
                 &:has(> *:only-child) {
                     gap: 0;
 
@@ -430,6 +423,10 @@ body>.backImg {
                     justify-content: center;
                     text-align: center;
 
+                    border: 1px solid var(--module-border);
+                    color: var(--root-text);
+                    background-color: var(--surface-button);
+
                     box-sizing: border-box;
                     padding: 0 5px;
 
@@ -447,7 +444,7 @@ body>.backImg {
                     }
 
                     &:hover {
-                        background-color: var(--surface-button);
+                        background-color: var(--surface-button-selected);
 
                         &::after {
                             font-size: 12px;

@@ -7,8 +7,9 @@ $(document).ready(function () {
         window.resizeTimeout = setTimeout(refreshMasonryLayout, 250); // Adjust the delay (in milliseconds) as needed
     });
 
-
     $(window).on('load resize', markOverflowingElements);
+
+    addToTabTitle('Home');
 
     $.getJSON('modules.json')
         .done(function (data) {
@@ -145,6 +146,15 @@ $(document).ready(function () {
             // alert('Could not load Bing image.');
         }
     }
+
+    $('#refreshBingBtn').on('click', async function () {
+        const imageUrl = 'https://picsum.photos/1920/1080?random=' + Date.now();
+        const $imageDisplay = $('#imageDisplay');
+        const $backImg = $('.backImg');
+        localStorage.setItem('backgroundImage', imageUrl);
+        $imageDisplay.attr('src', imageUrl);
+        $backImg.attr('src', imageUrl);
+    });
 
     $('input[name="wallpaperSource"]').on('change', async function () {
         localStorage.setItem('wallpaperSource', $(this).val());
@@ -766,6 +776,7 @@ function openModuleSelector(modules) {
 
     const $cancelButton = $('.actionBtn.cancel');
     $cancelButton.off('click').on('click', function () {
+        addToTabTitle('Home');
         $settings.removeClass('visible'); // Close the popup
         $('*').blur();
     });
@@ -777,6 +788,7 @@ function openModuleSelector(modules) {
 }
 
 function openSettingsWindow(modules) {
+    addToTabTitle('Settings');
     openModuleSelector(modules);
 
     $('.settingsWindow').each(function () {
@@ -809,11 +821,11 @@ function openSettingsWindow(modules) {
     });
 }
 
-$('#refreshBingBtn').on('click', async function () {
-    const imageUrl = 'https://picsum.photos/1920/1080?random=' + Date.now();
-    const $imageDisplay = $('#imageDisplay');
-    const $backImg = $('.backImg');
-    localStorage.setItem('backgroundImage', imageUrl);
-    $imageDisplay.attr('src', imageUrl);
-    $backImg.attr('src', imageUrl);
-});
+function addToTabTitle(suffix) {
+    const baseTitle = "Youie";
+    if (suffix && typeof suffix === 'string' && suffix.trim() !== "") {
+        document.title = `${baseTitle} - ${suffix}`;
+    } else {
+        document.title = baseTitle;
+    }
+}
