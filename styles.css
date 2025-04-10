@@ -308,7 +308,6 @@ body>.backImg {
             width: calc(100%);
             height: calc(100% - 36px);
             border-radius: 0 0 15px 15px;
-            box-shadow: 0 0px 10px #00000022;
 
             background-color: var(--module-back);
 
@@ -372,7 +371,7 @@ body>.backImg {
             padding-left: 10px;
 
             transition: .2s;
-            background: linear-gradient(to right, var(--module-border), transparent);
+            background: linear-gradient(to right, var(--module-back), transparent);
             background-color: transparent;
 
             position: relative;
@@ -438,6 +437,8 @@ body>.backImg {
                     box-sizing: border-box;
                     padding: 0 5px;
 
+                    transition: .15s;
+
                     border-radius: 100px;
                     width: fit-content;
                     min-width: 25px;
@@ -452,7 +453,9 @@ body>.backImg {
                     }
 
                     &:hover {
-                        background-color: var(--surface-button-selected);
+                        background-color: white;
+                        color: black !important;
+                        border-color: transparent;
 
                         &::after {
                             font-size: 12px;

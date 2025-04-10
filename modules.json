@@ -16,7 +16,7 @@
             "id": "module-weather",
             "icon": "fas fa-cloud-sun",
             "height": "254px",
-            "externalLink": "https://www.accuweather.com/",
+            "externalLink": "https://www.wunderground.com/",
             "contentType": "iframe"
         },
         {
@@ -112,7 +112,7 @@
             "mode": "internal",
             "id": "module-thenews",
             "icon": "fa-solid fa-newspaper",
-            "height": "285",
+            "height": "297",
             "contentType": "iframe"
         },
         {
