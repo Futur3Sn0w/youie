@@ -9,6 +9,7 @@
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
     <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.js"></script>
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
     <style>
         html,
@@ -18,34 +19,268 @@
             height: 100%;
             width: 100%;
             font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #listView {
+            padding: 0;
+        }
+
+        #newNote {
+            appearance: none;
+            padding: 5px 10px;
+            border-radius: 100px;
+            border: 1px solid var(--module-border);
+            color: var(--root-text);
+            margin-left: auto;
+            transition: .15s;
+
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+
+            background-color: var(--surface-button);
+
+            &:hover {
+                background-color: white;
+                color: black;
+                border-color: transparent;
+            }
+        }
+
+        #noteList {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            list-style: none;
+
+            box-sizing: border-box;
+
+            margin: 0;
+            padding: 10px;
+
+            li {
+                display: flex;
+                align-items: center;
+
+                box-sizing: border-box;
+                height: 30px;
+                border: 1px solid var(--module-border);
+                color: var(--root-text);
+                background-color: var(--surface-button);
+                border-radius: 8px;
+
+                transition: .15s;
+                cursor: pointer;
+
+                position: relative;
+                overflow: hidden;
+
+                & a {
+                    width: 100%;
+                    height: 100%;
+
+                    display: flex;
+                    align-items: center;
+
+                    box-sizing: border-box;
+                    padding-left: 10px;
+                    font-weight: bold;
+                    color: var(--root-text);
+
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                    z-index: 100;
+                }
+
+                &:hover {
+                    background-color: white;
+                    color: black;
+                    border-color: transparent;
+                }
+            }
+        }
+
+        #editorView {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        #editorHeader {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem;
+            background: var(--module-back);
+
+            #noteTitle {
+                font-weight: bold;
+            }
+
+            button {
+                appearance: none;
+                padding: 5px 10px;
+                border-radius: 100px;
+                border: 1px solid var(--module-border);
+                color: var(--root-text);
+                transition: .15s;
+
+                background-color: var(--surface-button);
+
+                &#saveButton {
+                    font-size: 17px;
+                    padding: 3px 7px;
+                }
+
+                &:hover {
+                    background-color: white;
+                    color: black;
+                    border-color: transparent;
+                }
+            }
         }
 
         #editor {
-            width: 100%;
-            height: 100%;
+            flex-grow: 1;
             padding: 1rem;
             box-sizing: border-box;
             outline: none;
             overflow-y: auto;
+            height: 100%;
         }
     </style>
 </head>
 
 <body>
-    <div id="editor" contenteditable="true"></div>
+    <div id="listView">
+        <button id="newNote">New Note</button>
+        <ul id="noteList"></ul>
+    </div>
+
+    <div id="editorView">
+        <div id="editorHeader">
+            <button id="backButton"><i class="fa-solid fa-chevron-left"></i></button>
+            <span id="noteTitle">Untitled</span>
+            <button id="saveButton" style="display: none;"><i class="fa-solid fa-floppy-disk"></i></button>
+        </div>
+        <div id="editor" contenteditable="true"></div>
+    </div>
     <script>
         $(function () {
+            const $listView = $('#listView');
+            const $editorView = $('#editorView');
             const $editor = $('#editor');
-            const storageKey = 'notepadContent';
+            const $noteTitle = $('#noteTitle');
+            const $noteList = $('#noteList');
+            let currentNote = null;
+            let unsavedChanges = false;
 
-            // Load saved content
-            const saved = localStorage.getItem(storageKey);
-            if (saved) $editor.html(saved);
+            const NOTE_STORAGE_KEY = 'notes';
 
-            // Save on input
-            $editor.on('input', function () {
-                localStorage.setItem(storageKey, $editor.html());
+            function generateId() {
+                return 'note-' + Date.now();
+            }
+
+            function getNotes() {
+                return JSON.parse(localStorage.getItem(NOTE_STORAGE_KEY)) || [];
+            }
+
+            function saveNotes(notes) {
+                localStorage.setItem(NOTE_STORAGE_KEY, JSON.stringify(notes));
+            }
+
+            function showListView() {
+                $editorView.hide();
+                $listView.show();
+                $('#saveButton').hide();
+                loadNoteList();
+            }
+
+            function showEditorView(note = null) {
+                $listView.hide();
+                $editorView.show();
+                currentNote = note;
+                $editor.html(note?.content || '');
+                $noteTitle.text(note?.title || 'Untitled');
+                $('#saveButton').hide();
+                if (!note && $editor.text().trim().length > 0) {
+                    $('#saveButton').show();
+                }
+                unsavedChanges = false;
+            }
+
+            function loadNoteList() {
+                const notes = getNotes();
+                $noteList.empty();
+                notes.forEach(n => {
+                    $noteList.append(`<li><a href="#" data-id="${n.id}">${n.title}</a></li>`);
+                });
+            }
+
+            $('#newNote').on('click', () => {
+                showEditorView();
             });
+
+            $('#noteList').on('click', 'a', function (e) {
+                e.preventDefault();
+                const id = $(this).data('id');
+                const note = getNotes().find(n => n.id === id);
+                if (note) showEditorView(note);
+            });
+
+            $('#saveButton').on('click', () => {
+                const content = $editor.html();
+                let notes = getNotes();
+                if (!currentNote) {
+                    const title = prompt("Enter a title for this note:");
+                    if (!title) return;
+                    const newNote = {
+                        id: generateId(),
+                        title,
+                        content
+                    };
+                    notes.push(newNote);
+                    currentNote = newNote;
+                } else {
+                    currentNote.content = content;
+                    notes = notes.map(n => n.id === currentNote.id ? currentNote : n);
+                }
+                $noteTitle.text(currentNote.title);
+                saveNotes(notes);
+                unsavedChanges = false;
+            });
+
+            $editor.on('input', () => {
+                unsavedChanges = true;
+                const content = $editor.html().trim();
+
+                // Show save button only if there's content and note is not yet saved
+                if (!currentNote && content.length > 0) {
+                    $('#saveButton').show();
+                } else {
+                    $('#saveButton').hide();
+                }
+
+                // Auto-save for named notes
+                if (currentNote) {
+                    currentNote.content = content;
+                    let notes = getNotes().map(n => n.id === currentNote.id ? currentNote : n);
+                    saveNotes(notes);
+                    unsavedChanges = false;
+                }
+            });
+
+            $('#backButton').on('click', () => {
+                if (unsavedChanges && confirm("Save changes before leaving?")) {
+                    $('#saveButton').click();
+                }
+                showListView();
+            });
+
+            showListView();
         });
     </script>
 </body>
