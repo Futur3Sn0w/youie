@@ -276,6 +276,14 @@ body>.backImg {
             height: 34px !important;
             margin-bottom: 6px;
 
+            &::after {
+                height: calc(100% - 4px);
+            }
+
+            & .header {
+                border-radius: 17px;
+            }
+
             .minimize-icon {
                 &::before {
                     content: '+';
