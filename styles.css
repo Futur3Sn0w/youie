@@ -364,8 +364,7 @@ body>.backImg {
             padding-left: 10px;
 
             transition: .2s;
-            background: linear-gradient(to right, var(--module-back), transparent);
-            background-color: transparent;
+            background-color: var(--module-back);
 
             position: relative;
 
