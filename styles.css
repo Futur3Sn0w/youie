@@ -232,7 +232,7 @@ body>.backImg {
     }
 
     .module {
-        background-color: transparent !important;
+        background-color: var(--module-back);
         border-radius: 15px;
 
         float: none !important;
@@ -304,15 +304,14 @@ body>.backImg {
             width: calc(100%);
             height: calc(100% - 30px);
 
-            background-color: var(--module-back);
-
             position: relative;
+            z-index: 10;
 
             transition: .2s;
 
             display: flex;
 
-            overflow-y: scroll;
+            overflow: visible;
 
             & iframe {
                 width: 100%;
@@ -322,18 +321,13 @@ body>.backImg {
 
         &.focus {
             box-shadow: 0 30px 30px #00000022;
-
-            & .header {
-                background-color: var(--module-back-focus);
-            }
+            background-color: var(--module-back-focus) !important;
 
             &:not(.minimized) .module-content {
                 opacity: 1 !important;
             }
 
             & .module-content {
-                background-color: var(--module-back-focus);
-
                 &::after {
                     opacity: .2;
                 }
@@ -364,9 +358,9 @@ body>.backImg {
             padding-left: 10px;
 
             transition: .2s;
-            background-color: var(--module-back);
 
             position: relative;
+            z-index: 20;
 
             .icon {
                 font-size: 14px;

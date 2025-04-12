@@ -6,11 +6,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <style>
-        #module-nyt-games .module-content {
+        .nyt-game-btns {
             display: flex;
+            align-items: center;
+            justify-content: center;
             flex-wrap: wrap;
             gap: 10px;
             padding: 10px;
+
+            &::before {
+                content: '';
+                width: 1px;
+                height: 100%;
+
+                position: absolute;
+                background: linear-gradient(to bottom, transparent, var(--module-border), transparent);
+                z-index: 1000;
+            }
+
+            &::after {
+                content: '';
+                height: 1px;
+                width: 100%;
+
+                position: absolute;
+                background: linear-gradient(to left, transparent, var(--module-border), transparent);
+                z-index: 1000;
+            }
         }
 
         .gameBtn {
@@ -22,16 +44,20 @@
             height: calc(50% - 5px);
             flex-shrink: 0;
             border-radius: 10px;
+            background-color: transparent;
 
             appearance: none;
             border: none;
             outline: none;
 
+            position: relative;
+
             cursor: pointer;
             color: black !important;
 
-            &:hover {
-                box-shadow: inset 0 0 0 500px #ffffff44;
+            &:hover::after {
+                box-shadow: inset 0 0 50px 10px #ffffff;
+                filter: blur(0);
             }
 
             & img {
@@ -39,44 +65,92 @@
                 height: 50px;
                 order: 1;
                 margin-bottom: 10px;
-            }
-
-            &::before {
-                content: attr(title);
-                font-family: koyak, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-                margin-bottom: -3px;
-
-                order: 2;
+                position: absolute;
+                z-index: 10;
             }
 
             &::after {
-                content: attr(desc);
-                font-size: 12px;
-                width: max-content;
+                content: '';
+                width: 100%;
+                height: 100%;
+                transition: .3s;
 
-                order: 3;
+                position: absolute;
+                top: 0;
+                left: 0;
+                z-index: 0;
+                border-radius: 10px;
+
+                display: flex;
+                filter: blur(20px);
+            }
+
+            &#gb1::after {
+                background-color: #B3A7FE;
+            }
+
+            &#gb2::after {
+                background-color: #96BEFA;
+            }
+
+            &#gb3::after {
+                background-color: #BFDDD9;
+            }
+
+            &#gb4::after {
+                background-color: #B5E352;
+            }
+
+            & p {
+                margin: 0;
+                padding: 0;
+                display: flex;
+                flex-direction: column;
+                position: relative;
+                z-index: 10;
+
+                gap: 60px;
+
+                &::before {
+                    content: attr(title);
+                    font-family: koyak, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+                    margin-bottom: -3px;
+
+                    order: 2;
+                }
+
+                &::after {
+                    content: attr(desc);
+                    font-size: 12px;
+                    width: max-content;
+
+                    order: 3;
+                }
             }
         }
     </style>
 </head>
 
 <body>
-    <button class="gameBtn" id="" title="Connections" desc="Group words" style="background-color: #B3A7FE;"
-        onclick="window.open('https://www.nytimes.com/games/connections', '_blank')">
-        <img src="resc/nyt/connections.svg" alt="">
-    </button>
-    <button class="gameBtn" id="" title="The Mini" desc="Solve in seconds" style="background-color: #96BEFA;"
-        onclick="window.open('https://www.nytimes.com/crosswords/game/mini', '_blank')">
-        <img src="resc/nyt/mini.svg" alt="">
-    </button>
-    <button class="gameBtn" id="" title="Strands" desc="Find hidden words" style="background-color: #BFDDD9;"
-        onclick="window.open('https://www.nytimes.com/games/strands', '_blank')">
-        <img src="resc/nyt/strands.svg" alt="">
-    </button>
-    <button class="gameBtn" id="" title="Tiles" desc="Match motifs" style="background-color: #B5E352;"
-        onclick="window.open('https://www.nytimes.com/puzzles/tiles', '_blank')">
-        <img src="resc/nyt/tiles.svg" alt="">
-    </button>
+    <div class="nyt-game-btns">
+        <button class="gameBtn" id="gb1" onclick="window.open('https://www.nytimes.com/games/connections', '_blank')">
+            <p title="Connections" desc="Group words"></p>
+            <img src="resc/nyt/connections.svg" alt="">
+        </button>
+        <button class="gameBtn" id="gb2"
+            onclick="window.open('https://www.nytimes.com/crosswords/game/mini', '_blank')">
+            <p title="The Mini" desc="Solve in seconds"></p>
+            <img src="resc/nyt/mini.svg" alt="">
+        </button>
+        <button class="gameBtn" id="gb3" onclick="window.open('https://www.nytimes.com/games/strands', '_blank')">
+            <p title="Strands" desc="Find hidden words"></p>
+            <img src="resc/nyt/strands.svg" alt="">
+        </button>
+        <button class="gameBtn" id="gb4" onclick="window.open('https://www.nytimes.com/puzzles/tiles', '_blank')">
+            <p title="Tiles" desc="Match motifs"></p>
+            <img src="resc/nyt/tiles.svg" alt="">
+        </button>
+    </div>
 
 </body>
 

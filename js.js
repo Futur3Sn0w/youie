@@ -142,26 +142,37 @@ $(document).ready(function () {
     const $imageDisplay = $('#imageDisplay');
     const $backImg = $('.backImg');
 
-    async function fetchBingWallpaper() {
+    async function fetchBingWallpaper(forceRefresh = false) {
+        const lastFetched = parseInt(localStorage.getItem('bingImageTimestamp') || "0", 10);
+        const now = Date.now();
+        const twentyFourHours = 24 * 60 * 60 * 1000;
+
+        if (!forceRefresh && localStorage.getItem('backgroundImage') && now - lastFetched < twentyFourHours) {
+            const cachedImage = localStorage.getItem('backgroundImage');
+            $imageDisplay.attr('src', cachedImage);
+            $backImg.attr('src', cachedImage);
+            return;
+        }
+
         try {
-            const imageUrl = 'https://picsum.photos/1920/1080?random=' + Date.now();
+            const imageUrl = 'https://picsum.photos/1920/1080?random=' + now;
             const base64Image = await loadImageOntoCanvas(imageUrl);
             localStorage.setItem('backgroundImage', base64Image);
+            localStorage.setItem('bingImageTimestamp', now.toString());
             $imageDisplay.attr('src', base64Image);
             $backImg.attr('src', base64Image);
         } catch (error) {
             console.error('Failed to fetch Bing wallpaper:', error);
-            // alert('Could not load Bing image.');
+            const cachedImage = localStorage.getItem('backgroundImage');
+            if (cachedImage) {
+                $imageDisplay.attr('src', cachedImage);
+                $backImg.attr('src', cachedImage);
+            }
         }
     }
 
     $('#refreshBingBtn').on('click', async function () {
-        const imageUrl = 'https://picsum.photos/1920/1080?random=' + Date.now();
-        const $imageDisplay = $('#imageDisplay');
-        const $backImg = $('.backImg');
-        localStorage.setItem('backgroundImage', imageUrl);
-        $imageDisplay.attr('src', imageUrl);
-        $backImg.attr('src', imageUrl);
+        await fetchBingWallpaper(true);
     });
 
     $('input[name="wallpaperSource"]').on('change', async function () {
@@ -270,7 +281,6 @@ $(document).ready(function () {
     async function loadInitialImage() {
         const savedSource = localStorage.getItem('wallpaperSource') || 'upload';
         const uploadedImage = localStorage.getItem('uploadedImage');
-        const backgroundImage = localStorage.getItem('backgroundImage');
 
         if (savedSource === 'upload') {
             $('input[name="wallpaperSource"][value="upload"]').prop('checked', true);
@@ -283,10 +293,7 @@ $(document).ready(function () {
             $('input[name="wallpaperSource"][value="bing"]').prop('checked', true);
             $('#fileInput').hide();
             $('#refreshBingBtn').show();
-            if (backgroundImage) {
-                $imageDisplay.attr('src', backgroundImage);
-                $backImg.attr('src', backgroundImage);
-            }
+            await fetchBingWallpaper(false);
         }
     }
 

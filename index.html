@@ -4,20 +4,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="version" content="v0.1.0">
     <title>Youie</title>
 
-    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-    <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.js"></script>
+    <script src="resc/ext/jquery-3.7.1.js"></script>
+    <script src="resc/ext/jquery-ui.js"></script>
 
-    <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.js"></script>
+    <script src="resc/ext/masonry.pkgd.js"></script>
 
     <link rel="apple-touch-icon" sizes="180x180" href="resc/favi/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="resc/favi/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="resc/favi/favicon-16x16.png">
     <link rel="manifest" href="resc/favi/site.webmanifest">
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.css">
+
+    <link rel="stylesheet" href="resc/ext/fa672/css/all.css">
+    <link rel="stylesheet" href="resc/ext/jquery-ui.css">
     <link rel="stylesheet" href="globals.css">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="settings.css">
@@ -47,10 +49,10 @@
         <div class="wallpaperTab tab" tab="Wallpaper" icon="fa-image">
             <div class="optGroup" title="Wallpaper source">
                 <label><input type="radio" name="wallpaperSource" value="upload" checked> Upload</label>
-                <label><input type="radio" name="wallpaperSource" value="bing"> Bing</label>
+                <label><input type="radio" name="wallpaperSource" value="bing">From the Web</label>
             </div>
-            <button id="refreshBingBtn" style="display:none;">Refresh Bing Image</button>
-            <input type="file" id="fileInput" accept="image/*">
+            <button class="wallActionBtn" id="refreshBingBtn" style="display:none;">Get New Image</button>
+            <input class="wallActionBtn" type="file" id="fileInput" accept="image/*">
             <img id="imageDisplay" src="" alt="Selected Image">
         </div>
 

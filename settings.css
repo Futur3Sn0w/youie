@@ -343,7 +343,67 @@
     align-items: center;
     justify-content: center;
     flex-direction: column;
+    gap: 5px;
+
     overflow: hidden;
+
+    .optGroup {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 5px;
+        gap: 5px;
+
+        position: absolute;
+        top: 15px;
+
+        background-color: var(--module-back);
+        border-radius: 100px;
+
+        &>label {
+            padding: 5px 10px;
+            border-radius: 100px;
+            background-color: var(--surface-button);
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            &:hover {
+                background-color: var(--surface-button-highlight);
+            }
+
+            &:has(:checked) {
+                background-color: white;
+                font-weight: bold;
+                color: black;
+            }
+        }
+
+        & input {
+            appearance: none;
+            margin: 0;
+            padding: 0;
+        }
+    }
+
+    & .wallActionBtn {
+        appearance: none;
+        padding: 5px 10px;
+        border-radius: 100px;
+        border: 1px solid var(--module-border);
+        color: var(--root-text);
+        /* margin-left: auto; */
+        transition: .15s;
+
+        background-color: var(--surface-button);
+
+        &:hover {
+            background-color: white;
+            color: black;
+            border-color: transparent;
+        }
+    }
 
     img {
 
