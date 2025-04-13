@@ -8,12 +8,9 @@ body {
     width: 100vw;
     height: 100vh;
 
-    &:has(.settingsWindow.visible) {
+    &:has(.settingsWindow.visible),
+    &:has(.global-popup.visible) {
         overflow: hidden !important;
-
-        *:not(.settingsWindow):not(.settingsWindow *) {
-            pointer-events: none;
-        }
 
         .toolbar {
             pointer-events: none;
@@ -31,6 +28,12 @@ body {
             transform: scale(1.05);
             filter: blur(10px);
             opacity: .25;
+        }
+    }
+
+    &:has(.settingsWindow.visible) {
+        *:not(.settingsWindow):not(.settingsWindow *) {
+            pointer-events: none;
         }
     }
 
@@ -118,6 +121,11 @@ body {
         text-align: center;
 
         transition: .4s;
+
+        &::placeholder {
+            color: var(--root-text);
+            opacity: .33;
+        }
 
         &:focus {
             width: 100%;
@@ -277,7 +285,8 @@ body>.backImg {
         }
 
         &.minimized {
-            height: 30px !important;
+            height: 35px !important;
+            border-radius: 18px;
             margin-bottom: 6px;
 
             .minimize-icon {
@@ -300,25 +309,6 @@ body>.backImg {
             box-shadow: none !important;
         }
 
-        & .module-content {
-            width: calc(100%);
-            height: calc(100% - 30px);
-
-            position: relative;
-            z-index: 10;
-
-            transition: .2s;
-
-            display: flex;
-
-            overflow: visible;
-
-            & iframe {
-                width: 100%;
-                height: 100%;
-            }
-        }
-
         &.focus {
             box-shadow: 0 30px 30px #00000022;
             background-color: var(--module-back-focus) !important;
@@ -334,28 +324,19 @@ body>.backImg {
             }
         }
 
-        &.external:not(.focus) .module-content {
-            pointer-events: none;
-        }
-
-        &.external:not(:hover) .module-content {
-            opacity: .65;
-        }
-
         & .header {
             content: attr(title);
             width: 100%;
-            height: 30px;
+            height: 35px;
             user-select: none;
-            overflow: hidden;
+            overflow: visible;
 
             display: flex;
             align-items: center;
-            gap: 7px;
             flex-shrink: 0;
 
             box-sizing: border-box;
-            padding-left: 10px;
+            padding-left: 0;
 
             transition: .2s;
 
@@ -364,6 +345,11 @@ body>.backImg {
 
             .icon {
                 font-size: 14px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 100%;
+                aspect-ratio: 1/1;
             }
 
             .title {
@@ -374,54 +360,120 @@ body>.backImg {
 
             .modHeadBtns {
                 display: flex;
+                flex-direction: column;
                 align-items: center;
                 justify-content: center;
-                gap: 3px;
+                gap: 0;
 
                 box-sizing: border-box;
-                padding: 3px;
 
-                margin-left: auto;
-                margin-right: 1px;
+                position: absolute;
+                right: 3px;
+                top: 3px;
 
-                border-radius: 100px;
+                border-radius: 15px;
                 transition: .2s;
 
                 width: fit-content;
+                max-width: 102px;
+                background-color: var(--module-back);
+                box-shadow: inset 0 0 0 1px var(--module-border);
+                border-radius: 14px;
                 min-width: 25px;
-                height: calc(100% - 2px);
+                height: fit-content;
+                max-height: calc(100% - 6px);
 
-                &:has(> *:only-child) {
-                    gap: 0;
+                & .modActions {
+                    width: 102px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: flex-end;
+                    gap: 3px;
+                    flex-shrink: 0;
+                    box-sizing: border-box;
+                    padding: 3px;
+                    margin-left: auto;
+                }
 
-                    i {
-                        margin-left: -3px;
+                & .module-menu {
+                    position: relative;
 
-                        &:hover {
-                            margin-left: 0;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 2px;
+
+                    overflow: hidden;
+
+                    transition: .2s;
+                    height: fit-content;
+                    max-height: 0;
+                    pointer-events: none;
+                    opacity: 0;
+
+                    min-width: 120px;
+
+                    &.visible {
+                        opacity: 1;
+                        pointer-events: all;
+                        padding: 3px;
+                        max-height: 200px;
+                    }
+
+                    & .module-action {
+                        padding: 5px 9px;
+                        padding-left: 0;
+                        border-radius: 100px;
+                        cursor: pointer;
+                        font-size: 12px;
+                        white-space: nowrap;
+                        width: 100%;
+
+                        display: flex;
+                        align-items: center;
+
+                        & i {
+                            font-size: 12px;
+                            width: 27px;
+                            display: flex;
+                            text-align: center;
+                            align-items: center;
+                            justify-content: center;
                         }
 
-                        &::before {
-                            margin-left: -2px;
+                        &:hover {
+                            background-color: var(--surface-button);
+                            color: var(--root-text);
                         }
                     }
                 }
 
-                i {
-                    font-size: 13px;
+                &:has(.module-menu.visible) {
+                    max-height: 130px;
+                    max-width: 200px;
+                    gap: 3px;
+
+                    border-radius: 13px 13px 15px 15px;
+                    background-color: var(--root-back);
+                    box-shadow:
+                        inset 0 0 0 1px var(--module-border),
+                        0 5px 10px rgba(0, 0, 0, 0.2);
+                }
+
+                .header-icon {
+                    font-size: 12px;
                     cursor: pointer;
+                    flex-shrink: 0;
 
                     display: flex;
                     align-items: center;
                     justify-content: center;
                     text-align: center;
 
-                    border: 1px solid var(--module-border);
                     color: var(--root-text);
                     background-color: var(--surface-button);
 
                     box-sizing: border-box;
-                    padding: 0 5px;
+                    padding: 5px;
 
                     transition: .15s;
 
@@ -449,6 +501,41 @@ body>.backImg {
                         }
                     }
                 }
+            }
+        }
+
+        &:has(.module-menu.visible) {
+            .module-content {
+                filter: blur(2px) grayscale(.3);
+                transform: scale(.966);
+                pointer-events: none;
+            }
+        }
+
+        &.external:not(.focus) .module-content {
+            pointer-events: none;
+        }
+
+        &.external:not(:hover) .module-content {
+            opacity: .65;
+        }
+
+        & .module-content {
+            width: calc(100%);
+            height: calc(100% - 35px);
+
+            position: relative;
+            z-index: 10;
+
+            transition: .2s;
+
+            display: flex;
+
+            overflow: visible;
+
+            & iframe {
+                width: 100%;
+                height: 100%;
             }
         }
     }

@@ -24,7 +24,7 @@
             "mode": "external",
             "id": "module-weather",
             "icon": "fas fa-cloud-sun",
-            "height": "253px",
+            "height": "258px",
             "externalLink": "https://www.wunderground.com/",
             "contentType": "iframe"
         },
@@ -38,7 +38,7 @@
             "mode": "internal",
             "id": "module-calendar",
             "icon": "fas fa-calendar",
-            "height": "323px",
+            "height": "328px",
             "externalLink": "https://calendar.google.com/",
             "contentType": "iframe"
         },
@@ -94,7 +94,7 @@
             "mode": "internal",
             "id": "module-calculator",
             "icon": "fa-solid fa-calculator",
-            "height": "385px",
+            "height": "390px",
             "contentType": "iframe"
         },
         {
@@ -162,7 +162,7 @@
             "mode": "internal",
             "id": "module-thenews",
             "icon": "fa-solid fa-newspaper",
-            "height": "292",
+            "height": "297",
             "contentType": "iframe"
         },
         {

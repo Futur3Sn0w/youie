@@ -24,6 +24,7 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="settings.css">
     <link rel="stylesheet" href="toolbar.css">
+    <link rel="stylesheet" href="global_popup.css">
 </head>
 
 <body>
@@ -51,23 +52,35 @@
                 <label><input type="radio" name="wallpaperSource" value="upload" checked> Upload</label>
                 <label><input type="radio" name="wallpaperSource" value="bing">From the Web</label>
             </div>
+
+            <img id="imageDisplay" src="" alt="Selected Image">
+
             <button class="wallActionBtn" id="refreshBingBtn" style="display:none;">Get New Image</button>
             <input class="wallActionBtn" type="file" id="fileInput" accept="image/*">
-            <img id="imageDisplay" src="" alt="Selected Image">
         </div>
 
         <div class="appearanceTab tab" tab="Appearance" icon="fa-palette">
-            <div class="optGroup" title="Toolbar position">
-                <label>
-                    <input type="radio" name="toolbar-position" value="left"> Left
-                </label>
-                <label>
-                    <input type="radio" name="toolbar-position" value="center"> Center
-                </label>
-                <label>
-                    <input type="radio" name="toolbar-position" value="right" checked> Right
-                </label>
+            <div class="optGroupWrapper" title="Toolbar position">
+                <div class="optGroup">
+                    <label>
+                        <input type="radio" name="toolbar-position" value="left"> Left
+                    </label>
+                    <label>
+                        <input type="radio" name="toolbar-position" value="center"> Center
+                    </label>
+                    <label>
+                        <input type="radio" name="toolbar-position" value="right" checked> Right
+                    </label>
+                </div>
             </div>
+        </div>
+    </div>
+
+    <div id="globalPopup" class="global-popup">
+        <div class="popup-inner">
+            <button class="popup-close">✕</button>
+            <h2 class="popup-title"></h2>
+            <div class="popup-body"></div>
         </div>
     </div>
 

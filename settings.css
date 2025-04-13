@@ -60,19 +60,6 @@
         justify-content: center;
         flex-shrink: 0;
 
-        &.save {
-            background-color: #4CAF50;
-
-            padding: 10px 20px;
-
-            bottom: 15px;
-            right: 15px;
-
-            &:hover {
-                background-color: #45a049;
-            }
-        }
-
         &.cancel {
             width: 35px;
             height: 35px;
@@ -94,7 +81,8 @@
         height: 100%;
 
         box-sizing: border-box;
-        padding: 60px 0;
+        padding: 0;
+        padding-top: 60px;
         padding-left: 200px;
 
         transition: .2s;
@@ -138,6 +126,7 @@
 
             background-color: var(--surface-button);
             color: var(--root-text);
+            box-shadow: inset 0 0 0 1px var(--module-border);
 
             box-sizing: border-box;
             padding: 10px;
@@ -148,20 +137,20 @@
             align-items: center;
             gap: 8px;
 
-            transition: .2s;
+            transition: .15s;
 
-            border-radius: 30px;
+            border-radius: 13px;
             appearance: none;
             border: none;
             outline: none;
 
             &:hover {
-                box-shadow: inset 0 0 0 100px var(--surface-button-highlight);
+                background-color: var(--surface-button-highlight) !important;
             }
 
             &.selected {
                 font-weight: bold;
-                border-radius: 13px;
+                border-radius: 30px;
                 background-color: var(--surface-button-selected);
 
                 i {
@@ -187,14 +176,6 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-
-    &::after {
-        content: "Deselect all modules to show them all";
-
-        margin-top: 10px;
-        font-size: 12px;
-        opacity: .5;
-    }
 
     & .category-filters {
         display: flex;
@@ -258,6 +239,7 @@
             width: calc(50% - 2.5px);
 
             background-color: var(--module-back);
+            box-shadow: inset 0 0 0 1px var(--module-border);
             border-radius: 10px;
 
             position: relative;
@@ -286,13 +268,14 @@
                 margin: 0;
 
                 &.name {
+                    font-weight: bold;
                     font-size: 15px;
                 }
 
                 &.desc {
                     font-size: 12px;
                     font-weight: normal;
-                    margin-top: 2px;
+                    margin-top: 3px;
                     margin-bottom: auto;
                     margin-right: 40px;
                     opacity: .75;
@@ -306,10 +289,6 @@
 
             &.selected {
                 background-color: var(--surface-button-selected);
-
-                & p.name {
-                    font-weight: bold;
-                }
 
                 &::after {
                     content: '✓';
@@ -364,6 +343,7 @@
             padding: 5px 10px;
             border-radius: 100px;
             background-color: var(--surface-button);
+            font-size: 13px;
 
             display: flex;
             align-items: center;
@@ -420,32 +400,67 @@
 .appearanceTab {
     display: flex;
     flex-direction: column;
-    align-items: center;
 
-    .optGroup {
+    box-sizing: border-box;
+
+    .optGroupWrapper {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
         width: calc(100% - 30px);
+        margin: 0 15px;
+        padding: 10px 15px;
+        border-radius: 10px;
+        background-color: var(--module-back);
+        box-shadow: inset 0 0 0 1px var(--module-border);
 
-        box-sizing: border-box;
-        padding: 15px;
+        .optGroup {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 5px;
+            gap: 5px;
 
-        border: 2px solid var(--root-back);
-        border-radius: 15px;
+            position: relative;
+            width: fit-content;
 
-        position: relative;
+            background-color: var(--module-back);
+            border-radius: 100px;
+
+            &>label {
+                padding: 5px 10px;
+                border-radius: 100px;
+                background-color: var(--surface-button);
+                font-size: 13px;
+
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                &:hover {
+                    background-color: var(--surface-button-highlight);
+                }
+
+                &:has(:checked) {
+                    background-color: white;
+                    font-weight: bold;
+                    color: black;
+                }
+            }
+
+            & input {
+                appearance: none;
+                margin: 0;
+                padding: 0;
+            }
+        }
 
         &::before {
             content: attr(title);
 
-            background-color: var(--root-back);
-            padding: 5px 10px;
-            border-radius: 7px;
-
-            font-size: 13px;
+            font-size: 14px;
             font-weight: bold;
-
-            position: absolute;
-            left: 15px;
-            top: -14px;
         }
     }
 }

@@ -61,6 +61,21 @@ $(document).ready(function () {
             $('#searchBox').val('')
             $("#autocompleteResults").empty().hide();
         }
+
+        // Hide module menus if click outside module menu and menu button
+        if ($(e.target).closest('.module-menu').length === 0 &&
+            $(e.target).closest('.menu-icon').length === 0) {
+            $('.module-menu').removeClass('visible');
+        }
+
+        if ($(e.target).closest('.popup-inner').length === 0 &&
+            $(e.target).closest('.module-menu').length === 0) {
+            $('.global-popup').removeClass('visible');
+        }
+    });
+
+    $(document).on('click', '#globalPopup .popup-close', function () {
+        $('#globalPopup').removeClass('visible');
     });
 
     var savedPosition = localStorage.getItem("toolbarPosition");
@@ -354,7 +369,91 @@ $(document).ready(function () {
     }
 });
 
-// Helper function to render a module
+// functions
+
+function showGlobalPopup(title, body) {
+    const $popup = $('#globalPopup');
+    $popup.find('.popup-title').text(title);
+
+    if (typeof body === 'string') {
+        $popup.find('.popup-body').html(`<p>${body}</p>`);
+    } else if (body instanceof jQuery || body instanceof HTMLElement) {
+        $popup.find('.popup-body').empty().append(body);
+    }
+
+    $popup.addClass('visible');
+}
+
+function createHeaderButtons(module) {
+    let $modHead = $('<div class="modHeadBtns">');
+    let $modActions = $('<div class="modActions">');
+
+    // Standard icons
+    $('<i class="header-icon refresh-icon fa-solid fa-rotate" hoverTxt="Refresh">')
+        .on("mouseover", function () {
+            $(this).closest('.module').find('.title').text($(this).attr('hoverTxt'));
+        }).on('mouseout', function () {
+            $(this).closest('.module').find('.title').text(module.name);
+        }).appendTo($modActions);
+
+    $('<i class="header-icon minimize-icon fa-solid fa-minus" hoverTxt="Minimize">')
+        .on("mouseover", function () {
+            $(this).closest('.module').find('.title').text($(this).attr('hoverTxt'));
+        }).on('mouseout', function () {
+            $(this).closest('.module').find('.title').text(module.name);
+        }).appendTo($modActions);
+
+    // Menu toggle icon
+    $('<i class="header-icon menu-icon fa-solid fa-ellipsis-vertical" hoverTxt="Menu">')
+        .on("click", function (e) {
+            e.stopPropagation();
+            const $thisModule = $(this).closest('.module');
+            const $menu = $thisModule.find('.module-menu');
+            $('.module').removeClass('focus');
+            $thisModule.addClass('focus');
+            $('.module-menu').not($menu).removeClass('visible');
+            $menu.toggleClass('visible');
+        }).appendTo($modActions);
+
+    $modActions.appendTo($modHead);
+
+    // Create module-menu and populate it
+    const $menu = $('<div class="module-menu">');
+    if (module.externalLink) {
+        $menu.append('<div class="module-action" data-action="view"><i class="fa-solid fa-arrow-up-right-from-square"></i> View More</div>');
+    }
+    $menu.append('<div class="module-action" data-action="info"><i class="fa-solid fa-circle-info"></i> Module Info</div>');
+    $menu.append('<div class="module-action" data-action="delete"><i class="fa-solid fa-eye-slash"></i> Remove Module</div>');
+
+    // Add handlers once
+    $menu.on('click', '.module-action', function () {
+        const $thisModule = $(this).closest('.module');
+        const action = $(this).data('action');
+        if (action === 'view') {
+            window.open(module.externalLink, '_blank');
+        } else if (action === 'info') {
+            const info = $(`
+                <div class="module-info-inner">
+                    <p class="aka-text">(AKA: <strong>${module.id}</strong>)</p>
+                    <p class="module-icon"><i class="${module.icon}"></i></p>
+                    <p class="module-desc">${module.description || 'No description provided.'}</p>
+                </div>
+            `);
+            showGlobalPopup(module.name, info);
+        } else if (action === 'delete') {
+            $thisModule.fadeOut(200, function () {
+                $thisModule.remove();
+                refreshMasonryLayout();
+                saveWidgetStates();
+            });
+        }
+        $menu.removeClass('visible');
+    });
+
+    $modHead.append($menu);
+    return $modHead;
+}
+
 function renderModule(module) {
     const moduleWidth = 350;
     let $moduleDiv = $('<div>').addClass('module').attr('id', module.id).css('width', moduleWidth);
@@ -365,38 +464,7 @@ function renderModule(module) {
     if (module.icon) $('<i>').addClass('icon').addClass(module.icon).appendTo($header);
     if (module.name) $(`<h2 class="title">${module.name}</h2>`).appendTo($header);
 
-    let $modHeadBtns = $('<div class="modHeadBtns">');
-    if (module.externalLink) {
-        $(`<i class="header-icon external-icon fa-solid fa-arrow-up-right-from-square" hoverTxt="Open" external="${module.externalLink}">`)
-            .on("mouseover", function () {
-                let thisModule = $(this).parent().parent().parent();
-                thisModule.find('.title').text($(this).attr('hoverTxt'));
-            }).on('mouseout', function () {
-                let thisModule = $(this).parent().parent().parent();
-                thisModule.find('.title').text(module.name);
-            })
-            .appendTo($modHeadBtns);
-    }
-
-    $('<i class="header-icon refresh-icon fa-solid fa-rotate" hoverTxt="Refresh">')
-        .on("mouseover", function () {
-            let thisModule = $(this).parent().parent().parent();
-            thisModule.find('.title').text($(this).attr('hoverTxt'));
-        }).on('mouseout', function () {
-            let thisModule = $(this).parent().parent().parent();
-            thisModule.find('.title').text(module.name);
-        })
-        .appendTo($modHeadBtns);
-
-    $('<i class="header-icon minimize-icon fa-solid fa-minus" hoverTxt="Minimize">')
-        .on("mouseover", function () {
-            let thisModule = $(this).parent().parent().parent();
-            thisModule.find('.title').text($(this).attr('hoverTxt'));
-        }).on('mouseout', function () {
-            let thisModule = $(this).parent().parent().parent();
-            thisModule.find('.title').text(module.name);
-        })
-        .appendTo($modHeadBtns);
+    let $modHeadBtns = createHeaderButtons(module);
 
     $header.append($modHeadBtns);
     $moduleDiv.append($header);
@@ -453,8 +521,6 @@ function renderModule(module) {
     $moduleDiv.append($moduleContent);
     return $moduleDiv;
 }
-
-// functions
 
 function markOverflowingElements() {
     $('.module').each(function () {
@@ -595,39 +661,7 @@ function loadModules() {
                             $(`<h2 class="title">${module.name}</h2>`).appendTo($header);
                         }
 
-                        let $modHeadBtns = $('<div class="modHeadBtns">');
-
-                        if (module.externalLink) {
-                            $(`<i class="header-icon external-icon fa-solid fa-arrow-up-right-from-square" hoverTxt="Open" external="${module.externalLink}">`)
-                                .on("mouseover", function () {
-                                    let thisModule = $(this).parent().parent().parent();
-                                    thisModule.find('.title').text($(this).attr('hoverTxt'));
-                                }).on('mouseout', function () {
-                                    let thisModule = $(this).parent().parent().parent();
-                                    thisModule.find('.title').text(module.name);
-                                })
-                                .appendTo($modHeadBtns);
-                        }
-
-                        $('<i class="header-icon refresh-icon fa-solid fa-rotate" hoverTxt="Refresh">')
-                            .on("mouseover", function () {
-                                let thisModule = $(this).parent().parent().parent();
-                                thisModule.find('.title').text($(this).attr('hoverTxt'));
-                            }).on('mouseout', function () {
-                                let thisModule = $(this).parent().parent().parent();
-                                thisModule.find('.title').text(module.name);
-                            })
-                            .appendTo($modHeadBtns);
-
-                        $('<i class="header-icon minimize-icon fa-solid fa-minus" hoverTxt="Minimize">')
-                            .on("mouseover", function () {
-                                let thisModule = $(this).parent().parent().parent();
-                                thisModule.find('.title').text($(this).attr('hoverTxt'));
-                            }).on('mouseout', function () {
-                                let thisModule = $(this).parent().parent().parent();
-                                thisModule.find('.title').text(module.name);
-                            })
-                            .appendTo($modHeadBtns);
+                        let $modHeadBtns = createHeaderButtons(module);
 
                         $header.append($modHeadBtns);
                         $moduleDiv.append($header);
@@ -845,7 +879,14 @@ function openModuleSelector(modules) {
 
 function openSettingsWindow(modules) {
     addToTabTitle('Settings');
-    openModuleSelector(modules);
+    $.getJSON('modules.json')
+        .done(function (freshData) {
+            openModuleSelector(freshData.modules);
+        })
+        .fail(function () {
+            console.error('Failed to refresh modules before opening settings.');
+            openModuleSelector(modules); // fallback to original
+        });
 
     $('.settingsWindow').each(function () {
         var $settingsWindow = $(this);

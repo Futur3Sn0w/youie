@@ -60,6 +60,17 @@
             margin: 0;
             padding: 10px;
 
+            &:empty::after {
+                content: 'Click below to add a new note';
+                font-size: 12px;
+                opacity: .5;
+                position: absolute;
+                width: 100%;
+                text-align: center;
+                bottom: 50px;
+                text-align: center;
+            }
+
             li {
                 display: flex;
                 align-items: center;
