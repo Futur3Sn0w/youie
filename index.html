@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="v0.1.0">
+    <meta name="version" content="v0.3.0">
     <title>Youie</title>
 
     <script src="resc/ext/jquery-3.7.1.js"></script>
@@ -20,11 +20,7 @@
 
     <link rel="stylesheet" href="resc/ext/fa672/css/all.css">
     <link rel="stylesheet" href="resc/ext/jquery-ui.css">
-    <link rel="stylesheet" href="globals.css">
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="settings.css">
-    <link rel="stylesheet" href="toolbar.css">
-    <link rel="stylesheet" href="global_popup.css">
+    <link rel="stylesheet" href="css.css">
 </head>
 
 <body>
@@ -74,6 +70,26 @@
                 </div>
             </div>
         </div>
+
+        <div class="aboutTab tab" tab="About Youie" icon="fa-circle-info">
+            <div class="about-content">
+                <div class="aboutGroup" for="Youie">
+                    <p class="aboutCard"><strong>Version</strong> <span id="aboutVersion">Loading...</span></p>
+                </div>
+                <div class="aboutGroup" for="Modules">
+                    <p class="aboutCard"><strong>Added</strong> <span id="aboutModuleAdded">Loading...</span></p>
+                    <p class="aboutCard"><strong>RSS</strong> <span id="aboutModuleRSS">Loading...</span></p>
+                    <p class="aboutCard"><strong>Total</strong> <span id="aboutModuleTotal">Loading...</span></p>
+                </div>
+                <div class="aboutGroup" for="Session">
+                    <p class="aboutCard"><strong>Browser</strong> <span id="aboutBrowser">Loading...</span></p>
+                    <p class="aboutCard"><strong>Platform</strong> <span id="aboutPlatform">Loading...</span></p>
+                    <p class="aboutCard"><strong>Memory</strong> <span id="aboutMemory">Loading...</span></p>
+                    <p class="aboutCard"><strong>Viewport</strong> <span id="aboutViewport">Loading...</span></p>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <div id="globalPopup" class="global-popup">

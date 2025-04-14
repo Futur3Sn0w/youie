@@ -14,6 +14,8 @@ $(document).ready(function () {
     $.getJSON('modules.json')
         .done(function (data) {
             if (data && Array.isArray(data.modules)) {
+                const customModules = JSON.parse(localStorage.getItem('customModules') || '[]');
+                data.modules = [...customModules, ...data.modules];
                 $('.settingsBtn').on('click', function () {
                     openSettingsWindow(data.modules); // Pass the modules data
                 });
@@ -38,38 +40,31 @@ $(document).ready(function () {
         });
 
     $(document).on("click", function (e) {
-        var container2 = $('.module');
-        if (!container2.is(e.target) && container2.has(e.target).length === 0) {
-            $('.module').removeClass('focus')
+        // Deselect modules if clicking outside
+        if (!e.target.closest('.module')) {
+            $('.module').removeClass('focus');
         }
 
-        var container4 = $('.googApps');
-        var container4Btn = $('.waffleBtn');
-        if (!container4.is(e.target) && container4.has(e.target).length === 0 && !container4Btn.is(e.target) && container4Btn.has(e.target).length === 0) {
-            container4.removeClass('visible');
+        if (!e.target.closest('.googApps') && !e.target.closest('.waffleBtn')) {
+            $('.googApps').removeClass('visible');
         }
 
-        var container1 = $('.settingsWindow');
-        var container1Btn = $('.settingsBtn');
-        if (!container1.is(e.target) && container1.has(e.target).length === 0 && !container1Btn.is(e.target) && container1Btn.has(e.target).length === 0) {
-            $('.settingsWindow').removeClass('visible'); // Close the popup
+        if (!e.target.closest('.settingsWindow') && !e.target.closest('.settingsBtn') &&
+            !e.target.closest('#globalPopup')) {
+            $('.settingsWindow').removeClass('visible');
         }
 
-        var container5 = $('.searchTxt');
-        var container5Btn = $('#autocompleteResults');
-        if (!container5.is(e.target) && container5.has(e.target).length === 0 && !container5Btn.is(e.target) && container5Btn.has(e.target).length === 0) {
-            $('#searchBox').val('')
+        if (!e.target.closest('.searchTxt') && !e.target.closest('#autocompleteResults')) {
+            $('#searchBox').val('');
             $("#autocompleteResults").empty().hide();
         }
 
-        // Hide module menus if click outside module menu and menu button
-        if ($(e.target).closest('.module-menu').length === 0 &&
-            $(e.target).closest('.menu-icon').length === 0) {
+        if (!e.target.closest('.module-menu') && !e.target.closest('.menu-icon')) {
             $('.module-menu').removeClass('visible');
         }
 
-        if ($(e.target).closest('.popup-inner').length === 0 &&
-            $(e.target).closest('.module-menu').length === 0) {
+        if (!e.target.closest('.popup-inner') && !e.target.closest('.module-menu') &&
+            !e.target.closest('.settingsWindow')) {
             $('.global-popup').removeClass('visible');
         }
     });
@@ -100,6 +95,8 @@ $(document).ready(function () {
         $.getJSON('modules.json')
             .done(function (data) {
                 if (data && Array.isArray(data.modules)) {
+                    const customModules = JSON.parse(localStorage.getItem('customModules') || '[]');
+                    data.modules = [...customModules, ...data.modules];
                     const targetModule = data.modules.find(m => m.id === moduleId);
                     if (targetModule) {
                         // Remove current module
@@ -422,6 +419,16 @@ function createHeaderButtons(module) {
     if (module.externalLink) {
         $menu.append('<div class="module-action" data-action="view"><i class="fa-solid fa-arrow-up-right-from-square"></i> View More</div>');
     }
+    try {
+        const states = JSON.parse(localStorage.getItem('moduleStates') || '[]');
+        const firstModuleId = states.length > 0 ? states[0].id : null;
+        if (module.id !== firstModuleId) {
+            $menu.append('<div class="module-action" data-action="move-top"><i class="fa-solid fa-arrow-up"></i> Move to Top</div>');
+        }
+    } catch (e) {
+        console.error('Failed to check moduleStates:', e);
+        $menu.append('<div class="module-action" data-action="move-top"><i class="fa-solid fa-arrow-up"></i> Move to Top</div>');
+    }
     $menu.append('<div class="module-action" data-action="info"><i class="fa-solid fa-circle-info"></i> Module Info</div>');
     $menu.append('<div class="module-action" data-action="delete"><i class="fa-solid fa-eye-slash"></i> Remove Module</div>');
 
@@ -432,19 +439,62 @@ function createHeaderButtons(module) {
         if (action === 'view') {
             window.open(module.externalLink, '_blank');
         } else if (action === 'info') {
-            const info = $(`
-                <div class="module-info-inner">
-                    <p class="aka-text">(AKA: <strong>${module.id}</strong>)</p>
-                    <p class="module-icon"><i class="${module.icon}"></i></p>
-                    <p class="module-desc">${module.description || 'No description provided.'}</p>
-                </div>
-            `);
+            let infoHtml = `
+            <div class="module-info-inner">
+                <p class="aka-text">(AKA: <strong>${module.id}</strong>)</p>
+                <p class="module-icon"><i class="${module.icon}"></i></p>
+                <p class="module-desc">${module.description || 'No description provided.'}</p>
+        `;
+
+            if (module.contentType === 'rss' && module.feedUrl) {
+                infoHtml += `<p class="rss-url"><strong>Feed URL:</strong> <a href="${module.feedUrl}" target="_blank">${module.feedUrl}</a></p>`;
+            }
+
+            infoHtml += `</div>`;
+
+            const info = $(infoHtml);
             showGlobalPopup(module.name, info);
         } else if (action === 'delete') {
+            const moduleId = module.id;
             $thisModule.fadeOut(200, function () {
                 $thisModule.remove();
+
+                // Remove from selectedModules (if present)
+                const selectedModules = JSON.parse(localStorage.getItem('selectedModules') || '[]');
+                const updatedSelected = selectedModules.filter(id => id !== moduleId);
+                localStorage.setItem('selectedModules', JSON.stringify(updatedSelected));
+
+                // Remove from customModules (if applicable)
+                const customModules = JSON.parse(localStorage.getItem('customModules') || '[]');
+                const updatedCustoms = customModules.filter(m => m.id !== moduleId);
+                localStorage.setItem('customModules', JSON.stringify(updatedCustoms));
+
                 refreshMasonryLayout();
                 saveWidgetStates();
+            });
+        } else if (action === 'move-top') {
+            const $container = $('.container');
+            const previousFirstId = $container.children('.module').first().attr('id');
+
+            $thisModule.fadeOut(200, function () {
+                $thisModule.prependTo($container).fadeIn(400);
+
+                // Remove 'move-top' from this module's menu
+                $thisModule.find('.module-menu .module-action[data-action="move-top"]').remove();
+
+                // Add 'move-top' to the old first module if not already present
+                const $oldFirst = $('#' + previousFirstId);
+                const $oldMenu = $oldFirst.find('.module-menu');
+                if ($oldMenu.length && $oldMenu.find('[data-action="move-top"]').length === 0) {
+                    $('<div class="module-action" data-action="move-top"><i class="fa-solid fa-arrow-up"></i> Move to Top</div>')
+                        .insertBefore($oldMenu.find('[data-action="info"]'));
+                }
+
+                forceRebuildMasonry();
+                setTimeout(() => {
+                    refreshMasonryLayout();
+                    saveWidgetStates();
+                }, 50);
             });
         }
         $menu.removeClass('visible');
@@ -556,9 +606,11 @@ function applyToolbarPosition(position) {
 function saveWidgetStates() {
     let states = [];
     $('.container .module').each(function () {
+        const $mod = $(this);
         states.push({
-            id: $(this).attr('id'),
-            minimized: $(this).hasClass('minimized')
+            id: $mod.attr('id'),
+            minimized: $mod.hasClass('minimized'),
+            order: $mod.index()
         });
     });
     localStorage.setItem('moduleStates', JSON.stringify(states));
@@ -569,14 +621,12 @@ function restoreWidgetStates() {
     if (storedStates) {
         try {
             const states = JSON.parse(storedStates);
-            const $container = $('.container');
+            states.sort((a, b) => a.order - b.order);
             states.forEach(state => {
                 const $module = $('#' + state.id);
                 if ($module.length) {
-                    // Set the minimized state based on saved value
                     $module.toggleClass('minimized', state.minimized);
-                    // Reorder: appending moves the element to the end in the desired order
-                    $container.append($module);
+                    $('.container').append($module);
                 }
             });
             refreshMasonryLayout();
@@ -614,170 +664,222 @@ function refreshMasonryLayout() {
 }
 
 function loadModules() {
-    const jsonUrl = 'modules.json';
-    const $targetContainer = $('.container'); // Hardcoded to use '.container'
-    const moduleWidth = 350; // Define your module width
+    window.onload = function () {
+        const jsonUrl = 'modules.json';
+        const $targetContainer = $('.container');
+        const moduleWidth = 350; // Define your module width
 
-    if (!$targetContainer.length) {
-        console.error(`Error: Target container ".container" not found.`);
-        return;
-    }
+        if (!$targetContainer.length) {
+            console.error(`Error: Target container ".container" not found.`);
+            return;
+        }
 
-    $.getJSON(jsonUrl)
-        .done(function (data) {
-            if (data && Array.isArray(data.modules)) {
-                const selectedModuleIds = JSON.parse(localStorage.getItem('selectedModules')) || [];
-                const modulesToShow = selectedModuleIds.length > 0
-                    ? data.modules.filter(m => selectedModuleIds.includes(m.id))
-                    : data.modules; // Show all if none selected
+        $.getJSON(jsonUrl)
+            .done(function (data) {
+                if (data && Array.isArray(data.modules)) {
+                    const customModules = JSON.parse(localStorage.getItem('customModules') || '[]');
+                    data.modules = [...customModules, ...data.modules];
+                    const selectedModuleIds = JSON.parse(localStorage.getItem('selectedModules')) || [];
+                    const modulesToShow = selectedModuleIds.length > 0
+                        ? data.modules.filter(m => selectedModuleIds.includes(m.id) || m.contentType === 'rss')
+                        : data.modules;
 
-                $targetContainer.children('.module').remove(); // Clear existing content before adding modules
+                    $targetContainer.children('.module').remove(); // Clear existing content before adding modules
 
-                $.each(modulesToShow, function (index, module) {
-                    if (!module.noShow) {
-                        let $moduleDiv = $('<div>')
-                            .addClass('module')
-                            .attr('id', module.id || `module-${index}`)
-                            .attr('name', module.name)
-                            .css('width', moduleWidth); // Apply the fixed width
+                    const nonRssModules = [];
+                    const rssModules = [];
 
-                        if (module.height) {
-                            $moduleDiv.css('height', module.height); // Apply dynamic height class if provided
+                    modulesToShow.forEach(module => {
+                        if (module.contentType === 'rss') {
+                            rssModules.push(module);
+                        } else {
+                            nonRssModules.push(module);
                         }
+                    });
 
-                        if (module.mode) {
-                            $moduleDiv.addClass(module.mode);
+                    // First load and render non-RSS modules
+                    nonRssModules.forEach((module, index) => {
+                        if (!module.noShow) {
+                            const $skeleton = $('<div>')
+                                .addClass('module skeleton-module')
+                                .attr('id', `skeleton-${module.id}`)
+                                .css({ width: moduleWidth, height: 350 })
+                                .html(`
+                                    <div class="header">
+                                        <div class="skeleton-icon"></div>
+                                        <h2 class="skeleton-title"></h2>
+                                        <div class="modHeadBtns">
+                                            <div class="modActions">
+                                                <i class="header-icon"></i>
+                                                <i class="header-icon"></i>
+                                                <i class="header-icon"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="module-content module-content-standard">
+                                        <ul class="rss-list">
+                                            <li class="skeleton-line"></li>
+                                            <li class="skeleton-line"></li>
+                                            <li class="skeleton-line"></li>
+                                        </ul>
+                                    </div>
+                                `);
+                            $('.container').append($skeleton);
+                            const $moduleDiv = renderModule(module);
+                            $(`#skeleton-${module.id}`).replaceWith($moduleDiv);
                         }
+                    });
 
-                        let $header = $('<div>').addClass('header');
+                    // Then load and render RSS modules
+                    rssModules.forEach(module => {
+                        // Create a placeholder skeleton module
+                        const $skeleton = $('<div>')
+                            .addClass('module skeleton-module')
+                            .attr('id', `skeleton-${module.id}`)
+                            .css({ width: moduleWidth, height: 350 })
+                            .html(`
+                                <div class="header">
+                                    <div class="icon skeleton-icon"></div>
+                                    <h2 class="skeleton-title title"></h2>
+                                    <div class="modHeadBtns">
+                                        <div class="modActions">
+                                            <i class="header-icon"></i>
+                                            <i class="header-icon"></i>
+                                            <i class="header-icon"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="module-content module-content-standard">
+                                    <ul class="rss-list">
+                                        <li class="skeleton-line"></li>
+                                        <li class="skeleton-line"></li>
+                                        <li class="skeleton-line"></li>
+                                        <li class="skeleton-line"></li>
+                                        <li class="skeleton-line"></li>
+                                        <li class="skeleton-line"></li>
+                                        <li class="skeleton-line"></li>
+                                        <li class="skeleton-line"></li>
+                                        <li class="skeleton-line"></li>
+                                        <li class="skeleton-line"></li>
+                                    </ul>
+                                </div>
+                            `);
+                        $('.container').append($skeleton);
 
-                        if (module.icon) {
-                            $('<i>')
-                                .addClass('icon')
-                                .addClass(module.icon)
-                                .appendTo($header);
-                        }
-                        if (module.name) {
-                            $(`<h2 class="title">${module.name}</h2>`).appendTo($header);
-                        }
+                        fetchRssFeed(module.feedUrl)
+                            .then(rssData => {
+                                const $rssModule = renderRssModule(module, rssData.items);
+                                $(`#skeleton-${module.id}`).replaceWith($rssModule);
+                                forceRebuildMasonry();
+                                refreshMasonryLayout();
+                                restoreWidgetStates();
+                            })
+                            .catch(err => {
+                                const $errorModule = $('<div>').addClass('module').css('width', 350)
+                                    .html(`<p>Error loading RSS: ${err.message}</p>`);
+                                $('.container').append($errorModule);
+                            });
+                    });
 
-                        let $modHeadBtns = createHeaderButtons(module);
+                    // Initialize Masonry after modules are added
+                    const masonryOptions = {
+                        itemSelector: '.module',
+                        fitWidth: true,
+                        scroll: false,
+                        gutter: 15
+                    };
+                    $targetContainer.masonry(masonryOptions);
 
-                        $header.append($modHeadBtns);
-                        $moduleDiv.append($header);
+                    // Initialize Sortable on the container
+                    $targetContainer.sortable({
+                        tolerance: 'pointer',
+                        handle: '.header',
+                        update: function (event, ui) {
+                            // Save the new order and states after sorting
+                            saveWidgetStates();
+                            const $modules = $('.container .module');
+                            const $newFirst = $modules.first();
 
-                        // --- Content Type Handling ---
-                        let $moduleContent; // Declare $moduleContent once
-                        switch (module.contentType) {
-                            case 'iframe':
-                                if (module.url) {
-                                    const $iframe = $('<iframe>')
-                                        .attr('src', module.url)
-                                        .attr('frameborder', '0')
-                                        .attr('title', module.name || 'Embedded Content');
-                                    $moduleContent = $('<div>').addClass('module-content module-content-iframe').append($iframe);
-                                } else {
-                                    const nativeFile = `nativeModule/${module.id}.html`;
-                                    asyncContent = true;
-                                    $.get(nativeFile)
-                                        .done(function (htmlData) {
-                                            // File exists; create iframe with nativeFile as the src
-                                            const $iframe = $('<iframe>')
-                                                .attr('src', nativeFile)
-                                                .attr('frameborder', '0')
-                                                .attr('title', module.name || 'Embedded Content');
-                                            $moduleContent = $('<div>').addClass('module-content module-content-iframe').append($iframe);
-                                            $moduleDiv.append($moduleContent);
-                                            refreshMasonryLayout();
-                                        })
-                                        .fail(function (jqXHR, textStatus, errorThrown) {
-                                            console.warn(`Module "${module.name}" has contentType 'iframe' but no 'url', and native file ${nativeFile} not found: ${textStatus}, ${errorThrown}`);
-                                            $moduleContent = $('<div>').addClass('module-content module-content-error').text('Iframe URL missing and native module file not found.');
-                                            $moduleDiv.append($moduleContent);
-                                        });
+                            // Remove 'move-top' from the new first
+                            $newFirst.find('.module-menu [data-action="move-top"]').remove();
+
+                            // Ensure all other modules have the button
+                            $modules.not($newFirst).each(function () {
+                                const $menu = $(this).find('.module-menu');
+                                if ($menu.find('[data-action="move-top"]').length === 0) {
+                                    $('<div class="module-action" data-action="move-top"><i class="fa-solid fa-arrow-up"></i> Move to Top</div>')
+                                        .insertBefore($menu.find('[data-action="info"]'));
                                 }
-                                break;
-
-                            case 'html':
-                                if (module.htmlContent) {
-                                    $moduleContent = $('<div>')
-                                        .addClass('module-content module-content-html')
-                                        .html(module.htmlContent); // Use .html() to interpret HTML
-                                } else {
-                                    const htmlFile = `nativeModule/${module.id}.html`;
-                                    $.get(htmlFile)
-                                        .done(function (htmlData) {
-                                            $moduleContent = $('<div>').addClass('module-content module-content-html').html(htmlData);
-                                            $moduleDiv.append($moduleContent);
-                                            // After loading HTML, reload Masonry layout
-                                            $targetContainer.masonry('reloadItems').masonry('layout');
-                                        })
-                                        .fail(function (jqXHR, textStatus, errorThrown) {
-                                            console.error(`Error loading HTML file ${htmlFile}: ${textStatus}, ${errorThrown}`);
-                                            $moduleContent = $('<div>').addClass('module-content module-content-error').text("Failed to load html");
-                                            $moduleDiv.append($moduleContent);
-                                        })
-                                    break;
-                                }
-                                break;
-
-                            case 'standard':
-                            default:
-                                $moduleContent = $('<div>').addClass('module-content module-content-standard').html('<p>Standard module area.</p>');
-                                break;
+                            });
+                            $targetContainer.masonry('reloadItems').masonry('layout');
+                        },
+                        start: function (event, ui) {
+                            ui.item.addClass('dragging');
+                            $('.module').removeClass('focus');
+                            ui.item.addClass('focus');
+                        },
+                        stop: function (event, ui) {
+                            $targetContainer.masonry('destroy'); // Destroy Masonry before dragging
+                            ui.item.removeClass('dragging');
+                            // Reinitialize Masonry after dragging stops
+                            $targetContainer.masonry(masonryOptions);
+                            saveWidgetStates();
                         }
-                        $moduleDiv.append($moduleContent);  // Append the content *once*
-                        $targetContainer.append($moduleDiv);
-                    }
-                });
+                    });
 
-                // Initialize Masonry after modules are added
-                const masonryOptions = {
-                    itemSelector: '.module',
-                    fitWidth: true,
-                    scroll: false,
-                    gutter: 15
-                };
-                $targetContainer.masonry(masonryOptions);
+                    // Add persistent test skeleton module for styling/animation dev
+                    // const $testSkeleton = $('<div>')
+                    //     .addClass('module skeleton-module test-skeleton')
+                    //     .attr('id', 'skeleton-test')
+                    //     .css({ width: 350, height: 350 })
+                    //     .html(`
+                    //             <div class="header">
+                    //                 <div class="icon skeleton-icon"></div>
+                    //                 <h2 class="skeleton-title title"></h2>
+                    //                 <div class="modHeadBtns">
+                    //                     <div class="modActions">
+                    //                         <i class="header-icon"></i>
+                    //                         <i class="header-icon"></i>
+                    //                         <i class="header-icon"></i>
+                    //                     </div>
+                    //                 </div>
+                    //             </div>
+                    //             <div class="module-content module-content-standard">
+                    //                 <ul class="rss-list">
+                    //                     <li class="skeleton-line"></li>
+                    //                     <li class="skeleton-line"></li>
+                    //                     <li class="skeleton-line"></li>
+                    //                     <li class="skeleton-line"></li>
+                    //                     <li class="skeleton-line"></li>
+                    //                     <li class="skeleton-line"></li>
+                    //                     <li class="skeleton-line"></li>
+                    //                     <li class="skeleton-line"></li>
+                    //                     <li class="skeleton-line"></li>
+                    //                     <li class="skeleton-line"></li>
+                    //                 </ul>
+                    //             </div>
+                    //     `);
+                    // $targetContainer.append($testSkeleton);
 
-                // Initialize Sortable on the container
-                $targetContainer.sortable({
-                    tolerance: 'pointer',
-                    handle: '.header',
-                    update: function (event, ui) {
-                        // Save the new order and states after sorting
-                        saveWidgetStates();
-                        $targetContainer.masonry('reloadItems').masonry('layout');
-                    },
-                    start: function (event, ui) {
-                        ui.item.addClass('dragging');
-                        $('.module').removeClass('focus');
-                        ui.item.addClass('focus');
-                    },
-                    stop: function (event, ui) {
-                        $targetContainer.masonry('destroy'); // Destroy Masonry before dragging
-                        ui.item.removeClass('dragging');
-                        // Reinitialize Masonry after dragging stops
-                        $targetContainer.masonry(masonryOptions);
-                        saveWidgetStates();
-                    }
-                });
-
-                // After all modules have been added and Masonry has been initialized...
-                restoreWidgetStates();
-            } else {
-                console.error(`Error: JSON data from ${jsonUrl} is missing the "modules" array.`);
-                $targetContainer.html('<p class="error">Could not load modules: Invalid data format.</p>');
-            }
-        })
-        .fail(function (jqXHR, textStatus, errorThrown) {
-            console.error(`Error loading modules from ${jsonUrl}: ${textStatus}, ${errorThrown}`);
-            $targetContainer.html(`<p class="error">Could not load modules. Please check the console for details (File: ${jsonUrl}).</p>`);
-        });
+                    // After all modules have been added and Masonry has been initialized...
+                    restoreWidgetStates();
+                } else {
+                    console.error(`Error: JSON data from ${jsonUrl} is missing the "modules" array.`);
+                    $targetContainer.html('<p class="error">Could not load modules: Invalid data format.</p>');
+                }
+            })
+            .fail(function (jqXHR, textStatus, errorThrown) {
+                console.error(`Error loading modules from ${jsonUrl}: ${textStatus}, ${errorThrown}`);
+                $targetContainer.html(`<p class="error">Could not load modules. Please check the console for details (File: ${jsonUrl}).</p>`);
+            });
+    };
 }
 
 function openModuleSelector(modules) {
     const $popup = $('.module-selector-popup');
+    const $rssButton = $('<button class="rss-add-btn">+ Add RSS Feed</button>').on('click', function () {
+        showGlobalPopup('Add RSS Feed', createRssInputForm());
+    });
     const $moduleList = $('<ul>').addClass('module-list');
     const $filterContainer = $('<div class="category-filters">');
     const allCategories = [...new Set(modules.flatMap(m => m.category || []))].sort();
@@ -872,7 +974,7 @@ function openModuleSelector(modules) {
     });
 
     $popup.empty();
-    $popup.append($filterContainer, $moduleList);
+    $popup.append($filterContainer, $moduleList, $rssButton);
 
     $settings.addClass('visible');
 }
@@ -916,6 +1018,33 @@ function openSettingsWindow(modules) {
             $settingsWindow.prepend($tabButtons);
         }
     });
+    const version = document.querySelector('meta[name="version"]')?.getAttribute('content') || 'N/A';
+    $('#aboutVersion').text(version);
+    const totalModules = JSON.parse(localStorage.getItem('customModules') || '[]').length +
+        (Array.isArray(modules) ? modules.length : 0);
+    const loadedModules = JSON.parse(localStorage.getItem('moduleStates') || '[]').length;
+    const rssModules = JSON.parse(localStorage.getItem('customModules') || '[]').length;
+    $('#aboutModuleAdded').text(loadedModules);
+    $('#aboutModuleRSS').text(rssModules);
+    $('#aboutModuleTotal').text(totalModules);
+    function detectBrowser() {
+        const ua = navigator.userAgent;
+        if (/Edg\//.test(ua)) return "Microsoft Edge";
+        if (/Chrome\//.test(ua) && !/Chromium/.test(ua)) return "Chrome";
+        if (/Chromium/.test(ua)) return "Chromium";
+        if (/Safari/.test(ua) && !/Chrome|Chromium/.test(ua)) return "Safari";
+        if (/Firefox\//.test(ua)) return "Firefox";
+        if (/OPR\//.test(ua)) return "Opera";
+        return "Unknown";
+    }
+    $('#aboutBrowser').text(detectBrowser());
+    $('#aboutPlatform').text(navigator.platform);
+    const mem = navigator.deviceMemory ? `${navigator.deviceMemory} GB` : 'Unavailable';
+    $('#aboutMemory').text(mem);
+
+    const vpWidth = window.innerWidth;
+    const vpHeight = window.innerHeight;
+    $('#aboutViewport').text(`${vpWidth} × ${vpHeight}`);
 }
 
 function addToTabTitle(suffix) {
@@ -925,4 +1054,272 @@ function addToTabTitle(suffix) {
     } else {
         document.title = baseTitle;
     }
+}
+
+function createRssInputForm() {
+    const $form = $('<div class="rss-form">');
+    $form.append('<p>Enter details manually:</p>');
+    $form.append('<input type="text" class="rss-title" placeholder="Enter Title">');
+    $form.append('<input type="url" class="rss-url" placeholder="Enter RSS Feed URL">');
+    const $submit = $('<button>Add Feed</button>').on('click', async function () {
+        const title = $form.find('.rss-title').val().trim();
+        const url = $form.find('.rss-url').val().trim();
+
+        if (!title || !url) {
+            alert('Please enter both a title and RSS URL.');
+            return;
+        }
+
+        try {
+            const rssData = await fetchRssFeed(url);
+            if (!rssData.items || rssData.items.length === 0) {
+                alert('No RSS items found or invalid feed.');
+                return;
+            }
+
+            const id = `rss-${Date.now()}`;
+            const module = {
+                id,
+                name: title,
+                description: `RSS Feed: ${title}`,
+                category: ['Custom', 'Web'],
+                mode: 'internal',
+                icon: 'fa-solid fa-rss',
+                contentType: 'rss',
+                feedUrl: url
+            };
+
+            const customModules = JSON.parse(localStorage.getItem('customModules') || '[]');
+            customModules.push(module);
+            localStorage.setItem('customModules', JSON.stringify(customModules));
+
+            const $module = renderRssModule(module, rssData.items);
+            $('.container').prepend($module);
+            forceRebuildMasonry();
+            refreshMasonryLayout();
+            saveWidgetStates();
+            $('#globalPopup').removeClass('visible');
+        } catch (e) {
+            console.error('Error loading RSS:', e);
+            alert('Failed to load RSS feed.');
+        }
+        saveWidgetStates();
+    });
+
+    $form.append($submit);
+
+    // Divider and starter feed section
+    $form.append('<div class="sep">');
+    $form.append('<p>Or choose an RSS feed to get you started:</p>');
+
+    let $feedSelectForm = $('<div class="feedForm">');
+
+    const starterFeeds = {
+        "Yahoo News": "https://news.yahoo.com/rss/",
+        "A Frugal Chick": "https://www.afrugalchick.com/feed/",
+        "Pilot Online": "https://www.pilotonline.com/feed/",
+        "HuffPost": "https://chaski.huffpost.com/us/auto/vertical/us-news",
+        "BleepingComputer": "https://www.bleepingcomputer.com/feed/",
+        "MakeUseOf": "https://www.makeuseof.com/feed/"
+    };
+
+    const $feedSelect = $('<select><option value="" hidden>-- Select a feed --</option></select>');
+    Object.entries(starterFeeds).forEach(([label, url]) => {
+        $feedSelect.append(`<option value="${url}">${label}</option>`);
+    });
+
+    const $starterBtn = $('<button disabled>Add to Modules</button>');
+
+    $feedSelect.on('change', function () {
+        $starterBtn.prop('disabled', !$(this).val());
+    });
+
+    $starterBtn.on('click', async function () {
+        const feedUrl = $feedSelect.val();
+        const title = $feedSelect.find('option:selected').text();
+
+        try {
+            const rssData = await fetchRssFeed(feedUrl);
+            if (!rssData.items || rssData.items.length === 0) {
+                alert('No RSS items found or invalid feed.');
+                return;
+            }
+
+            const id = `rss-${Date.now()}`;
+            const module = {
+                id,
+                name: title,
+                description: `RSS Feed: ${title}`,
+                category: ['Custom', 'Web'],
+                mode: 'internal',
+                icon: 'fa-solid fa-rss',
+                contentType: 'rss',
+                feedUrl: feedUrl
+            };
+
+            const customModules = JSON.parse(localStorage.getItem('customModules') || '[]');
+            customModules.push(module);
+            localStorage.setItem('customModules', JSON.stringify(customModules));
+
+            const $module = renderRssModule(module, rssData.items);
+            $('.container').prepend($module);
+            forceRebuildMasonry();
+            refreshMasonryLayout();
+            saveWidgetStates();
+            $('#globalPopup').removeClass('visible');
+        } catch (e) {
+            console.error('Error loading starter RSS feed:', e);
+            alert('Failed to load starter RSS feed.');
+        }
+        saveWidgetStates();
+    });
+
+    $feedSelectForm.append($feedSelect, $starterBtn);
+    $form.append($feedSelectForm);
+    $form.append('<a href="https://getrssfeed.com/" target="_blank">Need some help?</a>');
+
+    return $form;
+}
+
+async function fetchRssFeed(url) {
+    try {
+        // Force using AllOrigins + raw XML parser
+        throw new Error("Force fallback to test AllOrigins XML parsing");
+    } catch (err) {
+        // Fallback using AllOrigins proxy
+        const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
+        const fallbackResponse = await fetch(proxyUrl);
+        if (!fallbackResponse.ok) throw new Error('Failed to fetch RSS feed via AllOrigins');
+        const text = await fallbackResponse.text();
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(text, "application/xml");
+
+        let lastItemEnd = 0;
+
+        const items = Array.from(xmlDoc.querySelectorAll("item")).map(item => {
+            let thumbnail = "";
+
+            // 1. Try any media:content tag with a "url" attribute
+            const mediaContents = item.getElementsByTagName("media:content");
+            for (let el of mediaContents) {
+                if (!thumbnail && el.getAttribute("url")) {
+                    thumbnail = el.getAttribute("url");
+                    break;
+                }
+            }
+
+            // 2. Fallback to media:thumbnail
+            if (!thumbnail) {
+                const thumbEl = item.querySelector("media\\:thumbnail");
+                if (thumbEl) {
+                    thumbnail = thumbEl.getAttribute("url") || "";
+                }
+            }
+
+            // 3. enclosure
+            if (!thumbnail) {
+                const enclosure = item.querySelector("enclosure");
+                if (enclosure && enclosure.getAttribute("type") === "image/jpeg") {
+                    thumbnail = enclosure.getAttribute("url") || "";
+                }
+            }
+
+            // 4. <content:encoded> block
+            if (!thumbnail) {
+                const contentEncoded = item.querySelector("content\\:encoded")?.textContent || "";
+                const imgMatch = contentEncoded.match(/<img[^>]+src="([^">]+)"/i);
+                if (imgMatch && imgMatch[1]) {
+                    thumbnail = imgMatch[1];
+                }
+            }
+
+            // 5. description fallback
+            if (!thumbnail) {
+                const desc = item.querySelector("description")?.textContent || "";
+                const imgMatch = desc.match(/<img[^>]+src="([^">]+)"/i);
+                if (imgMatch && imgMatch[1]) {
+                    thumbnail = imgMatch[1];
+                }
+            }
+
+            const rawItemStart = text.indexOf("<item", lastItemEnd);
+            const rawItemEnd = text.indexOf("</item>", rawItemStart) + 7;
+            const rawItem = text.substring(rawItemStart, rawItemEnd);
+            lastItemEnd = rawItemEnd;
+
+            const sourceEl = item.getElementsByTagName("source")[0];
+            const authorFromSource = sourceEl?.firstChild?.nodeValue?.trim();
+
+            const fallbackAuthor = item.querySelector("author")?.textContent ||
+                item.querySelector("creator")?.textContent ||
+                item.querySelector("media\\:credit")?.textContent || "";
+
+            return {
+                title: item.querySelector("title")?.textContent || "Untitled",
+                link: item.querySelector("link")?.textContent || "#",
+                pubDate: item.querySelector("pubDate")?.textContent || "",
+                author: authorFromSource || fallbackAuthor,
+                description: item.querySelector("description")?.textContent || "",
+                thumbnail
+            };
+        });
+
+        return { items };
+    }
+}
+
+function renderRssModule(module, items) {
+    const $moduleDiv = $('<div>').addClass('module').addClass('rss-module').attr('id', module.id).css('height', 350);
+    const $header = $('<div>').addClass('header');
+    $('<i>').addClass('icon').addClass(module.icon).appendTo($header);
+    $(`<h2 class="title">${module.name}</h2>`).appendTo($header);
+    $header.append(createHeaderButtons(module));
+    $moduleDiv.append($header);
+
+    const $content = $('<div class="module-content module-content-standard">');
+    const $list = $('<ul class="rss-list">');
+    const $detail = $(`
+      <div class="rss-detail">
+          <div class="rss-detail-header">
+              <button class="rss-back-btn">← Back</button>
+              <a class="rss-full-link" href="#" target="_blank">Read Full Article</a>
+          </div>
+          <div class="rss-detail-content"></div>
+      </div>
+  `);
+
+    $detail.find('.rss-back-btn').on('click', function () {
+        $detail.removeClass('visible');
+    });
+
+    items.forEach(item => {
+        const $li = $('<li>').text(item.title).attr('title', item.title).on('click', function () {
+            const date = item.pubDate
+                ? new Date(item.pubDate).toLocaleDateString('en-US', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                })
+                : '';
+            const author = item.author || '';
+
+            $detail.find('.rss-detail-content').html(`
+                <div class="rss-meta">
+                    ${author ? `<span class="rss-author">${author}</span>` : ''}
+                    <h3 class="article-title">${item.title}</h3>
+                    ${date ? `<span class="rss-date">${date}</span>` : ''}
+                </div>
+                <img class="rss-image" src="${item.thumbnail}" alt="" style="max-width:100%;">
+                <div class="article-body">${item.description}</div>
+            `);
+            $detail.find('.rss-full-link').attr('href', item.link);
+            $detail.addClass('visible');
+        });
+        $list.append($li);
+    });
+
+    $content.append($list, $detail);
+    $moduleDiv.append($content);
+    return $moduleDiv;
 }
