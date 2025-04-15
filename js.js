@@ -4,7 +4,8 @@ $(document).ready(function () {
     $(window).on('resize', function () {
         // Debounce the resize event to prevent excessive layout calls
         clearTimeout(window.resizeTimeout);
-        window.resizeTimeout = setTimeout(refreshMasonryLayout, 250); // Adjust the delay (in milliseconds) as needed
+        window.resizeTimeout = setTimeout(forceRebuildMasonry, 250); // Adjust the delay (in milliseconds) as needed
+        saveWidgetStates();
     });
 
     $(window).on('load resize', markOverflowingElements);
@@ -129,7 +130,7 @@ $(document).ready(function () {
             $(this).attr('hoverTxt', 'Minimize');
         }
         let fallbackTimer = setTimeout(() => {
-            refreshMasonryLayout();
+            forceRebuildMasonry();
             markOverflowingElements();
             saveWidgetStates();
         }, 300);
@@ -138,10 +139,7 @@ $(document).ready(function () {
             clearTimeout(fallbackTimer);
             requestAnimationFrame(() => {
                 forceRebuildMasonry();
-                setTimeout(() => {
-                    $('.container').masonry('layout');
-                    saveWidgetStates();
-                }, 100);
+                saveWidgetStates();
             });
         });
     });
@@ -469,7 +467,7 @@ function createHeaderButtons(module) {
                 const updatedCustoms = customModules.filter(m => m.id !== moduleId);
                 localStorage.setItem('customModules', JSON.stringify(updatedCustoms));
 
-                refreshMasonryLayout();
+                forceRebuildMasonry();
                 saveWidgetStates();
             });
         } else if (action === 'move-top') {
@@ -491,10 +489,7 @@ function createHeaderButtons(module) {
                 }
 
                 forceRebuildMasonry();
-                setTimeout(() => {
-                    refreshMasonryLayout();
-                    saveWidgetStates();
-                }, 50);
+                saveWidgetStates();
             });
         }
         $menu.removeClass('visible');
@@ -535,7 +530,8 @@ function renderModule(module) {
                         const $iframe = $('<iframe>').attr('src', nativeFile).attr('frameborder', '0').attr('title', module.name || 'Embedded Content');
                         $moduleContent = $('<div>').addClass('module-content module-content-iframe').append($iframe);
                         $moduleDiv.append($moduleContent);
-                        refreshMasonryLayout();
+                        forceRebuildMasonry();
+                        saveWidgetStates();
                     })
                     .fail(function () {
                         $moduleContent = $('<div>').addClass('module-content module-content-error').text('Iframe URL missing and native module file not found.');
@@ -629,7 +625,7 @@ function restoreWidgetStates() {
                     $('.container').append($module);
                 }
             });
-            refreshMasonryLayout();
+            forceRebuildMasonry();
         } catch (e) {
             console.error("Error restoring widget states:", e);
         }
@@ -650,6 +646,10 @@ function forceRebuildMasonry() {
         scroll: false,
         gutter: 15
     });
+
+    setTimeout(() => {
+        refreshMasonryLayout();
+    }, 50);
 }
 
 function refreshMasonryLayout() {
@@ -771,7 +771,6 @@ function loadModules() {
                                 const $rssModule = renderRssModule(module, rssData.items);
                                 $(`#skeleton-${module.id}`).replaceWith($rssModule);
                                 forceRebuildMasonry();
-                                refreshMasonryLayout();
                                 restoreWidgetStates();
                             })
                             .catch(err => {
@@ -796,7 +795,6 @@ function loadModules() {
                         handle: '.header',
                         update: function (event, ui) {
                             // Save the new order and states after sorting
-                            saveWidgetStates();
                             const $modules = $('.container .module');
                             const $newFirst = $modules.first();
 
@@ -812,6 +810,7 @@ function loadModules() {
                                 }
                             });
                             $targetContainer.masonry('reloadItems').masonry('layout');
+                            saveWidgetStates();
                         },
                         start: function (event, ui) {
                             ui.item.addClass('dragging');
@@ -956,7 +955,7 @@ function openModuleSelector(modules) {
                 localStorage.setItem('selectedModules', JSON.stringify(selectedIds));
                 loadModules();
                 forceRebuildMasonry();
-                refreshMasonryLayout();
+                saveWidgetStates();
             });
 
             $moduleList.append($listItem);
@@ -1077,7 +1076,7 @@ function createRssInputForm() {
                 return;
             }
 
-            const id = `rss-${Date.now()}`;
+            const id = `rss-${btoa(feedUrl).replace(/[^a-zA-Z0-9]/g, '').slice(0, 10)}`;
             const module = {
                 id,
                 name: title,
@@ -1096,8 +1095,6 @@ function createRssInputForm() {
             const $module = renderRssModule(module, rssData.items);
             $('.container').prepend($module);
             forceRebuildMasonry();
-            refreshMasonryLayout();
-            saveWidgetStates();
             $('#globalPopup').removeClass('visible');
         } catch (e) {
             console.error('Error loading RSS:', e);
@@ -1145,7 +1142,7 @@ function createRssInputForm() {
                 return;
             }
 
-            const id = `rss-${Date.now()}`;
+            const id = `rss-${btoa(feedUrl).replace(/[^a-zA-Z0-9]/g, '').slice(0, 10)}`;
             const module = {
                 id,
                 name: title,
@@ -1164,8 +1161,6 @@ function createRssInputForm() {
             const $module = renderRssModule(module, rssData.items);
             $('.container').prepend($module);
             forceRebuildMasonry();
-            refreshMasonryLayout();
-            saveWidgetStates();
             $('#globalPopup').removeClass('visible');
         } catch (e) {
             console.error('Error loading starter RSS feed:', e);
@@ -1226,19 +1221,28 @@ async function fetchRssFeed(url) {
 
             // 4. <content:encoded> block
             if (!thumbnail) {
-                const contentEncoded = item.querySelector("content\\:encoded")?.textContent || "";
-                const imgMatch = contentEncoded.match(/<img[^>]+src="([^">]+)"/i);
-                if (imgMatch && imgMatch[1]) {
-                    thumbnail = imgMatch[1];
+                let contentEncoded = "";
+                const contentNodes = item.getElementsByTagName("content:encoded");
+                if (contentNodes.length && contentNodes[0].childNodes.length) {
+                    contentEncoded = contentNodes[0].childNodes[0].nodeValue || "";
+                }
+                try {
+                    const htmlDoc = new DOMParser().parseFromString(contentEncoded, "text/html");
+                    const imgEl = htmlDoc.querySelector("img");
+                    if (imgEl && imgEl.getAttribute("src")) {
+                        thumbnail = imgEl.getAttribute("src");
+                    }
+                } catch (e) {
+                    console.warn("Could not parse content:encoded HTML:", e);
                 }
             }
 
             // 5. description fallback
             if (!thumbnail) {
                 const desc = item.querySelector("description")?.textContent || "";
-                const imgMatch = desc.match(/<img[^>]+src="([^">]+)"/i);
-                if (imgMatch && imgMatch[1]) {
-                    thumbnail = imgMatch[1];
+                const descImgMatch = desc.match(/<img[^>]+src="([^">]+)"/i);
+                if (descImgMatch && descImgMatch[1]) {
+                    thumbnail = descImgMatch[1];
                 }
             }
 

@@ -12,6 +12,112 @@
             padding: 4px;
             margin-bottom: auto;
             min-height: 200px;
+
+            & iframe,
+            & iframe * {
+                position: absolute !important;
+                top: -1000px !important;
+                display: none !important;
+                width: 0 !important;
+                height: 0 !important;
+            }
+
+            tbody {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+
+                & tr:first-of-type {
+                    width: 100%;
+                    height: 60px;
+                    font-size: 25px;
+
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+
+                    & td {
+                        width: 100%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+
+                        & div {
+                            display: none;
+                        }
+
+                        & h3 {
+                            display: flex;
+                            margin: 0 auto;
+                            text-align: center;
+                            align-items: center;
+                            justify-content: center;
+                            text-transform: capitalize;
+
+                            & a:last-of-type {
+                                display: none;
+                            }
+                        }
+                    }
+                }
+
+                &>tr:not(:first-of-type) {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 5px;
+
+                    &:nth-of-type(3) {
+                        .WoDSyn {
+                            display: flex;
+                            color: transparent;
+
+                            & a {
+                                padding: 5px 10px;
+                                border-radius: 100px;
+                                background-color: var(--surface-button);
+                                box-shadow: var(--bxsh-border);
+                                font-size: 13px;
+
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+
+                                &:hover {
+                                    background-color: var(--surface-button-highlight);
+                                }
+
+                                &:has(:checked) {
+                                    background-color: white;
+                                    font-weight: bold;
+                                    color: black;
+                                }
+                            }
+                        }
+                    }
+
+                    td {
+                        width: 100%;
+                        text-align: left;
+                        font-size: 13px;
+                        padding: 0 5px;
+
+                        &.WoDLeft {
+                            text-transform: uppercase;
+                            letter-spacing: 3px;
+                            font-size: 11px;
+                            opacity: .5;
+                            width: 100%;
+                            text-align: center;
+                            font-weight: bold;
+
+                            box-sizing: border-box;
+                            padding: 0;
+                            padding-bottom: 3px;
+                            border-bottom: 1px solid var(--module-border);
+                        }
+                    }
+                }
+            }
         }
     </style>
 </head>

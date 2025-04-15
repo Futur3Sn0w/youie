@@ -13,7 +13,8 @@
     height: 600px;
 
     background-color: var(--root-back-alpha);
-    box-shadow: inset 0 0 0 1px var(--module-border);
+    box-shadow:
+        var(--bxsh-border);
     backdrop-filter: blur(20px);
     box-shadow:
         0 30px 30px #00000022,
@@ -32,7 +33,7 @@
     & .actionBtn {
         cursor: pointer;
         border: none;
-        border-radius: 12px;
+        border-radius: 18px;
         color: white;
         transition: background-color 0.3s;
         font-size: 16px;
@@ -51,6 +52,7 @@
 
             top: 15px;
             right: 15px;
+            transition: .2s;
 
             background-color: #f44336;
 
@@ -110,7 +112,8 @@
 
             background-color: var(--surface-button);
             color: var(--root-text);
-            box-shadow: inset 0 0 0 1px var(--module-border);
+            box-shadow:
+                var(--bxsh-border);
 
             box-sizing: border-box;
             padding: 10px;
@@ -175,7 +178,7 @@
 
         appearance: none;
         border-radius: 100px;
-        border: 1px solid var(--module-border);
+        box-shadow: var(--bxsh-border);
         background-color: rgb(45, 176, 45);
         cursor: pointer;
 
@@ -198,12 +201,20 @@
     & .category-filters {
         display: flex;
         align-items: center;
-        gap: 5px;
+        gap: 3px;
 
-        width: calc(100% - 50px);
+        width: max-content;
+
+        background-color: var(--module-back);
+        box-shadow: var(--bxsh-border);
+        border-radius: 100px;
+
+        padding: 5px;
+        padding-left: 10px;
+        margin: 12px;
+        margin-left: 15px;
         margin-right: auto;
         box-sizing: border-box;
-        padding: 15px;
 
         &::before {
             content: 'Filters: ';
@@ -216,8 +227,14 @@
             appearance: none;
             padding: 5px 10px;
             border-radius: 100px;
-            border: 1px solid var(--module-border);
+            box-shadow: var(--bxsh-border);
             color: var(--root-text);
+            position: relative;
+
+            transition: .15s;
+
+            display: flex;
+            align-items: center;
 
             background-color: var(--surface-button);
 
@@ -228,6 +245,22 @@
             &.clear.selected {
                 pointer-events: none;
                 opacity: .33;
+            }
+
+            &:last-of-type {
+                margin-right: 12px;
+
+                &::before {
+                    content: '';
+                    width: 2px;
+                    height: 70%;
+
+                    position: absolute;
+                    right: -8px;
+
+                    background-color: var(--root-text);
+                    opacity: .35;
+                }
             }
 
             &.selected:not(.clear) {
@@ -266,7 +299,8 @@
             width: calc(50% - 2.5px);
 
             background-color: var(--module-back);
-            box-shadow: inset 0 0 0 1px var(--module-border);
+            box-shadow:
+                var(--bxsh-border);
             border-radius: 10px;
 
             position: relative;
@@ -398,7 +432,7 @@
         appearance: none;
         padding: 5px 10px;
         border-radius: 100px;
-        border: 1px solid var(--module-border);
+        box-shadow: var(--bxsh-border);
         color: var(--root-text);
         /* margin-left: auto; */
         transition: .15s;
@@ -441,7 +475,7 @@
         padding: 10px 15px;
         border-radius: 10px;
         background-color: var(--module-back);
-        box-shadow: inset 0 0 0 1px var(--module-border);
+        box-shadow: var(--bxsh-border);
 
         .optGroup {
             display: flex;
@@ -554,7 +588,8 @@
 
             border-radius: 10px;
             background-color: var(--module-back);
-            box-shadow: inset 0 0 0 1px var(--module-border);
+            box-shadow:
+                var(--bxsh-border);
 
             &:first-of-type {
                 margin-left: 10px;

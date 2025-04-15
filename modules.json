@@ -52,6 +52,7 @@
             "mode": "external",
             "id": "module-tfd-wotd",
             "icon": "fas fa-hashtag",
+            "height": "350px",
             "externalLink": "https://www.thefreedictionary.com/",
             "contentType": "html"
         },
