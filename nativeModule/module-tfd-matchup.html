@@ -8,25 +8,60 @@
     <style>
         #MatchUp {
             width: 100%;
-        }
+            display: flex;
+            flex-direction: column;
+            align-items: center;
 
-        #MatchUp TD {
-            font: normal 10pt '';
-        }
+            & tbody tr td:first-of-type {
+                &>p {
+                    text-align: center;
+                }
+            }
 
-        #MatchUp A {
-            color: #0000FF
+            & TD {
+                font-size: 10pt;
+            }
+
+            & A {
+                color: #0000FF
+            }
         }
 
         #tfd_MatchUp INPUT.tfd_txt {
             border: 1px #777 solid;
-            height: 16pt;
-            font-size: 10pt;
-            width: 100px;
+            color: black !important;
+            height: 25px;
+            font-size: 14px;
+            width: 110px;
             cursor: pointer;
             margin-top: 2px;
             margin-right: 4px;
-            text-align: center
+            text-align: center;
+            border-radius: 100px;
+        }
+
+        input[type="button"],
+        input[type="submit"] {
+            appearance: none;
+            padding: 7px 12px;
+            border-radius: 100px;
+            border: none;
+            box-shadow: var(--bxsh-border);
+            transition: .15s;
+            font-size: 13px;
+
+            color: var(--root-text);
+            cursor: pointer;
+            background-color: var(--module-back);
+
+            &:is(button) {
+                font-weight: bold;
+            }
+
+            &:hover {
+                background-color: #ffffff;
+                color: black;
+            }
         }
     </style>
 </head>

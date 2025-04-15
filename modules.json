@@ -11,6 +11,7 @@
             "mode": "external",
             "id": "module-tfd-matchup",
             "icon": "fas fa-puzzle-piece",
+            "height": "310px",
             "externalLink": "https://www.thefreedictionary.com/",
             "contentType": "html"
         },

@@ -408,6 +408,11 @@ function createHeaderButtons(module) {
             $thisModule.addClass('focus');
             $('.module-menu').not($menu).removeClass('visible');
             $menu.toggleClass('visible');
+        })
+        .on("mouseover", function () {
+            $(this).closest('.module').find('.title').text($(this).attr('hoverTxt'));
+        }).on('mouseout', function () {
+            $(this).closest('.module').find('.title').text(module.name);
         }).appendTo($modActions);
 
     $modActions.appendTo($modHead);
@@ -664,47 +669,47 @@ function refreshMasonryLayout() {
 }
 
 function loadModules() {
-    window.onload = function () {
-        const jsonUrl = 'modules.json';
-        const $targetContainer = $('.container');
-        const moduleWidth = 350; // Define your module width
 
-        if (!$targetContainer.length) {
-            console.error(`Error: Target container ".container" not found.`);
-            return;
-        }
+    const jsonUrl = 'modules.json';
+    const $targetContainer = $('.container');
+    const moduleWidth = 350; // Define your module width
 
-        $.getJSON(jsonUrl)
-            .done(function (data) {
-                if (data && Array.isArray(data.modules)) {
-                    const customModules = JSON.parse(localStorage.getItem('customModules') || '[]');
-                    data.modules = [...customModules, ...data.modules];
-                    const selectedModuleIds = JSON.parse(localStorage.getItem('selectedModules')) || [];
-                    const modulesToShow = selectedModuleIds.length > 0
-                        ? data.modules.filter(m => selectedModuleIds.includes(m.id) || m.contentType === 'rss')
-                        : data.modules;
+    if (!$targetContainer.length) {
+        console.error(`Error: Target container ".container" not found.`);
+        return;
+    }
 
-                    $targetContainer.children('.module').remove(); // Clear existing content before adding modules
+    $.getJSON(jsonUrl)
+        .done(function (data) {
+            if (data && Array.isArray(data.modules)) {
+                const customModules = JSON.parse(localStorage.getItem('customModules') || '[]');
+                data.modules = [...customModules, ...data.modules];
+                const selectedModuleIds = JSON.parse(localStorage.getItem('selectedModules')) || [];
+                const modulesToShow = selectedModuleIds.length > 0
+                    ? data.modules.filter(m => selectedModuleIds.includes(m.id) || m.contentType === 'rss')
+                    : data.modules;
 
-                    const nonRssModules = [];
-                    const rssModules = [];
+                $targetContainer.children('.module').remove(); // Clear existing content before adding modules
 
-                    modulesToShow.forEach(module => {
-                        if (module.contentType === 'rss') {
-                            rssModules.push(module);
-                        } else {
-                            nonRssModules.push(module);
-                        }
-                    });
+                const nonRssModules = [];
+                const rssModules = [];
 
-                    // First load and render non-RSS modules
-                    nonRssModules.forEach((module, index) => {
-                        if (!module.noShow) {
-                            const $skeleton = $('<div>')
-                                .addClass('module skeleton-module')
-                                .attr('id', `skeleton-${module.id}`)
-                                .css({ width: moduleWidth, height: 350 })
-                                .html(`
+                modulesToShow.forEach(module => {
+                    if (module.contentType === 'rss') {
+                        rssModules.push(module);
+                    } else {
+                        nonRssModules.push(module);
+                    }
+                });
+
+                // First load and render non-RSS modules
+                nonRssModules.forEach((module, index) => {
+                    if (!module.noShow) {
+                        const $skeleton = $('<div>')
+                            .addClass('module skeleton-module')
+                            .attr('id', `skeleton-${module.id}`)
+                            .css({ width: moduleWidth, height: 350 })
+                            .html(`
                                     <div class="header">
                                         <div class="skeleton-icon"></div>
                                         <h2 class="skeleton-title"></h2>
@@ -724,20 +729,20 @@ function loadModules() {
                                         </ul>
                                     </div>
                                 `);
-                            $('.container').append($skeleton);
-                            const $moduleDiv = renderModule(module);
-                            $(`#skeleton-${module.id}`).replaceWith($moduleDiv);
-                        }
-                    });
+                        $('.container').append($skeleton);
+                        const $moduleDiv = renderModule(module);
+                        $(`#skeleton-${module.id}`).replaceWith($moduleDiv);
+                    }
+                });
 
-                    // Then load and render RSS modules
-                    rssModules.forEach(module => {
-                        // Create a placeholder skeleton module
-                        const $skeleton = $('<div>')
-                            .addClass('module skeleton-module')
-                            .attr('id', `skeleton-${module.id}`)
-                            .css({ width: moduleWidth, height: 350 })
-                            .html(`
+                // Then load and render RSS modules
+                rssModules.forEach(module => {
+                    // Create a placeholder skeleton module
+                    const $skeleton = $('<div>')
+                        .addClass('module skeleton-module')
+                        .attr('id', `skeleton-${module.id}`)
+                        .css({ width: moduleWidth, height: 350 })
+                        .html(`
                                 <div class="header">
                                     <div class="icon skeleton-icon"></div>
                                     <h2 class="skeleton-title title"></h2>
@@ -764,114 +769,114 @@ function loadModules() {
                                     </ul>
                                 </div>
                             `);
-                        $('.container').append($skeleton);
+                    $('.container').append($skeleton);
 
-                        fetchRssFeed(module.feedUrl)
-                            .then(rssData => {
-                                const $rssModule = renderRssModule(module, rssData.items);
-                                $(`#skeleton-${module.id}`).replaceWith($rssModule);
-                                forceRebuildMasonry();
-                                restoreWidgetStates();
-                            })
-                            .catch(err => {
-                                const $errorModule = $('<div>').addClass('module').css('width', 350)
-                                    .html(`<p>Error loading RSS: ${err.message}</p>`);
-                                $('.container').append($errorModule);
-                            });
-                    });
+                    fetchRssFeed(module.feedUrl)
+                        .then(rssData => {
+                            const $rssModule = renderRssModule(module, rssData.items);
+                            $(`#skeleton-${module.id}`).replaceWith($rssModule);
+                            forceRebuildMasonry();
+                            restoreWidgetStates();
+                        })
+                        .catch(err => {
+                            const $errorModule = $('<div>').addClass('module').css('width', 350)
+                                .html(`<p>Error loading RSS: ${err.message}</p>`);
+                            $('.container').append($errorModule);
+                        });
+                });
 
-                    // Initialize Masonry after modules are added
-                    const masonryOptions = {
-                        itemSelector: '.module',
-                        fitWidth: true,
-                        scroll: false,
-                        gutter: 15
-                    };
-                    $targetContainer.masonry(masonryOptions);
+                // Initialize Masonry after modules are added
+                const masonryOptions = {
+                    itemSelector: '.module',
+                    fitWidth: true,
+                    scroll: false,
+                    gutter: 15
+                };
+                $targetContainer.masonry(masonryOptions);
 
-                    // Initialize Sortable on the container
-                    $targetContainer.sortable({
-                        tolerance: 'pointer',
-                        handle: '.header',
-                        update: function (event, ui) {
-                            // Save the new order and states after sorting
-                            const $modules = $('.container .module');
-                            const $newFirst = $modules.first();
+                // Initialize Sortable on the container
+                $targetContainer.sortable({
+                    tolerance: 'pointer',
+                    handle: '.header',
+                    update: function (event, ui) {
+                        // Save the new order and states after sorting
+                        const $modules = $('.container .module');
+                        const $newFirst = $modules.first();
 
-                            // Remove 'move-top' from the new first
-                            $newFirst.find('.module-menu [data-action="move-top"]').remove();
+                        // Remove 'move-top' from the new first
+                        $newFirst.find('.module-menu [data-action="move-top"]').remove();
 
-                            // Ensure all other modules have the button
-                            $modules.not($newFirst).each(function () {
-                                const $menu = $(this).find('.module-menu');
-                                if ($menu.find('[data-action="move-top"]').length === 0) {
-                                    $('<div class="module-action" data-action="move-top"><i class="fa-solid fa-arrow-up"></i> Move to Top</div>')
-                                        .insertBefore($menu.find('[data-action="info"]'));
-                                }
-                            });
-                            $targetContainer.masonry('reloadItems').masonry('layout');
-                            saveWidgetStates();
-                        },
-                        start: function (event, ui) {
-                            ui.item.addClass('dragging');
-                            $('.module').removeClass('focus');
-                            ui.item.addClass('focus');
-                        },
-                        stop: function (event, ui) {
-                            $targetContainer.masonry('destroy'); // Destroy Masonry before dragging
-                            ui.item.removeClass('dragging');
-                            // Reinitialize Masonry after dragging stops
-                            $targetContainer.masonry(masonryOptions);
-                            saveWidgetStates();
-                        }
-                    });
+                        // Ensure all other modules have the button
+                        $modules.not($newFirst).each(function () {
+                            const $menu = $(this).find('.module-menu');
+                            if ($menu.find('[data-action="move-top"]').length === 0) {
+                                $('<div class="module-action" data-action="move-top"><i class="fa-solid fa-arrow-up"></i> Move to Top</div>')
+                                    .insertBefore($menu.find('[data-action="info"]'));
+                            }
+                        });
+                        $targetContainer.masonry('reloadItems').masonry('layout');
+                        saveWidgetStates();
+                    },
+                    start: function (event, ui) {
+                        ui.item.addClass('dragging');
+                        $('.module').removeClass('focus');
+                        ui.item.addClass('focus');
+                    },
+                    stop: function (event, ui) {
+                        $targetContainer.masonry('destroy'); // Destroy Masonry before dragging
+                        ui.item.removeClass('dragging');
+                        // Reinitialize Masonry after dragging stops
+                        $targetContainer.masonry(masonryOptions);
+                        saveWidgetStates();
+                    }
+                });
 
-                    // Add persistent test skeleton module for styling/animation dev
-                    // const $testSkeleton = $('<div>')
-                    //     .addClass('module skeleton-module test-skeleton')
-                    //     .attr('id', 'skeleton-test')
-                    //     .css({ width: 350, height: 350 })
-                    //     .html(`
-                    //             <div class="header">
-                    //                 <div class="icon skeleton-icon"></div>
-                    //                 <h2 class="skeleton-title title"></h2>
-                    //                 <div class="modHeadBtns">
-                    //                     <div class="modActions">
-                    //                         <i class="header-icon"></i>
-                    //                         <i class="header-icon"></i>
-                    //                         <i class="header-icon"></i>
-                    //                     </div>
-                    //                 </div>
-                    //             </div>
-                    //             <div class="module-content module-content-standard">
-                    //                 <ul class="rss-list">
-                    //                     <li class="skeleton-line"></li>
-                    //                     <li class="skeleton-line"></li>
-                    //                     <li class="skeleton-line"></li>
-                    //                     <li class="skeleton-line"></li>
-                    //                     <li class="skeleton-line"></li>
-                    //                     <li class="skeleton-line"></li>
-                    //                     <li class="skeleton-line"></li>
-                    //                     <li class="skeleton-line"></li>
-                    //                     <li class="skeleton-line"></li>
-                    //                     <li class="skeleton-line"></li>
-                    //                 </ul>
-                    //             </div>
-                    //     `);
-                    // $targetContainer.append($testSkeleton);
+                // Add persistent test skeleton module for styling/animation dev
+                // const $testSkeleton = $('<div>')
+                //     .addClass('module skeleton-module test-skeleton')
+                //     .attr('id', 'skeleton-test')
+                //     .css({ width: 350, height: 350 })
+                //     .html(`
+                //             <div class="header">
+                //                 <div class="icon skeleton-icon"></div>
+                //                 <h2 class="skeleton-title title"></h2>
+                //                 <div class="modHeadBtns">
+                //                     <div class="modActions">
+                //                         <i class="header-icon"></i>
+                //                         <i class="header-icon"></i>
+                //                         <i class="header-icon"></i>
+                //                     </div>
+                //                 </div>
+                //             </div>
+                //             <div class="module-content module-content-standard">
+                //                 <ul class="rss-list">
+                //                     <li class="skeleton-line"></li>
+                //                     <li class="skeleton-line"></li>
+                //                     <li class="skeleton-line"></li>
+                //                     <li class="skeleton-line"></li>
+                //                     <li class="skeleton-line"></li>
+                //                     <li class="skeleton-line"></li>
+                //                     <li class="skeleton-line"></li>
+                //                     <li class="skeleton-line"></li>
+                //                     <li class="skeleton-line"></li>
+                //                     <li class="skeleton-line"></li>
+                //                 </ul>
+                //             </div>
+                //     `);
+                // $targetContainer.append($testSkeleton);
 
-                    // After all modules have been added and Masonry has been initialized...
-                    restoreWidgetStates();
-                } else {
-                    console.error(`Error: JSON data from ${jsonUrl} is missing the "modules" array.`);
-                    $targetContainer.html('<p class="error">Could not load modules: Invalid data format.</p>');
-                }
-            })
-            .fail(function (jqXHR, textStatus, errorThrown) {
-                console.error(`Error loading modules from ${jsonUrl}: ${textStatus}, ${errorThrown}`);
-                $targetContainer.html(`<p class="error">Could not load modules. Please check the console for details (File: ${jsonUrl}).</p>`);
-            });
-    };
+                // After all modules have been added and Masonry has been initialized...
+                restoreWidgetStates();
+            } else {
+                console.error(`Error: JSON data from ${jsonUrl} is missing the "modules" array.`);
+                $targetContainer.html('<p class="error">Could not load modules: Invalid data format.</p>');
+            }
+        })
+        .fail(function (jqXHR, textStatus, errorThrown) {
+            console.error(`Error loading modules from ${jsonUrl}: ${textStatus}, ${errorThrown}`);
+            $targetContainer.html(`<p class="error">Could not load modules. Please check the console for details (File: ${jsonUrl}).</p>`);
+        });
+
 }
 
 function openModuleSelector(modules) {
@@ -953,8 +958,12 @@ function openModuleSelector(modules) {
                     .get();
 
                 localStorage.setItem('selectedModules', JSON.stringify(selectedIds));
-                loadModules();
+
                 forceRebuildMasonry();
+
+                // Load modules fresh from localStorage and JSON
+                loadModules();
+
                 saveWidgetStates();
             });
 
