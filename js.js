@@ -830,7 +830,7 @@ function loadModules() {
 
                     fetchRssFeed(module.feedUrl)
                         .then(rssData => {
-                            const $rssModule = renderRssModule(module, rssData.items);
+                            const $rssModule = renderRssModule(module, rssData.items, rssData.feedLink);
                             $(`#skeleton-${module.id}`).replaceWith($rssModule);
                             forceRebuildMasonry();
                             restoreWidgetStates();
@@ -1334,13 +1334,17 @@ async function fetchRssFeed(url) {
             };
         });
 
-        return { items };
+        const channelLink = xmlDoc.querySelector("channel > link")?.textContent || "";
+        return { items, feedLink: channelLink };
     }
 }
 
-function renderRssModule(module, items) {
+function renderRssModule(module, items, feedLink = '') {
     const $moduleDiv = $('<div>').addClass('module').addClass('rss-module').attr('id', module.id).css('height', 350);
     const $header = $('<div>').addClass('header');
+    if (feedLink) {
+        module.externalLink = feedLink;
+    }
     $('<i>').addClass('icon').addClass(module.icon).appendTo($header);
     $(`<h2 class="title">${module.name}</h2>`).appendTo($header);
     $header.append(createHeaderButtons(module));
