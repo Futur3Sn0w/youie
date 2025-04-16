@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="../css/globals.css">
+    <script src="../resc/ext/jquery-3.7.1.js"></script>
+
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+
+            p {
+                margin: 0;
+                padding: 0;
+            }
+        }
+
+        .qotd-module {
+            width: 100%;
+            height: fit-content;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+
+            position: relative;
+            z-index: 10;
+
+            margin: auto 0;
+
+            #qotd-quote {
+                width: 100%;
+                text-align: center;
+
+                box-sizing: border-box;
+                padding: 0 15px;
+
+                font-size: 22px;
+                font-weight: bold;
+
+                overflow-y: scroll;
+
+                &::before,
+                &::after {
+                    content: '"';
+                    font-size: 28px;
+                    font-style: italic;
+                    font-weight: normal;
+                    opacity: .5;
+                }
+            }
+
+            #sep {
+                display: flex;
+            }
+
+            #qotd-author {
+                font-size: 15px;
+                font-weight: 500;
+                opacity: .6;
+            }
+        }
+
+        #qotd-link,
+        #discuss {
+            appearance: none;
+            padding: 7px 12px;
+
+            color: var(--root-text);
+            font-size: 13px;
+            font-weight: 500;
+
+            border-radius: 100px;
+            box-shadow: var(--bxsh-border);
+
+            cursor: pointer;
+            transition: .15s;
+
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+
+            background-color: var(--root-back-alpha);
+
+            &:hover {
+                background-color: white;
+                color: black;
+                border-color: transparent;
+            }
+        }
+
+        #discuss {
+            margin: 0;
+
+            right: unset;
+            left: 10px;
+        }
+
+        #qotd-image {
+            width: 100%;
+            height: 100%;
+
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 0;
+
+            mask-image: linear-gradient(to top, black, transparent);
+            opacity: .25;
+
+            object-fit: cover;
+            object-position: top center;
+        }
+
+        @keyframes imgSlide {
+            0% {}
+        }
+    </style>
+</head>
+
+<body>
+    <img id="qotd-image" alt="" style="display: none;">
+    <div id="qotd-module" class="qotd-module">
+        <p id="qotd-quote"></p>
+        <p id="sep">~</p>
+        <p id="qotd-author"></p>
+    </div>
+    <button id="qotd-link" style="display: none;">About...</button>
+
+    <script>
+        $(document).ready(function () {
+            const cacheKey = "qotdCache";
+            const cacheTimeKey = "qotdCacheTime";
+            const now = Date.now();
+            const eightHours = 8 * 60 * 60 * 1000;
+
+            const cachedItem = localStorage.getItem(cacheKey);
+            const cachedTime = parseInt(localStorage.getItem(cacheTimeKey), 10);
+
+            // If cached and recent, use it
+            const cachedDate = new Date(cachedTime);
+            const nowDate = new Date(now);
+            const isSameDay = cachedDate.getFullYear() === nowDate.getFullYear() &&
+                cachedDate.getMonth() === nowDate.getMonth() &&
+                cachedDate.getDate() === nowDate.getDate();
+
+            if (cachedItem && cachedTime && isSameDay) {
+                renderQOTD(JSON.parse(cachedItem));
+                $("#qotd-module").removeClass("loading");
+                return;
+            }
+
+            function renderQOTD(dataObj) {
+                const { title, link, imgSrc, quoteText, discussHref } = dataObj;
+
+                $("#qotd-author").text(title);
+                $("#qotd-quote").text(quoteText);
+
+                if (imgSrc) {
+                    $("#qotd-image").attr("src", imgSrc).show();
+                }
+
+                if (link) {
+                    $("#qotd-link").on("click", () => window.open(link, "_blank")).show();
+                }
+
+                if (discussHref) {
+                    const $discuss = $('<a>')
+                        .attr('href', discussHref)
+                        .attr('target', '_blank')
+                        .addClass('discuss-link')
+                        .attr('id', 'discuss')
+                        .text('Discuss...');
+                    $("#qotd-module").parent().append($discuss);
+                }
+            }
+
+            const qotdUrl = "https://www.thefreedictionary.com/_/WoD/rss.aspx?type=quote";
+
+            const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(qotdUrl)}`;
+            $("#qotd-module").addClass("loading");
+            setTimeout(() => {
+                fetch(proxyUrl)
+                    .then(response => {
+                        if (!response.ok) throw new Error("Network response was not ok");
+                        return response.text();
+                    })
+                    .then(str => {
+                        const parser = new DOMParser();
+                        const data = parser.parseFromString(str, "application/xml");
+
+                        const $item = $(data).find("item").first();
+                        const title = $item.find("title").text();
+                        const link = $item.find("link").text();
+                        const description = $item.find("description").text();
+
+                        const $desc = $("<div>").html(description);
+                        const imgRaw = $desc.find("img").attr("src");
+                        const imgSrc = imgRaw ? (imgRaw.startsWith("http") ? imgRaw : "https:" + imgRaw) : null;
+                        const quoteText = $desc.clone().children('a').remove().end().text().replace(/\s*Discuss\s*$/, "").trim();
+                        const discussHref = $desc.find("a").attr("href");
+
+                        const qotdData = { title, link, imgSrc, quoteText, discussHref };
+
+                        localStorage.setItem(cacheKey, JSON.stringify(qotdData));
+                        localStorage.setItem(cacheTimeKey, now.toString());
+
+                        renderQOTD(qotdData);
+                        $("#qotd-module").removeClass("loading");
+                    })
+                    .catch(() => {
+                        $("#qotd-module").html("<p>Unable to load Quote of the Day.</p>");
+                        $("#qotd-module").removeClass("loading");
+                    });
+            }, 1000);
+        });
+    </script>
+</body>
+
+</html>

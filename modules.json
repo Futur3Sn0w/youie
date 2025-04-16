@@ -58,6 +58,20 @@
             "contentType": "html"
         },
         {
+            "name": "Quote of the Day",
+            "description": "Quote of the Day from TheFreeLibrary",
+            "category": [
+                "Stock",
+                "Web"
+            ],
+            "mode": "external",
+            "id": "module-tfl-qotd",
+            "icon": "fas fa-comment",
+            "height": "300px",
+            "externalLink": "https://www.thefreelibrary.com/",
+            "contentType": "iframe"
+        },
+        {
             "name": "Hangman",
             "description": "Hangman game from TheFreeDictionary",
             "category": [

@@ -6,10 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link rel="stylesheet" href="../css/globals.css">
-    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-    <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.js"></script>
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <script src="../resc/ext/jquery-3.7.1.js"></script>
+    <script src="../resc/ext/jquery-ui.js"></script>
+    <link rel="stylesheet" href="../resc/ext/jquery-ui.css">
+    <link rel="stylesheet" href="../resc/ext/fa672/css/all.css">
 
     <style>
         html,
@@ -74,6 +74,7 @@
             li {
                 display: flex;
                 align-items: center;
+                justify-content: center;
 
                 box-sizing: border-box;
                 height: 30px;
@@ -82,35 +83,120 @@
                 background-color: var(--surface-button);
                 border-radius: 8px;
 
+                box-sizing: border-box;
+                overflow: hidden;
+
                 transition: .15s;
                 cursor: pointer;
 
                 position: relative;
-                overflow: hidden;
+
+                & .noteActionsMenu {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 6px;
+
+                    position: absolute;
+                    right: -30px;
+                    top: 2px;
+
+                    height: 26px;
+                    width: 56px;
+
+                    color: var(--root-text);
+                    background-color: var(--root-back);
+                    border-radius: 6px;
+
+                    transition: .15s;
+                    opacity: 0;
+                    pointer-events: none;
+                    z-index: 300;
+
+                    & button {
+                        margin: 0;
+                        padding: 0;
+
+                        background: none;
+                        border: none;
+                        border-radius: 5px;
+
+                        color: inherit;
+                        cursor: pointer;
+
+                        position: relative;
+                        width: 24px;
+                        height: 24px;
+
+                        transition: .15s;
+
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+
+                        box-shadow: none !important;
+
+                        &:first-of-type {
+                            &::after {
+                                content: '';
+
+                                height: 50%;
+                                width: 2px;
+
+                                border-radius: 100px;
+                                background-color: var(--root-text);
+                                opacity: .25;
+
+                                position: absolute;
+                                right: -4px;
+                            }
+
+                            &:hover i {
+                                color: var(--youie-blue) !important;
+                            }
+                        }
+
+                        &:last-of-type:hover i {
+                            color: var(--youie-red) !important;
+                        }
+
+                        &:hover {
+                            background-color: var(--surface-button-highlight);
+                        }
+                    }
+                }
 
                 & a {
                     width: 100%;
-                    height: 100%;
+                    height: fit-content;
 
-                    display: flex;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                    overflow: hidden;
+
                     align-items: center;
 
                     box-sizing: border-box;
                     padding-left: 10px;
                     font-weight: bold;
-                    color: var(--root-text);
+                    color: inherit;
 
-                    position: absolute;
-                    left: 0;
-                    top: 0;
+                    position: relative;
+
                     z-index: 100;
                 }
 
                 &:hover {
-                    background-color: white;
-                    color: black;
-                    border-color: transparent;
+                    padding-right: 60px;
+                    background-color: var(--surface-button-highlight);
+
+                    .noteActionsMenu {
+                        opacity: 1;
+                        right: 2px;
+                        pointer-events: all;
+                    }
                 }
+
             }
         }
 
@@ -118,29 +204,39 @@
             display: none;
             flex-direction: column;
             height: 100%;
-        }
+            overflow: hidden;
 
-        #editorHeader {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0.5rem;
-            margin: 5px;
-            margin-top: 0;
-            height: 56px;
-            border-radius: 10px;
-            background: var(--module-back);
-            box-shadow: var(--bxsh-border);
-            position: relative;
-        }
+            & #editorHeader {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 0.5rem;
+                margin: 5px;
+                margin-top: 0;
+                height: 56px;
+                border-radius: 10px;
+                background: var(--module-back);
+                box-shadow: var(--bxsh-border);
+                position: relative;
 
-        #editorHeader #noteTitle {
-            font-weight: bold;
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            pointer-events: none;
-            width: max-content;
+                & #noteTitle {
+                    font-weight: bold;
+                    position: absolute;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    pointer-events: none;
+                    width: max-content;
+                }
+            }
+
+            & #editor {
+                flex-grow: 1;
+                padding: 1rem;
+                box-sizing: border-box;
+                outline: none;
+                overflow-y: scroll;
+                height: calc(100% - 56px - 1rem);
+            }
         }
 
         button {
@@ -160,18 +256,12 @@
 
             &:hover {
                 background-color: white;
-                color: black;
                 border-color: transparent;
-            }
-        }
 
-        #editor {
-            flex-grow: 1;
-            padding: 1rem;
-            box-sizing: border-box;
-            outline: none;
-            overflow-y: auto;
-            height: 100%;
+                i {
+                    color: black !important;
+                }
+            }
         }
     </style>
 </head>
@@ -239,7 +329,15 @@
                 const notes = getNotes();
                 $noteList.empty();
                 notes.forEach(n => {
-                    $noteList.append(`<li><a href="#" data-id="${n.id}">${n.title}</a></li>`);
+                    $noteList.append(`
+                        <li>
+                            <a href="#" data-id="${n.id}">${n.title}</a>
+                            <div class="noteActionsMenu">
+                                <button class="renameNote" data-id="${n.id}" title="Rename"><i class="fa-solid fa-pencil"></i></button>
+                                <button class="deleteNote" data-id="${n.id}" title="Delete"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        </li>
+                    `);
                 });
             }
 
@@ -301,6 +399,30 @@
                     $('#saveButton').click();
                 }
                 showListView();
+            });
+
+            $noteList.on('click', '.renameNote', function () {
+                const id = $(this).data('id');
+                const notes = getNotes();
+                const note = notes.find(n => n.id === id);
+                const newTitle = prompt("Enter new title:", note.title);
+                if (newTitle && newTitle.trim()) {
+                    note.title = newTitle.trim();
+                    saveNotes(notes);
+                    loadNoteList();
+                }
+            });
+
+            $noteList.on('click', '.deleteNote', function () {
+                const id = $(this).data('id');
+                if (confirm("Delete this note?")) {
+                    const notes = getNotes().filter(n => n.id !== id);
+                    saveNotes(notes);
+                    loadNoteList();
+                    if (currentNote && currentNote.id === id) {
+                        showListView();
+                    }
+                }
             });
 
             showListView();

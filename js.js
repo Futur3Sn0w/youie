@@ -125,9 +125,9 @@ $(document).ready(function () {
         const $module = $(this).closest('.module');
         $module.toggleClass('minimized');
         if ($module.hasClass('minimized')) {
-            $(this).attr('hoverTxt', 'Maximize');
+            $(this).attr('hoverTxt', 'Maximize').removeClass('fa-minimize').addClass('fa-maximize');
         } else {
-            $(this).attr('hoverTxt', 'Minimize');
+            $(this).attr('hoverTxt', 'Minimize').addClass('fa-minimize').removeClass('fa-maximize');
         }
         let fallbackTimer = setTimeout(() => {
             forceRebuildMasonry();
@@ -391,7 +391,7 @@ function createHeaderButtons(module) {
             $(this).closest('.module').find('.title').text(module.name);
         }).appendTo($modActions);
 
-    $('<i class="header-icon minimize-icon fa-solid fa-minus" hoverTxt="Minimize">')
+    $('<i class="header-icon minimize-icon fa-solid fa-minimize" hoverTxt="Minimize">')
         .on("mouseover", function () {
             $(this).closest('.module').find('.title').text($(this).attr('hoverTxt'));
         }).on('mouseout', function () {
