@@ -171,7 +171,7 @@ body>.backImg {
     overflow: visible;
 
     border-radius: 35px 35px 0 0;
-    transition: .3s;
+    transition: .15s;
 
     box-shadow:
         0 0px 0px #00000000,
@@ -182,6 +182,10 @@ body>.backImg {
 
     position: relative;
     z-index: 10;
+
+    &.tempHide {
+        opacity: 0;
+    }
 
     &::after {
         content: '';

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="v0.3.3">
+    <meta name="version" content="v0.3.4">
     <title>Youie</title>
 
     <script src="resc/ext/jquery-3.7.1.js"></script>
@@ -25,14 +25,36 @@
 
 <body>
     <div class="toolbar">
-        <div class="links">
-            <a href="https://mail.google.com" class="cbLink">Gmail</a>
-            <a href="https://images.google.com" class="cbLink">Images</a>
+        <div class="bar">
+            <div class="links">
+                <a href="https://mail.google.com" class="cbLink" title="Email from Google">Gmail</a>
+                <a href="https://images.google.com" class="cbLink" title="Google Images">Images</a>
+            </div>
+            <div class="sep"></div>
+            <button class="mainMenuBtn toolbarBtn" title="Main menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
         </div>
-        <div class="sep"></div>
-        <button class="settingsBtn editModulesBtn toolbarBtn" title="Settings">
-            <i class="fa-solid fa-gear"></i>
-        </button>
+
+        <div class="mainMenu">
+            <div class="sep" title="Youie"></div>
+            <button class="mainMenu-action" data-action="add-new" title="Add Module">
+                <i class="fa-solid fa-plus"></i>
+            </button>
+            <button class="mainMenu-action settingsBtn editModulesBtn" data-action="settings" title="Settings">
+                <i class="fa-solid fa-gear"></i>
+            </button>
+            <div class="sep" title="Modules"></div>
+            <button class="mainMenu-action" data-action="minimize-all" title="Minimize All">
+                <i class="fa-solid fa-minimize"></i>
+            </button>
+            <button class="mainMenu-action" data-action="maximize-all" title="Maximize All">
+                <i class="fa-solid fa-maximize"></i>
+            </button>
+            <button class="mainMenu-action" data-action="refresh-layout" title="Refresh Feed">
+                <i class="fa-solid fa-refresh"></i>
+            </button>
+        </div>
     </div>
     <img class="backImg">
     <div class="main-header">

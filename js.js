@@ -8,6 +8,37 @@ $(document).ready(function () {
         saveWidgetStates();
     });
 
+    $('.mainMenuBtn').on('click', function (e) {
+        e.stopPropagation();
+        $('.mainMenu').toggleClass('visible');
+    });
+
+    $(document).on('click', '.mainMenu-action', function () {
+        const action = $(this).data('action');
+        const $modules = $('.module');
+
+        if (action === 'minimize-all') {
+            $modules.addClass('minimized')
+                .find('.minimize-icon')
+                .attr('hoverTxt', 'Maximize')
+                .removeClass('fa-minimize')
+                .addClass('fa-maximize');
+        } else if (action === 'maximize-all') {
+            $modules.removeClass('minimized')
+                .find('.minimize-icon')
+                .attr('hoverTxt', 'Minimize')
+                .addClass('fa-minimize')
+                .removeClass('fa-maximize');
+        } else if (action === 'add-new') {
+            $('.settingsBtn').click();
+            $('.settingsWindow').find('.tabBtn').first().click();
+        }
+        forceRebuildMasonry(true);
+
+        $('.mainMenu').removeClass('visible');
+        saveWidgetStates();
+    });
+
     $(window).on('load resize', markOverflowingElements);
 
     addToTabTitle('Home');
@@ -67,6 +98,10 @@ $(document).ready(function () {
         if (!e.target.closest('.popup-inner') && !e.target.closest('.module-menu') &&
             !e.target.closest('.settingsWindow')) {
             $('.global-popup').removeClass('visible');
+        }
+
+        if (!e.target.closest('.mainMenu') && !e.target.closest('.mainMenuBtn')) {
+            $('.mainMenu').removeClass('visible');
         }
     });
 
@@ -637,24 +672,46 @@ function restoreWidgetStates() {
     }
 }
 
-function forceRebuildMasonry() {
+function forceRebuildMasonry(animate) {
     const $container = $('.container');
 
-    if ($container.data('masonry')) {
-        $container.masonry('destroy'); // Blow it up
+    if (animate) {
+        $('.scroller').addClass('tempHide');
+
+        setTimeout(() => {
+            if ($container.data('masonry')) {
+                $container.masonry('destroy'); // Blow it up
+            }
+
+            // Rebuild it
+            $container.masonry({
+                itemSelector: '.module',
+                fitWidth: true,
+                scroll: false,
+                gutter: 15
+            });
+
+            setTimeout(() => {
+                refreshMasonryLayout();
+                $('.scroller').removeClass('tempHide');
+            }, 150);
+        }, 150);
+    } else {
+        if ($container.data('masonry')) {
+            $container.masonry('destroy');
+        }
+
+        $container.masonry({
+            itemSelector: '.module',
+            fitWidth: true,
+            scroll: false,
+            gutter: 15
+        });
+
+        setTimeout(() => {
+            refreshMasonryLayout();
+        }, 50);
     }
-
-    // Rebuild it
-    $container.masonry({
-        itemSelector: '.module',
-        fitWidth: true,
-        scroll: false,
-        gutter: 15
-    });
-
-    setTimeout(() => {
-        refreshMasonryLayout();
-    }, 50);
 }
 
 function refreshMasonryLayout() {

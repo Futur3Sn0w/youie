@@ -1,8 +1,9 @@
 .toolbar {
     width: fit-content;
-    height: 40px;
+    height: fit-content;
+    max-height: 40px;
 
-    border-radius: 100px;
+    border-radius: 20px;
     background-color: var(--root-back-alpha);
     backdrop-filter: blur(15px);
     box-shadow:
@@ -13,15 +14,115 @@
     padding: 0 5px;
 
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 6px;
 
-    transition: .2s;
+    transition: .3s;
 
     position: fixed;
     top: 5px;
     right: 5px;
     z-index: 100;
+
+    &:has(.mainMenu.visible) {
+        max-height: 300px;
+        border-radius: 14px;
+    }
+
+    & .bar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 40px;
+
+        gap: 6px;
+
+        flex-shrink: 0;
+
+        & .toolbarBtn {
+            appearance: none;
+            border: none;
+
+            width: fit-content;
+            min-width: 30px;
+            height: 30px;
+
+            background-color: transparent;
+
+            transition: .15s;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-left: 0;
+
+            position: relative;
+            z-index: 200;
+            border-radius: 100px;
+
+            i {
+                pointer-events: none;
+                width: 30px;
+
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                transition: .15s;
+            }
+
+            &.mainMenuBtn {
+                width: 35px;
+                padding: 0;
+
+                &::after {
+                    content: unset;
+                }
+            }
+
+            &::after {
+                content: attr(title);
+                font-size: 12px;
+                margin-right: 5px;
+
+                transition: .2s;
+
+                &:empty {
+                    display: none;
+                }
+            }
+
+            &:hover {
+                background-color: var(--surface-button-highlight);
+            }
+        }
+
+        & .links {
+            display: flex;
+            gap: 20px;
+            padding: 0 15px;
+        }
+
+        & a {
+            text-decoration: none;
+            color: var(--root-text);
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+
+        & .sep {
+            width: 2px;
+            height: 15px;
+
+            border-radius: 100px;
+            background-color: var(--root-text);
+            opacity: .5;
+
+            position: relative;
+        }
+    }
 
     &.toolbar-left {
         left: 5px;
@@ -41,68 +142,125 @@
         transform: none;
     }
 
-    & .links {
+    & .mainMenu {
         display: flex;
-        gap: 20px;
-        padding: 0 15px;
-    }
-
-    & a {
-        text-decoration: none;
-        color: var(--root-text);
-
-        &:hover {
-            text-decoration: underline;
-        }
-    }
-
-    & .sep {
-        width: 2px;
-        height: 15px;
-
-        border-radius: 100px;
-        background-color: var(--root-text);
-        opacity: .5;
-
-        position: relative;
-    }
-
-    & .toolbarBtn {
-        appearance: none;
-        border: none;
-
-        width: fit-content;
-        min-width: 30px;
-        height: 30px;
-
-        background-color: transparent;
-
-        transition: .15s;
-
-        display: flex;
+        flex-direction: column;
         align-items: center;
-        justify-content: center;
+        gap: 1px;
+
+        width: 100%;
+        height: fit-content;
+        overflow: hidden;
+
+        margin-top: -5px;
+
+        transition: .3s;
+        transform: translateY(-10px);
+        transform-origin: top center;
+        opacity: 0;
+        pointer-events: none;
+
+        padding-bottom: 5px;
 
         position: relative;
-        z-index: 200;
-        border-radius: 100px;
+        z-index: 100000;
 
-        i {
-            pointer-events: none;
-            width: 20px;
-            transition: .15s;
+        &.visible {
+            opacity: 1;
+            transform: translateY(0px);
+            pointer-events: all;
         }
 
-        &::after {
-            content: attr(title);
-            font-size: 12px;
-            margin-right: 5px;
+        & .sep {
+            width: 100%;
+            height: fit-content;
+            border-bottom: 1px solid var(--module-border);
 
-            transition: .2s;
+            box-sizing: border-box;
+            padding-bottom: 2px;
+            margin-bottom: 5px;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
+            &:last-of-type {
+                margin-top: 5px;
+            }
+
+            &::before {
+                content: attr(title);
+
+                font-weight: bold;
+                font-size: 12px;
+                opacity: .5;
+                letter-spacing: 5px;
+                margin-top: 5px;
+                text-transform: uppercase;
+                width: 100%;
+                text-align: center;
+
+                pointer-events: none;
+            }
+
+            &::after {
+                /* content: ''; */
+                width: 80%;
+                height: 1px;
+                background-color: var(--root-text);
+                opacity: .25;
+            }
         }
 
-        &:hover {
-            background-color: var(--surface-button-highlight);
+        & .mainMenu-action {
+            width: 100%;
+            height: 30px;
+            flex-shrink: 0;
+
+            font-size: 14px;
+            font-weight: bold;
+
+            display: flex;
+            align-items: center;
+
+            box-sizing: border-box;
+            padding: 0;
+            padding-bottom: 1px;
+
+            color: var(--root-text);
+            background-color: transparent;
+            border-radius: 10px;
+
+            transition: .1s;
+            cursor: pointer;
+
+            position: relative;
+
+            &::after {
+                content: attr(title);
+            }
+
+            & i {
+                font-size: 13px;
+                width: 30px;
+                height: 30px;
+                margin-bottom: -1px;
+                display: flex;
+                text-align: center;
+                align-items: center;
+                justify-content: center;
+                transition: .1s;
+            }
+
+            &:hover {
+                background-color: white;
+                color: black;
+
+                & i {
+                    color: black;
+                }
+            }
         }
     }
 }
