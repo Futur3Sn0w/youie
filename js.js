@@ -1320,9 +1320,9 @@ async function fetchRssFeed(url) {
         throw new Error("Force fallback to test AllOrigins XML parsing");
     } catch (err) {
         // Fallback using AllOrigins proxy
-        const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
+        const proxyUrl = `/api/rss?url=${encodeURIComponent(url)}`;
         const fallbackResponse = await fetch(proxyUrl);
-        if (!fallbackResponse.ok) throw new Error('Failed to fetch RSS feed via AllOrigins');
+        if (!fallbackResponse.ok) throw new Error('Failed to fetch RSS feed');
         const text = await fallbackResponse.text();
         const parser = new DOMParser();
         const xmlDoc = parser.parseFromString(text, "application/xml");
