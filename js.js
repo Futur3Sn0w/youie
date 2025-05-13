@@ -141,6 +141,9 @@ $(document).ready(function () {
         $('.popup-confirm').on('click', function () {
             $('#importDataFile').click();
         });
+        $('.popup-cancel').on('click', function () {
+            $('.popup-close').click();
+        });
     });
 
     $('#importDataFile').on('change', function (event) {
@@ -173,6 +176,9 @@ $(document).ready(function () {
         $('.popup-confirm').on('click', function () {
             localStorage.clear();
             location.reload();
+        });
+        $('.popup-cancel').on('click', function () {
+            $('.popup-close').click();
         });
     });
 
