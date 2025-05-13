@@ -73,6 +73,18 @@
     }
 }
 
+#scrollBlocker {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 100vh;
+    z-index: 9999;
+    pointer-events: none;
+    /* So it doesn't block mouse clicks */
+    display: none;
+}
+
 body {
     margin: 0;
     padding: 0;

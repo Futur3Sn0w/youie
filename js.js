@@ -13,7 +13,7 @@ $(document).ready(function () {
         $('.mainMenu').toggleClass('visible');
     });
 
-    $(document).on('click', '.mainMenu-action', function () {
+    $(document).on('click', '.mainMenu-action:not(.settingsBtn)', function () {
         const action = $(this).data('action');
         const $modules = $('.module');
 
@@ -50,6 +50,7 @@ $(document).ready(function () {
                 data.modules = [...customModules, ...data.modules];
                 $('.settingsBtn').on('click', function () {
                     openSettingsWindow(data.modules); // Pass the modules data
+                    $('.mainMenu').removeClass('visible');
                 });
 
                 loadModules(); // Load modules on initial page load
@@ -60,7 +61,7 @@ $(document).ready(function () {
                 });
 
             } else {
-                console.error(`Error: Could not load modules.  Invalid data.`);
+                console.error(`Error: Could not load modules. Invalid data.`);
                 $('.container').html('<p class="error">Could not load modules.</p>');
             }
             markOverflowingElements();
@@ -165,7 +166,8 @@ $(document).ready(function () {
             $(this).attr('hoverTxt', 'Minimize').addClass('fa-minimize').removeClass('fa-maximize');
         }
         let fallbackTimer = setTimeout(() => {
-            forceRebuildMasonry();
+            // forceRebuildMasonry();
+            softRebuildMasonry();
             markOverflowingElements();
             saveWidgetStates();
         }, 300);
@@ -173,7 +175,8 @@ $(document).ready(function () {
         $module.one('transitionend', function () {
             clearTimeout(fallbackTimer);
             requestAnimationFrame(() => {
-                forceRebuildMasonry();
+                // forceRebuildMasonry();
+                softRebuildMasonry();
                 saveWidgetStates();
             });
         });
@@ -226,6 +229,7 @@ $(document).ready(function () {
         if (selectedSource === 'upload') {
             $('#fileInput').show();
             $('#refreshBingBtn').hide();
+            $('#urlInputWrapper').hide();
             const uploadedImage = localStorage.getItem('uploadedImage');
             if (uploadedImage) {
                 $imageDisplay.attr('src', uploadedImage);
@@ -238,10 +242,21 @@ $(document).ready(function () {
         } else if (selectedSource === 'bing') {
             $('#fileInput').hide();
             $('#refreshBingBtn').show();
+            $('#urlInputWrapper').hide();
             const imageUrl = 'https://picsum.photos/1920/1080?random=' + Date.now();
             localStorage.setItem('backgroundImage', imageUrl);
             $imageDisplay.attr('src', imageUrl);
             $backImg.attr('src', imageUrl);
+        } else if (selectedSource === 'url') {
+            $('#fileInput').hide();
+            $('#refreshBingBtn').hide();
+            $('#urlInputWrapper').show();
+            const urlImage = localStorage.getItem('urlImage');
+            if (urlImage) {
+                $imageDisplay.attr('src', urlImage);
+                $backImg.attr('src', urlImage);
+                $('#wallpaperUrlInput').val(urlImage);
+            }
         }
     });
 
@@ -331,6 +346,7 @@ $(document).ready(function () {
             $('input[name="wallpaperSource"][value="upload"]').prop('checked', true);
             $('#fileInput').show();
             $('#refreshBingBtn').hide();
+            $('#urlInputWrapper').hide();
             const image = uploadedImage || defaultImagePath;
             $imageDisplay.attr('src', image);
             $backImg.attr('src', image);
@@ -338,9 +354,44 @@ $(document).ready(function () {
             $('input[name="wallpaperSource"][value="bing"]').prop('checked', true);
             $('#fileInput').hide();
             $('#refreshBingBtn').show();
+            $('#urlInputWrapper').hide();
             await fetchBingWallpaper(false);
+        } else if (savedSource === 'url') {
+            $('input[name="wallpaperSource"][value="url"]').prop('checked', true);
+            $('#fileInput').hide();
+            $('#refreshBingBtn').hide();
+            $('#urlInputWrapper').show();
+            const urlImage = localStorage.getItem('urlImage');
+            if (urlImage) {
+                $imageDisplay.attr('src', urlImage);
+                $backImg.attr('src', urlImage);
+                $('#wallpaperUrlInput').val(urlImage);
+            }
         }
     }
+
+    // Handler for the wallpaper URL input
+    $('#wallpaperUrlInput').on('input', function () {
+        const imageUrl = $(this).val().trim();
+        const $input = $(this);
+
+        if (!imageUrl) {
+            $input.removeClass('valid invalid');
+            return;
+        }
+
+        const img = new Image();
+        img.onload = function () {
+            $input.removeClass('invalid').addClass('valid');
+            localStorage.setItem('urlImage', imageUrl);
+            $('#imageDisplay').attr('src', imageUrl);
+            $('.backImg').attr('src', imageUrl);
+        };
+        img.onerror = function () {
+            $input.removeClass('valid').addClass('invalid');
+        };
+        img.src = imageUrl;
+    });
 
     loadInitialImage();
 });
@@ -457,17 +508,18 @@ function createHeaderButtons(module) {
     if (module.externalLink) {
         $menu.append('<div class="module-action" data-action="view"><i class="fa-solid fa-arrow-up-right-from-square"></i> View More</div>');
     }
+    $menu.append('<div class="module-action" data-action="info"><i class="fa-solid fa-circle-info"></i> Module Info</div>');
     try {
         const states = JSON.parse(localStorage.getItem('moduleStates') || '[]');
         const firstModuleId = states.length > 0 ? states[0].id : null;
         if (module.id !== firstModuleId) {
+            $menu.append('<div class="sep mt-sep"></div>');
             $menu.append('<div class="module-action" data-action="move-top"><i class="fa-solid fa-arrow-up"></i> Move to Top</div>');
         }
     } catch (e) {
         console.error('Failed to check moduleStates:', e);
-        $menu.append('<div class="module-action" data-action="move-top"><i class="fa-solid fa-arrow-up"></i> Move to Top</div>');
     }
-    $menu.append('<div class="module-action" data-action="info"><i class="fa-solid fa-circle-info"></i> Module Info</div>');
+    $menu.append('<div class="sep"></div>');
     $menu.append('<div class="module-action" data-action="delete"><i class="fa-solid fa-eye-slash"></i> Remove Module</div>');
 
     // Add handlers once
@@ -605,6 +657,7 @@ function renderModule(module) {
     }
 
     $moduleDiv.append($moduleContent);
+
     return $moduleDiv;
 }
 
@@ -635,8 +688,7 @@ function markOverflowingElements() {
 }
 
 function applyToolbarPosition(position) {
-    $('.toolbar').removeClass('toolbar-left toolbar-center toolbar-right')
-        .addClass('toolbar-' + position);
+    $('.toolbar').attr('tpos', position);
 }
 
 function saveWidgetStates() {
@@ -717,11 +769,22 @@ function forceRebuildMasonry(animate) {
 function refreshMasonryLayout() {
     const $container = $('.container');
     if ($container.hasClass('ui-sortable')) {
-        $container.sortable('refresh');
+        $container.sortable('refreshPositions');
     }
 
     if ($container.data('masonry')) {
         $container.masonry('reloadItems').masonry('layout');
+    }
+}
+
+function softRebuildMasonry() {
+    const $container = $('.container');
+    if ($container.hasClass('ui-sortable')) {
+        $container.sortable('refresh');
+    }
+
+    if ($container.data('masonry')) {
+        $container.masonry('layout');
     }
 }
 
@@ -788,6 +851,7 @@ function loadModules() {
                                 `);
                         $('.container').append($skeleton);
                         const $moduleDiv = renderModule(module);
+
                         $(`#skeleton-${module.id}`).replaceWith($moduleDiv);
                     }
                 });
@@ -832,12 +896,14 @@ function loadModules() {
                         .then(rssData => {
                             const $rssModule = renderRssModule(module, rssData.items, rssData.feedLink);
                             $(`#skeleton-${module.id}`).replaceWith($rssModule);
+                            $rssModule.addClass('loaded');
                             forceRebuildMasonry();
                             restoreWidgetStates();
                         })
                         .catch(err => {
                             const $errorModule = $('<div>').addClass('module').css('width', 350)
                                 .html(`<p>Error loading RSS: ${err.message}</p>`);
+                            $errorModule.addClass('loaded');
                             $('.container').append($errorModule);
                         });
                 });
@@ -855,6 +921,8 @@ function loadModules() {
                 $targetContainer.sortable({
                     tolerance: 'pointer',
                     handle: '.header',
+                    cursor: 'move',
+                    containment: 'parent',
                     update: function (event, ui) {
                         // Save the new order and states after sorting
                         const $modules = $('.container .module');
@@ -924,6 +992,10 @@ function loadModules() {
 
                 // After all modules have been added and Masonry has been initialized...
                 restoreWidgetStates();
+
+                setTimeout(() => {
+                    $('.container').addClass('loaded');
+                }, 100);
             } else {
                 console.error(`Error: JSON data from ${jsonUrl} is missing the "modules" array.`);
                 $targetContainer.html('<p class="error">Could not load modules: Invalid data format.</p>');
@@ -1395,5 +1467,6 @@ function renderRssModule(module, items, feedLink = '') {
 
     $content.append($list, $detail);
     $moduleDiv.append($content);
+
     return $moduleDiv;
 }

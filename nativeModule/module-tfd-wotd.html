@@ -4,11 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/globals.css">
 
     <style>
         .wotd {
             width: 350px;
             position: relative;
+            box-sizing: border-box;
             padding: 4px;
             margin-bottom: auto;
             min-height: 200px;
@@ -20,12 +22,20 @@
                 display: none !important;
                 width: 0 !important;
                 height: 0 !important;
+                opacity: 0 !important;
+                visibility: collapse !important;
+            }
+
+            .WordOfTheDay {
+                width: 100%;
+                display: flex;
             }
 
             tbody {
                 display: flex;
                 flex-direction: column;
                 gap: 10px;
+                width: 100%;
 
                 & tr:first-of-type {
                     width: 100%;
@@ -69,7 +79,13 @@
                     &:nth-of-type(3) {
                         .WoDSyn {
                             display: flex;
+                            flex-wrap: wrap;
+                            align-items: center;
+                            justify-content: center;
                             color: transparent;
+                            gap: 5px 0;
+
+                            width: 100%;
 
                             & a {
                                 padding: 5px 10px;
@@ -77,6 +93,9 @@
                                 background-color: var(--surface-button);
                                 box-shadow: var(--bxsh-border);
                                 font-size: 13px;
+
+                                width: max-content;
+                                flex-shrink: 0;
 
                                 display: flex;
                                 align-items: center;

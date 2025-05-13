@@ -2,11 +2,27 @@ body {
     margin: 0;
     padding: 0;
     background-color: var(--root-back);
-    color: var(--root-text);
     overflow-x: hidden;
 
     width: 100vw;
     height: 100vh;
+
+    &:not(#module-weather) {
+        color: var(--root-text);
+    }
+
+    & .ui-resizable-s {
+        height: 10px;
+        bottom: 0;
+        cursor: s-resize;
+        position: absolute;
+        width: 100%;
+        z-index: 90;
+    }
+
+    & .module.ui-resizable {
+        position: relative;
+    }
 
     &:has(.settingsWindow.visible),
     &:has(.global-popup.visible) {
@@ -43,9 +59,6 @@ body {
     &:has(#autocompleteResults:not(:empty)) {
         .scroller {
             overflow: hidden;
-            box-shadow:
-                0 -10px 20px #00000022,
-                0 -90px 90px var(--root-back-alpha-b);
 
             &::after {
                 opacity: 1;
@@ -192,7 +205,7 @@ body>.backImg {
         width: 100%;
         height: 100%;
 
-        background: linear-gradient(to bottom, var(--root-back), var(--root-back));
+        background: linear-gradient(to bottom, var(--root-back-alpha), var(--root-back));
 
         position: absolute;
         top: 0;
@@ -201,6 +214,16 @@ body>.backImg {
         transition: .3s;
         opacity: 0;
     }
+}
+
+.sortable-placeholder {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px dashed var(--text-color, #aaa);
+    margin-bottom: 15px;
+    box-sizing: border-box;
+    opacity: 0.6;
+    visibility: visible;
+    /* force visible */
 }
 
 .container {
@@ -230,6 +253,15 @@ body>.backImg {
     padding: 30px 30px 40px 30px;
 
     transition: .2s;
+
+    &:not(.loaded) {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+
+    &:has(.module.resizing) .module:not(.resizing) {
+        pointer-events: none !important;
+    }
 
     &::after {
         content: '';

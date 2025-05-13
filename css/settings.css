@@ -383,7 +383,7 @@
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    gap: 5px;
+    gap: 10px;
 
     overflow: hidden;
 
@@ -443,6 +443,38 @@
             background-color: white;
             color: black;
             border-color: transparent;
+        }
+    }
+
+    #wallpaperUrlInput {
+        appearance: none;
+        padding: 5px 10px;
+        border-radius: 100px;
+        width: 500px;
+        outline: none;
+        border: 2px solid transparent;
+        box-shadow: var(--bxsh-border);
+        color: var(--root-text);
+        /* margin-left: auto; */
+        transition: .15s;
+
+        background-color: var(--surface-button);
+
+        &:hover {
+            background-color: white;
+            color: black;
+            border-color: transparent;
+        }
+
+
+        &.valid {
+            border-color: #00e676;
+            /* Bright green */
+        }
+
+        &.invalid {
+            border-color: #ff5252;
+            /* Bright red */
         }
     }
 

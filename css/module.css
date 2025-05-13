@@ -10,19 +10,16 @@
     box-shadow: var(--bxsh-border);
 
     box-sizing: border-box;
+    margin-bottom: 15px;
 
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
 
-    transition: height .2s,
-        box-shadow .2s,
-        background-color .2s !important;
+    transition: .2s;
 
     width: 350px;
     height: 300px;
-
-    margin-bottom: 13px;
 
     &.skeleton-module {
         background: linear-gradient(to bottom, transparent, var(--root-back));
@@ -126,10 +123,15 @@
     }
 
     &.dragging,
-    &:has(.dragging) {
+    &:has(.dragging),
+    &.resizing {
         transition: 0s !important;
-        backdrop-filter: blur(20px);
         box-shadow: none !important;
+
+        & .module-content,
+        & .header {
+            pointer-events: none !important;
+        }
     }
 
     &.focus {
@@ -137,6 +139,7 @@
             var(--bxsh-border),
             0 30px 30px #00000022;
         background-color: var(--module-back-focus) !important;
+        z-index: 1000000;
 
         &:not(.minimized) .module-content {
             opacity: 1 !important;
@@ -295,6 +298,21 @@
                     pointer-events: all;
                     padding: 3px;
                     max-height: 300px;
+                }
+
+                &:has(.module-action[data-action="move-top"]) .mt-sep {
+                    display: flex !important;
+                }
+
+                & .sep {
+                    width: 90%;
+                    height: 1px;
+                    background-color: var(--module-border);
+                    margin: 3px auto;
+
+                    &.mt-sep {
+                        display: none;
+                    }
                 }
 
                 & .module-action {

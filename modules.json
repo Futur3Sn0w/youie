@@ -25,7 +25,8 @@
             "mode": "external",
             "id": "module-weather",
             "icon": "fas fa-cloud-sun",
-            "height": "258px",
+            "height": "260px",
+            "resize": false,
             "externalLink": "https://www.wunderground.com/",
             "contentType": "iframe"
         },

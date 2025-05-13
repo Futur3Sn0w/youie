@@ -124,19 +124,19 @@
         }
     }
 
-    &.toolbar-left {
+    &[tpos=left] {
         left: 5px;
         right: auto;
         transform: none;
     }
 
-    &.toolbar-center {
+    &[tpos=center] {
         left: 50%;
         right: auto;
         transform: translateX(-50%);
     }
 
-    &.toolbar-right {
+    &[tpos=right] {
         right: 5px;
         left: auto;
         transform: none;
