@@ -110,6 +110,65 @@ $(document).ready(function () {
         $('#globalPopup').removeClass('visible');
     });
 
+    // EXPORT
+    $(document).on('click', '#exportDataBtn', function () {
+        const data = {};
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key !== 'backgroundImage') {
+                data[key] = localStorage.getItem(key);
+            }
+        }
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'youie_data_backup.json';
+        a.click();
+        URL.revokeObjectURL(url);
+    });
+
+    // IMPORT
+    $(document).on('click', '#importDataBtn', function () {
+        showGlobalPopup("Import Settings", `
+        <p>This will completely override your current settings and reload the site. Continue?</p>
+        <button class="popup-confirm">Yes, Import</button>
+    `);
+        $('.popup-confirm').on('click', function () {
+            $('#importDataFile').click();
+        });
+    });
+
+    $('#importDataFile').on('change', function (event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            try {
+                const importedData = JSON.parse(e.target.result);
+                for (const key in importedData) {
+                    localStorage.setItem(key, importedData[key]);
+                }
+                location.reload();
+            } catch (err) {
+                alert("Invalid file format. Please try again.");
+            }
+        };
+        reader.readAsText(file);
+    });
+
+    // RESET
+    $(document).on('click', '#resetDataBtn', function () {
+        showGlobalPopup("Reset All Data", `
+        <p>This will delete all saved data and reset the app. Continue?</p>
+        <button class="popup-confirm">Yes, Reset</button>
+    `);
+        $('.popup-confirm').on('click', function () {
+            localStorage.clear();
+            location.reload();
+        });
+    });
+
     var savedPosition = localStorage.getItem("toolbarPosition");
     if (savedPosition) {
         applyToolbarPosition(savedPosition);

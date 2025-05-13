@@ -601,6 +601,49 @@
                 padding-bottom: 2px;
                 border-bottom: 1px solid var(--module-border);
             }
+
+            &[for="Your Data"] {
+                flex-direction: column;
+                gap: 0;
+
+                margin-top: 10px;
+
+                & p {
+                    margin: 0;
+                    padding: 0;
+
+                    font-size: 14px;
+
+                    &:last-of-type {
+                        margin-bottom: 10px;
+                    }
+                }
+
+                & .dataButtons {
+                    display: flex;
+                    gap: 5px;
+
+
+
+                    & .dataBtn {
+                        padding: 5px 10px;
+                        border-radius: 100px;
+                        box-shadow: var(--bxsh-border);
+                        color: var(--root-text);
+                        font-size: 15px;
+                        /* margin-left: auto; */
+                        transition: .15s;
+
+                        background-color: var(--surface-button);
+
+                        &:hover {
+                            background-color: white;
+                            color: black;
+                            border-color: transparent;
+                        }
+                    }
+                }
+            }
         }
 
         .aboutCard {

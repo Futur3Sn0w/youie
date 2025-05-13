@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="v0.5.0-3">
+    <meta name="version" content="v0.5.0-4">
     <title>Youie</title>
 
     <script src="resc/ext/jquery-3.7.1.js"></script>
@@ -115,6 +115,16 @@
                     <p class="aboutCard"><strong>Platform</strong> <span id="aboutPlatform">Loading...</span></p>
                     <p class="aboutCard"><strong>Memory</strong> <span id="aboutMemory">Loading...</span></p>
                     <p class="aboutCard"><strong>Viewport</strong> <span id="aboutViewport">Loading...</span></p>
+                </div>
+                <div class="aboutGroup" for="Your Data">
+                    <p>Youie allows you to import, export, or completely reset and remove your data.</p>
+                    <p>Choose from an option below to get started.</p>
+                    <div class="dataButtons">
+                        <button class="dataBtn" id="exportDataBtn">Export Data</button>
+                        <button class="dataBtn" id="importDataBtn">Import Data</button>
+                        <button class="dataBtn" id="resetDataBtn">Reset Data</button>
+                        <input type="file" id="importDataFile" accept="application/json" style="display:none;">
+                    </div>
                 </div>
             </div>
         </div>
