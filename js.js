@@ -131,8 +131,12 @@ $(document).ready(function () {
     // IMPORT
     $(document).on('click', '#importDataBtn', function () {
         showGlobalPopup("Import Settings", `
-        <p>This will completely override your current settings and reload the site. Continue?</p>
+        <p>Select a JSON with your saved Youie settings to import them.</p>
+        <p><b>Note:</b> This will completely clear your existing Youie data on this domain. This does NOT apply to any other Youie domain.</p>
+        <p></p>
+        <p>Are you sure you want import new settings?</p>
         <button class="popup-confirm">Yes, Import</button>
+        <button class="popup-cancel">No, Cancel Import</button>
     `);
         $('.popup-confirm').on('click', function () {
             $('#importDataFile').click();
@@ -160,8 +164,11 @@ $(document).ready(function () {
     // RESET
     $(document).on('click', '#resetDataBtn', function () {
         showGlobalPopup("Reset All Data", `
-        <p>This will delete all saved data and reset the app. Continue?</p>
+        <p><b>Note:</b> This will completely clear your existing Youie data on this domain. This does NOT apply to any other Youie domain.</p>
+        <p></p>
+        <p>Are you sure you want to reset Youie?</p>
         <button class="popup-confirm">Yes, Reset</button>
+        <button class="popup-cancel">No, Do Not Reset</button>
     `);
         $('.popup-confirm').on('click', function () {
             localStorage.clear();

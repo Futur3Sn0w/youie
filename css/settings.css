@@ -565,7 +565,7 @@
 
         padding: 10px;
         width: 100%;
-        height: fit-content;
+        height: calc(100% - 60px);
 
         display: flex;
         flex-direction: column;
@@ -606,13 +606,13 @@
                 flex-direction: column;
                 gap: 0;
 
-                margin-top: 10px;
+                margin-top: auto;
 
                 & p {
                     margin: 0;
                     padding: 0;
 
-                    font-size: 14px;
+                    font-size: 13px;
 
                     &:last-of-type {
                         margin-bottom: 10px;
@@ -623,14 +623,12 @@
                     display: flex;
                     gap: 5px;
 
-
-
                     & .dataBtn {
-                        padding: 5px 10px;
+                        padding: 6px 12px;
                         border-radius: 100px;
                         box-shadow: var(--bxsh-border);
                         color: var(--root-text);
-                        font-size: 15px;
+                        font-size: 14px;
                         /* margin-left: auto; */
                         transition: .15s;
 
@@ -640,6 +638,12 @@
                             background-color: white;
                             color: black;
                             border-color: transparent;
+                            font-weight: bold;
+                        }
+
+                        &#resetDataBtn:hover {
+                            background-color: var(--youie-red);
+                            color: white;
                         }
                     }
                 }

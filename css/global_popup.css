@@ -25,6 +25,33 @@
         }
     }
 
+    button:not(.popup-close) {
+        appearance: none;
+        padding: 5px 10px;
+        border-radius: 100px;
+        box-shadow: var(--bxsh-border);
+        color: var(--root-text);
+        margin-left: auto;
+        transition: .15s;
+
+        background-color: var(--surface-button);
+
+        &[disabled] {
+            opacity: .5;
+            pointer-events: none;
+        }
+
+        &:hover {
+            background-color: white;
+            color: black;
+            border-color: transparent;
+        }
+
+        &.popup-cancel {
+            margin-left: auto;
+        }
+    }
+
     & .popup-inner {
         background: var(--root-back);
         color: var(--root-text);
@@ -56,9 +83,7 @@
             margin-top: 0;
         }
     }
-}
 
-.global-popup {
     .module-info-inner {
         .module-icon {
             opacity: .1;
@@ -110,6 +135,7 @@
                 width: max-content;
                 appearance: none;
                 padding: 6px 11px;
+                padding-right: 30px;
                 border-radius: 100px;
                 box-shadow: var(--bxsh-border);
                 border: none;
@@ -134,8 +160,13 @@
             }
 
             &::after {
-                content: 'pp';
+                content: '▼';
                 order: 2;
+                position: relative;
+                z-index: 1000;
+                font-size: 14px;
+                transform: translateX(-20px) translateY(4.5px) scaleY(80%);
+                pointer-events: none;
             }
 
             & button {
@@ -172,27 +203,5 @@
             box-shadow: var(--bxsh-border);
         }
 
-        button {
-            appearance: none;
-            padding: 5px 10px;
-            border-radius: 100px;
-            box-shadow: var(--bxsh-border);
-            color: var(--root-text);
-            margin-left: auto;
-            transition: .15s;
-
-            background-color: var(--surface-button);
-
-            &[disabled] {
-                opacity: .5;
-                pointer-events: none;
-            }
-
-            &:hover {
-                background-color: white;
-                color: black;
-                border-color: transparent;
-            }
-        }
     }
 }
