@@ -186,7 +186,7 @@
 
             const qotdUrl = "https://www.thefreedictionary.com/_/WoD/rss.aspx?type=quote";
 
-            const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(qotdUrl)}`;
+            const proxyUrl = `/api/rss?url=${encodeURIComponent(qotdUrl)}`;
             $("#qotd-module").addClass("loading");
             setTimeout(() => {
                 fetch(proxyUrl)
