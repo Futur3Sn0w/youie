@@ -6,8 +6,14 @@
     border: none !important;
     box-shadow: none !important;
 
+    &.focus {
+        background-color: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
+
     .modHeadBtns {
-        display: none;
+        display: none !important;
     }
 
     .module-content {
@@ -81,7 +87,7 @@
             position: absolute;
             right: 0;
 
-            width: calc(56px);
+            width: calc(50%);
             height: calc(100%);
 
             display: flex;
