@@ -1205,12 +1205,13 @@ function updatePageBar() {
 
     // if ($pages.length <= 1) return;
 
-    $pages.forEach(page => function () {
-        const pageId = page.attr('id');
+    $pages.each(function () {
+        const pageId = $(this).attr('id');
         const label = $(this).find('.title').text().trim() || $(this).attr('id')?.replace('page-', '') || 'Untitled';
 
         const $btn = $('<button>')
             .text(label)
+            .attr('for', pageId)
             .on('click', function () {
                 $('.scroller').addClass('tempHide')
                 setTimeout(() => {

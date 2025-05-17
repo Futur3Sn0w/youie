@@ -171,7 +171,6 @@
                 border-radius: 100px;
                 box-shadow: var(--bxsh-border);
                 border: none;
-                color: var(--root-text);
                 transition: .15s;
 
                 position: relative;
