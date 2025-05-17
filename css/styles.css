@@ -283,8 +283,12 @@ body>.backImg {
 
 .page-bar {
     display: flex;
-    position: absolute;
+    position: fixed;
     bottom: 10px;
+
+    width: max-content;
+    height: max-content;
+    flex-shrink: 0;
 
     background: linear-gradient(to bottom, var(--root-back-alpha), var(--root-back));
     box-shadow: var(--bxsh-border);
