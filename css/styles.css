@@ -260,6 +260,7 @@ body>.backImg {
 
     transition: .2s;
 
+    &:not(.visible),
     &:not(.loaded) {
         opacity: 0;
         transform: translateY(50px);

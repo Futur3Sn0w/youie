@@ -1215,8 +1215,8 @@ function updatePageBar() {
             .on('click', function () {
                 $('.scroller').addClass('tempHide')
                 setTimeout(() => {
-                    $('.rss-page').hide();
-                    $(`#${pageId}`).show();
+                    $('.rss-page').removeClass('visible');
+                    $(`#${pageId}`).addClass('visible');
                     $bar.children('button').removeClass('selected');
                     $(this).addClass('selected')
                     $('.scroller').removeClass('tempHide');
@@ -1232,8 +1232,8 @@ function updatePageBar() {
         .on('click', function () {
             $('.scroller').addClass('tempHide')
             setTimeout(() => {
-                $('.rss-page').hide();
-                $(`.container`).show();
+                $('.rss-page').removeClass('visible');
+                $(`.container`).addClass('visible');
                 $bar.children('button').removeClass('selected');
                 $(this).addClass('selected')
                 $('.scroller').removeClass('tempHide');
