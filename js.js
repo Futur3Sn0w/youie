@@ -1473,16 +1473,11 @@ function renderRssModule(module, items, feedLink = '') {
     const $detail = $(`
       <div class="rss-detail">
           <div class="rss-detail-header">
-              <button class="rss-back-btn">← Back</button>
               <a class="rss-full-link" href="#" target="_blank">Read Full Article</a>
           </div>
           <div class="rss-detail-content"></div>
       </div>
   `);
-
-    $detail.find('.rss-back-btn').on('click', function () {
-        $detail.removeClass('visible');
-    });
 
     items.forEach(item => {
         const $li = $('<li>').text(item.title).attr('title', item.title).on('click', function () {
@@ -1495,6 +1490,9 @@ function renderRssModule(module, items, feedLink = '') {
                 })
                 : '';
             const author = item.author || '';
+
+            $('li').removeClass('selected');
+            $li.addClass('selected');
 
             $detail.find('.rss-detail-content').html(`
                 <div class="rss-meta">

@@ -351,11 +351,20 @@ body>.backImg {
 
     border-radius: 100px;
 
+    transition: .3s;
+
     padding: 5px;
 
     &>button {
         padding: 5px 10px;
         border-radius: 100px;
+    }
+
+    &:not(:has(button)) {
+        opacity: 0;
+        pointer-events: none;
+        transform: scale(.9) translateY(30px);
+        filter: blur(10px);
     }
 }
 
