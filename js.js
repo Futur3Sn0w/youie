@@ -1474,7 +1474,7 @@ async function fetchRssFeed(url) {
 
 function renderRssModule(module, items, feedLink = '') {
     const $rssPage = $('<div class="rss-page">').attr('id', `page-${module.id}`);
-    const $moduleDiv = $('<div>').addClass('module').addClass('rss-module').attr('id', module.id).css('height', 350);
+    const $moduleDiv = $('<div>').addClass('module').addClass('rss-module').attr('id', module.id);
     const $header = $('<div>').addClass('header');
     if (feedLink) {
         module.externalLink = feedLink;
