@@ -1205,8 +1205,8 @@ function updatePageBar() {
 
     // if ($pages.length <= 1) return;
 
-    $pages.each(function () {
-        const pageId = $(this).attr('id');
+    $pages.each(page, function () {
+        const pageId = page.attr('id');
         const label = $(this).find('.title').text().trim() || $(this).attr('id')?.replace('page-', '') || 'Untitled';
 
         const $btn = $('<button>')
