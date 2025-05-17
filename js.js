@@ -966,9 +966,11 @@ function loadModules() {
 
                     fetchRssFeed(module.feedUrl)
                         .then(rssData => {
-                            const $rssModule = renderRssModule(module, rssData.items, rssData.feedLink);
-                            $(`#skeleton-${module.id}`).replaceWith($rssModule);
-                            $rssModule.addClass('loaded');
+                            const $rssPage = renderRssModule(module, rssData.items, rssData.feedLink);
+                            $(`#skeleton-${module.id}`).remove();
+                            $('.scroller').append($rssPage);
+                            updatePageBar();
+                            // $rssModule.addClass('loaded');
                             forceRebuildMasonry();
                             restoreWidgetStates();
                         })
