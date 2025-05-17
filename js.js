@@ -1315,7 +1315,7 @@ function createRssInputForm() {
         $feedSelect.append(`<option value="${url}">${label}</option>`);
     });
 
-    const $starterBtn = $('<button disabled>Add to Modules</button>');
+    const $starterBtn = $('<button disabled>Add Page</button>');
 
     $feedSelect.on('change', function () {
         $starterBtn.prop('disabled', !$(this).val());

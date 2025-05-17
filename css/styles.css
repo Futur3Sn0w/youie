@@ -334,7 +334,7 @@ body>.backImg {
 .page-bar {
     display: flex;
     gap: 5px;
-    position: absolute;
+    position: fixed;
     left: 50%;
     transform: translateX(-50%);
     bottom: 10px;
@@ -344,7 +344,7 @@ body>.backImg {
     height: max-content;
     flex-shrink: 0;
 
-    background: linear-gradient(to bottom, var(--root-back-alpha), var(--root-back));
+    background: var(--root-back);
     box-shadow:
         var(--bxsh-border),
         0 20px 20px #00000022;
@@ -357,10 +357,11 @@ body>.backImg {
 
     &>button {
         appearance: none;
-        padding: 5px 10px;
+        padding: 7px 12px;
         border-radius: 100px;
         box-shadow: var(--bxsh-border);
         color: var(--root-text);
+        font-size: 14px;
         margin-left: auto;
         transition: .15s;
 

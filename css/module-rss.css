@@ -13,7 +13,11 @@
     }
 
     .modHeadBtns {
-        display: none !important;
+
+        .header-icon:first-of-type,
+        .header-icon:nth-of-type(2) {
+            display: none !important;
+        }
     }
 
     .module-content {
