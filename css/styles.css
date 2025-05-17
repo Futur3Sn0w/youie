@@ -281,6 +281,17 @@ body>.backImg {
     }
 }
 
+.page-bar {
+    display: flex;
+    position: absolute;
+    bottom: 10px;
+
+    background: linear-gradient(to bottom, var(--root-back-alpha), var(--root-back));
+    box-shadow: var(--bxsh-border);
+
+    padding: 5px;
+}
+
 #autocompleteResults {
     position: absolute;
     top: 0;

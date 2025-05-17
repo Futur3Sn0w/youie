@@ -1262,7 +1262,7 @@ function createRssInputForm() {
             customModules.push(module);
             localStorage.setItem('customModules', JSON.stringify(customModules));
 
-            const $module = renderRssModule(module, rssData.items);
+            // const $module = renderRssModule(module, rssData.items);
             // $('.container').prepend($module);
             const $rssPage = renderRssModule(module, rssData.items, rssData.feedLink);
             $('.scroller').append($rssPage);
