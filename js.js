@@ -1205,22 +1205,22 @@ function updatePageBar() {
 
     // if ($pages.length <= 1) return;
 
-    $pages.toArray().forEach(page => {
-        const $page = $(page);
-        const pageId = page.attr('id');
-        const label = page.find('.title').text().trim() || pageId?.replace('page-', '') || 'Untitled';
+    $pages.each(function () {
+        console.log(this);
+        const pageId = $(this).attr('id');
+        const label = $(this).find('.title').text().trim() || $(this).attr('id')?.replace('page-', '') || 'Untitled';
 
         const $btn = $('<button>')
             .text(label)
             .attr('for', pageId)
             .on('click', function () {
-                $('.scroller').addClass('tempHide');
+                $('.scroller').addClass('tempHide')
                 setTimeout(() => {
-                    $('.container').removeClass('visible');
+                    $(`.container`).removeClass('visible');
                     $('.rss-page').removeClass('visible');
                     $(`#${pageId}`).addClass('visible');
                     $bar.children('button').removeClass('selected');
-                    $(this).addClass('selected');
+                    $(this).addClass('selected')
                     $('.scroller').removeClass('tempHide');
                 }, 200);
             });
