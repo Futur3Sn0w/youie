@@ -177,16 +177,9 @@
                 display: flex;
                 order: 1;
 
-                background-color: var(--surface-button);
-
                 &[disabled] {
                     opacity: .5;
                     pointer-events: none;
-                }
-
-                &:hover {
-                    background-color: white;
-                    color: black;
                 }
             }
 

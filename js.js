@@ -1359,7 +1359,7 @@ function createRssInputForm() {
             setTimeout(() => {
                 updatePageBar(); // Function to refresh the button bar
             }, 100);
-            $('#globalPopup').removeClass('visible');
+            alert(`"${title}" feed added!`)
         } catch (e) {
             console.error('Error loading starter RSS feed:', e);
             alert('Failed to load starter RSS feed.');
