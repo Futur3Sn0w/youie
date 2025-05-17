@@ -304,7 +304,7 @@ body>.backImg {
     border-radius: 35px 35px 0 0;
 
     width: 100vw;
-    height: 100vh;
+    height: calc(70vh - 70px);
 
     margin: auto;
     margin-bottom: 0;

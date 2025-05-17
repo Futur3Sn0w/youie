@@ -934,12 +934,12 @@ function loadModules() {
                         .then(rssData => {
                             const $rssPage = renderRssModule(module, rssData.items, rssData.feedLink);
                             $('.scroller').append($rssPage);
-                            setTimeout(() => {
-                                updatePageBar();
-                            }, 100);
                             // $rssModule.addClass('loaded');
                             forceRebuildMasonry();
                             restoreWidgetStates();
+                            setTimeout(() => {
+                                updatePageBar();
+                            }, 100);
                         })
                         .catch(err => {
                             const $errorModule = $('<div>').addClass('module').css('width', 350)
@@ -999,11 +999,6 @@ function loadModules() {
 
                 // After all modules have been added and Masonry has been initialized...
                 restoreWidgetStates();
-
-                $('.container').show(); // Always visible
-                if ($('.rss-page').length === 1) {
-                    $('.rss-page').show(); // Show the only RSS page by default
-                }
 
                 setTimeout(() => {
                     $('.container').addClass('loaded');
@@ -1268,8 +1263,10 @@ function createRssInputForm() {
             // $('.container').prepend($module);
             const $rssPage = renderRssModule(module, rssData.items, rssData.feedLink);
             $('.scroller').append($rssPage);
-            updatePageBar(); // Function to refresh the button bar
             forceRebuildMasonry();
+            setTimeout(() => {
+                updatePageBar(); // Function to refresh the button bar
+            }, 100);
             $('#globalPopup').removeClass('visible');
         } catch (e) {
             console.error('Error loading RSS:', e);
