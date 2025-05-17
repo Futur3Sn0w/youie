@@ -338,7 +338,7 @@ body>.backImg {
     left: 50%;
     transform: translateX(-50%);
     bottom: 10px;
-    z-index: 2000;
+    z-index: 49;
 
     width: max-content;
     height: max-content;
@@ -356,14 +356,32 @@ body>.backImg {
     padding: 5px;
 
     &>button {
+        appearance: none;
         padding: 5px 10px;
         border-radius: 100px;
+        box-shadow: var(--bxsh-border);
+        color: var(--root-text);
+        margin-left: auto;
+        transition: .15s;
+
+        background-color: var(--surface-button);
+
+        &:hover,
+        &.selected {
+            background-color: white;
+            color: black;
+            border-color: transparent;
+        }
+
+        &.selected {
+            font-weight: bold;
+        }
     }
 
     &:not(:has(button)) {
         opacity: 0;
         pointer-events: none;
-        transform: scale(.9) translateY(30px);
+        transform: scale(.9) translateY(30px) translateX(-50%);
         filter: blur(10px);
     }
 }

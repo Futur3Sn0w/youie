@@ -1224,6 +1224,8 @@ function updatePageBar() {
         .on('click', function () {
             $('.rss-page').hide();
             $(`.container`).show();
+            $bar.children('button').removeClass('selected');
+            $(this).addClass('selected')
         })
         .prependTo($bar);
 }

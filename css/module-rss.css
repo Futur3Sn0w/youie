@@ -34,6 +34,7 @@
 
             box-sizing: border-box;
             width: 100%;
+            flex-shrink: 0;
             height: 100%;
 
             transition: .2s;
@@ -124,7 +125,7 @@
                 padding: 15px;
 
                 display: flex;
-                justify-content: space-between;
+                justify-content: flex-end;
                 align-items: center;
 
                 border-radius: 10px;
