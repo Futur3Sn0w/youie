@@ -1245,7 +1245,7 @@ function updatePageBar() {
 
     $pages.each(function () {
         const pageId = $(this).attr('id');
-        const label = $(this).find('.title').text() || 'Untitled';
+        const label = $(this).find('.title').text().trim() || $(this).attr('id')?.replace('page-', '') || 'Untitled';
 
         const $btn = $('<button>')
             .text(label)
