@@ -1028,42 +1028,13 @@ function loadModules() {
                     }
                 });
 
-                // Add persistent test skeleton module for styling/animation dev
-                // const $testSkeleton = $('<div>')
-                //     .addClass('module skeleton-module test-skeleton')
-                //     .attr('id', 'skeleton-test')
-                //     .css({ width: 350, height: 350 })
-                //     .html(`
-                //             <div class="header">
-                //                 <div class="icon skeleton-icon"></div>
-                //                 <h2 class="skeleton-title title"></h2>
-                //                 <div class="modHeadBtns">
-                //                     <div class="modActions">
-                //                         <i class="header-icon"></i>
-                //                         <i class="header-icon"></i>
-                //                         <i class="header-icon"></i>
-                //                     </div>
-                //                 </div>
-                //             </div>
-                //             <div class="module-content module-content-standard">
-                //                 <ul class="rss-list">
-                //                     <li class="skeleton-line"></li>
-                //                     <li class="skeleton-line"></li>
-                //                     <li class="skeleton-line"></li>
-                //                     <li class="skeleton-line"></li>
-                //                     <li class="skeleton-line"></li>
-                //                     <li class="skeleton-line"></li>
-                //                     <li class="skeleton-line"></li>
-                //                     <li class="skeleton-line"></li>
-                //                     <li class="skeleton-line"></li>
-                //                     <li class="skeleton-line"></li>
-                //                 </ul>
-                //             </div>
-                //     `);
-                // $targetContainer.append($testSkeleton);
-
                 // After all modules have been added and Masonry has been initialized...
                 restoreWidgetStates();
+
+                $('.container').show(); // Always visible
+                if ($('.rss-page').length === 1) {
+                    $('.rss-page').show(); // Show the only RSS page by default
+                }
 
                 setTimeout(() => {
                     $('.container').addClass('loaded');
@@ -1265,6 +1236,33 @@ function addToTabTitle(suffix) {
     }
 }
 
+function updatePageBar() {
+    const $pages = $('.rss-page');
+    const $bar = $('.page-bar');
+    $bar.empty();
+
+    if ($pages.length <= 1) {
+        $bar.hide();
+        return;
+    }
+
+    $pages.each(function () {
+        const pageId = $(this).attr('id');
+        const label = $(this).find('.title').text() || 'Untitled';
+
+        const $btn = $('<button>')
+            .text(label)
+            .on('click', function () {
+                $('.rss-page').hide();
+                $(`#${pageId}`).show();
+            });
+
+        $bar.append($btn);
+    });
+
+    $bar.show();
+}
+
 function createRssInputForm() {
     const $form = $('<div class="rss-form">');
     $form.append('<p>Enter details manually:</p>');
@@ -1303,7 +1301,10 @@ function createRssInputForm() {
             localStorage.setItem('customModules', JSON.stringify(customModules));
 
             const $module = renderRssModule(module, rssData.items);
-            $('.container').prepend($module);
+            // $('.container').prepend($module);
+            const $rssPage = renderRssModule(module, rssData.items, rssData.feedLink);
+            $('.scroller').append($rssPage);
+            updatePageBar(); // Function to refresh the button bar
             forceRebuildMasonry();
             $('#globalPopup').removeClass('visible');
         } catch (e) {
@@ -1369,7 +1370,10 @@ function createRssInputForm() {
             localStorage.setItem('customModules', JSON.stringify(customModules));
 
             const $module = renderRssModule(module, rssData.items);
-            $('.container').prepend($module);
+            // $('.container').prepend($module);
+            const $rssPage = renderRssModule(module, rssData.items, rssData.feedLink);
+            $('.scroller').append($rssPage);
+            updatePageBar(); // Function to refresh the button bar
             forceRebuildMasonry();
             $('#globalPopup').removeClass('visible');
         } catch (e) {
@@ -1484,6 +1488,7 @@ async function fetchRssFeed(url) {
 }
 
 function renderRssModule(module, items, feedLink = '') {
+    const $rssPage = $('<div class="rss-page">').attr('id', `page-${module.id}`).hide();
     const $moduleDiv = $('<div>').addClass('module').addClass('rss-module').attr('id', module.id).css('height', 350);
     const $header = $('<div>').addClass('header');
     if (feedLink) {
@@ -1540,5 +1545,6 @@ function renderRssModule(module, items, feedLink = '') {
     $content.append($list, $detail);
     $moduleDiv.append($content);
 
-    return $moduleDiv;
+    $rssPage.append($moduleDiv);
+    return $rssPage;
 }
