@@ -33,11 +33,12 @@
             list-style: none;
 
             box-sizing: border-box;
-            width: 100%;
+            width: 50%;
             height: 100%;
 
-            transform: scale(1);
             transition: .2s;
+
+            position: relative;
 
             margin: 0;
             padding: 10px;
@@ -76,16 +77,9 @@
             }
         }
 
-        &:has(.rss-detail.visible) {
-            ul {
-                opacity: 0;
-                transform: scale(.95);
-            }
-        }
-
         .rss-detail {
-            position: absolute;
-            right: 0;
+            position: relative;
+            /* right: 0; */
 
             width: calc(50%);
             height: calc(100%);

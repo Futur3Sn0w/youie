@@ -335,15 +335,20 @@ body>.backImg {
     display: flex;
     gap: 5px;
     position: absolute;
-    z-index: 2000;
+    left: 50%;
+    transform: translateX(-50%);
     bottom: 10px;
+    z-index: 2000;
 
     width: max-content;
     height: max-content;
     flex-shrink: 0;
 
     background: linear-gradient(to bottom, var(--root-back-alpha), var(--root-back));
-    box-shadow: var(--bxsh-border);
+    box-shadow:
+        var(--bxsh-border),
+        0 20px 20px #00000022;
+
     border-radius: 100px;
 
     padding: 5px;
