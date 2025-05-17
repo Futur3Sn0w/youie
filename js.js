@@ -1265,7 +1265,7 @@ function createRssInputForm() {
                 return;
             }
 
-            const id = `rss-${btoa(feedUrl).replace(/[^a-zA-Z0-9]/g, '').slice(0, 10)}`;
+            const id = `rss-${btoa(feedUrl).replace(/[^a-zA-Z0-9]/g, '')}-${Date.now()}`;
             const module = {
                 id,
                 name: title,
@@ -1336,7 +1336,7 @@ function createRssInputForm() {
                 return;
             }
 
-            const id = `rss-${btoa(feedUrl).replace(/[^a-zA-Z0-9]/g, '').slice(0, 10)}`;
+            const id = `rss-${btoa(feedUrl).replace(/[^a-zA-Z0-9]/g, '')}-${Date.now()}`;
             const module = {
                 id,
                 name: title,
