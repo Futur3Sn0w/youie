@@ -934,7 +934,9 @@ function loadModules() {
                         .then(rssData => {
                             const $rssPage = renderRssModule(module, rssData.items, rssData.feedLink);
                             $('.scroller').append($rssPage);
-                            updatePageBar();
+                            setTimeout(() => {
+                                updatePageBar();
+                            }, 100);
                             // $rssModule.addClass('loaded');
                             forceRebuildMasonry();
                             restoreWidgetStates();
