@@ -930,44 +930,9 @@ function loadModules() {
 
                 // Then load and render RSS modules
                 rssModules.forEach(module => {
-                    // Create a placeholder skeleton module
-                    const $skeleton = $('<div>')
-                        .addClass('module skeleton-module')
-                        .attr('id', `skeleton-${module.id}`)
-                        .css({ width: moduleWidth, height: 350 })
-                        .html(`
-                                <div class="header">
-                                    <div class="icon skeleton-icon"></div>
-                                    <h2 class="skeleton-title title"></h2>
-                                    <div class="modHeadBtns">
-                                        <div class="modActions">
-                                            <i class="header-icon"></i>
-                                            <i class="header-icon"></i>
-                                            <i class="header-icon"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="module-content module-content-standard">
-                                    <ul class="rss-list">
-                                        <li class="skeleton-line"></li>
-                                        <li class="skeleton-line"></li>
-                                        <li class="skeleton-line"></li>
-                                        <li class="skeleton-line"></li>
-                                        <li class="skeleton-line"></li>
-                                        <li class="skeleton-line"></li>
-                                        <li class="skeleton-line"></li>
-                                        <li class="skeleton-line"></li>
-                                        <li class="skeleton-line"></li>
-                                        <li class="skeleton-line"></li>
-                                    </ul>
-                                </div>
-                            `);
-                    $('.container').append($skeleton);
-
                     fetchRssFeed(module.feedUrl)
                         .then(rssData => {
                             const $rssPage = renderRssModule(module, rssData.items, rssData.feedLink);
-                            $(`#skeleton-${module.id}`).remove();
                             $('.scroller').append($rssPage);
                             updatePageBar();
                             // $rssModule.addClass('loaded');
