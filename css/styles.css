@@ -215,7 +215,7 @@ body>.backImg {
         opacity: 0;
     }
 
-    &:has(.rss-page:not([style="display: none;"])) {
+    &:has(.rss-page.visible) {
         .container {
             display: none;
         }

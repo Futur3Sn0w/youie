@@ -1207,8 +1207,8 @@ function updatePageBar() {
 
     $pages.toArray().forEach(page => {
         const $page = $(page);
-        const pageId = $page.attr('id');
-        const label = $page.find('.title').text().trim() || pageId?.replace('page-', '') || 'Untitled';
+        const pageId = page.attr('id');
+        const label = page.find('.title').text().trim() || pageId?.replace('page-', '') || 'Untitled';
 
         const $btn = $('<button>')
             .text(label)
