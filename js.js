@@ -1212,8 +1212,14 @@ function updatePageBar() {
         const $btn = $('<button>')
             .text(label)
             .on('click', function () {
-                $('.rss-page').hide();
-                $(`#${pageId}`).show();
+                $('.scroller').addClass('tempHide')
+                setTimeout(() => {
+                    $('.rss-page').hide();
+                    $(`#${pageId}`).show();
+                    $bar.children('button').removeClass('selected');
+                    $(this).addClass('selected')
+                    $('.scroller').removeClass('tempHide');
+                }, 200);
             });
 
         $bar.append($btn);
@@ -1222,10 +1228,14 @@ function updatePageBar() {
     $('<button>')
         .text('Modules')
         .on('click', function () {
-            $('.rss-page').hide();
-            $(`.container`).show();
-            $bar.children('button').removeClass('selected');
-            $(this).addClass('selected')
+            $('.scroller').addClass('tempHide')
+            setTimeout(() => {
+                $('.rss-page').hide();
+                $(`.container`).show();
+                $bar.children('button').removeClass('selected');
+                $(this).addClass('selected')
+                $('.scroller').removeClass('tempHide');
+            }, 200);
         })
         .prependTo($bar);
 }
