@@ -1226,7 +1226,7 @@ function updatePageBar() {
     });
 
     $('<button>')
-        .class('selected')
+        .attr('class', 'selected')
         .text('Modules')
         .on('click', function () {
             $('.scroller').addClass('tempHide')
