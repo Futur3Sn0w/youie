@@ -14,6 +14,15 @@
 
     .modHeadBtns {
 
+        &:has(.module-menu:not(.visible)) {
+            background-color: transparent !important;
+            box-shadow: none !important;
+        }
+
+        .header-icon {
+            border-radius: 1000px !important;
+        }
+
         .header-icon:first-of-type,
         .header-icon:nth-of-type(2) {
             display: none !important;
