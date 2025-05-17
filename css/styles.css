@@ -214,6 +214,12 @@ body>.backImg {
         transition: .3s;
         opacity: 0;
     }
+
+    &:has(.rss-page:not([style="display: none;"])) {
+        .container {
+            display: none;
+        }
+    }
 }
 
 .sortable-placeholder {
@@ -246,8 +252,8 @@ body>.backImg {
     height: fit-content;
     min-height: 200px;
 
-    margin: 0 auto;
-    margin-top: auto;
+    margin: auto;
+    margin-bottom: 0;
 
     box-sizing: border-box;
     padding: 30px 30px 40px 30px;
@@ -281,9 +287,55 @@ body>.backImg {
     }
 }
 
+.rss-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    /* gap: 15px; */
+
+    position: relative;
+    z-index: 10;
+
+    overflow-y: scroll;
+    overflow-x: hidden;
+
+    backdrop-filter: blur(20px);
+    border-radius: 35px 35px 0 0;
+
+    width: 100vw;
+    height: 100%;
+
+    margin: auto;
+    margin-bottom: 0;
+
+    box-sizing: border-box;
+    padding: 30px 30px 40px 30px;
+
+    transition: .2s;
+
+    &::after {
+        content: '';
+        width: 100%;
+        height: 100%;
+
+        background: linear-gradient(to bottom, var(--root-back-alpha), var(--root-back));
+        box-shadow: var(--bxsh-border);
+
+        position: absolute;
+        top: 0;
+        z-index: -1;
+        border-radius: inherit;
+
+        transition: .3s;
+        opacity: 1;
+    }
+}
+
 .page-bar {
     display: flex;
     position: fixed;
+    z-index: 2000;
     bottom: 10px;
 
     width: max-content;
