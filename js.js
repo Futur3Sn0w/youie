@@ -1215,6 +1215,7 @@ function updatePageBar() {
             .on('click', function () {
                 $('.scroller').addClass('tempHide')
                 setTimeout(() => {
+                    $(`.container`).removeClass('visible');
                     $('.rss-page').removeClass('visible');
                     $(`#${pageId}`).addClass('visible');
                     $bar.children('button').removeClass('selected');
