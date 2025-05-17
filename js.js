@@ -934,11 +934,9 @@ function loadModules() {
                         .then(rssData => {
                             const $rssPage = renderRssModule(module, rssData.items, rssData.feedLink);
                             $('.scroller').append($rssPage);
-                            // $rssModule.addClass('loaded');
                             forceRebuildMasonry();
-                            restoreWidgetStates();
                             setTimeout(() => {
-                                updatePageBar();
+                                updatePageBar(); // Function to refresh the button bar
                             }, 100);
                         })
                         .catch(err => {
@@ -1330,12 +1328,14 @@ function createRssInputForm() {
             customModules.push(module);
             localStorage.setItem('customModules', JSON.stringify(customModules));
 
-            const $module = renderRssModule(module, rssData.items);
+            // const $module = renderRssModule(module, rssData.items);
             // $('.container').prepend($module);
             const $rssPage = renderRssModule(module, rssData.items, rssData.feedLink);
             $('.scroller').append($rssPage);
-            updatePageBar(); // Function to refresh the button bar
             forceRebuildMasonry();
+            setTimeout(() => {
+                updatePageBar(); // Function to refresh the button bar
+            }, 100);
             $('#globalPopup').removeClass('visible');
         } catch (e) {
             console.error('Error loading starter RSS feed:', e);
