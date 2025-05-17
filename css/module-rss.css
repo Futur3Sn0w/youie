@@ -1,4 +1,15 @@
 .rss-module {
+    width: 100% !important;
+    height: 100% !important;
+
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+
+    .modHeadBtns {
+        display: none;
+    }
+
     .module-content {
         padding: 0;
         margin: 0;
@@ -68,8 +79,9 @@
 
         .rss-detail {
             position: absolute;
+            right: 0;
 
-            width: calc(100%);
+            width: calc(56px);
             height: calc(100%);
 
             display: flex;
