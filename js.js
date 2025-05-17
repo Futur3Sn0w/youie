@@ -1241,10 +1241,7 @@ function updatePageBar() {
     const $bar = $('.page-bar');
     $bar.empty();
 
-    if ($pages.length <= 1) {
-        $bar.hide();
-        return;
-    }
+    if ($pages.length <= 1) return;
 
     $pages.each(function () {
         const pageId = $(this).attr('id');
@@ -1259,8 +1256,6 @@ function updatePageBar() {
 
         $bar.append($btn);
     });
-
-    $bar.show();
 }
 
 function createRssInputForm() {
