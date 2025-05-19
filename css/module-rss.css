@@ -77,10 +77,9 @@
 
         & .modHeadBtns {
 
-            &:has(.module-menu:not(.visible)) {
-                background-color: transparent !important;
-                box-shadow: none !important;
-            }
+            /* &:has(.module-menu:not(.visible)) {
+                width: 25px;
+            } */
 
             & .header-icon {
                 border-radius: 1000px !important;

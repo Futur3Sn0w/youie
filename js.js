@@ -553,6 +553,7 @@ function showGlobalPopup(title, body) {
 function createHeaderButtons(module) {
     let $modHead = $('<div class="modHeadBtns">');
     let $modActions = $('<div class="modActions">');
+    let isRSSPage = module.contentType == 'rss';
 
     // Standard icons
     $('<i class="header-icon refresh-icon fa-solid fa-rotate" hoverTxt="Refresh">')
@@ -597,7 +598,7 @@ function createHeaderButtons(module) {
     if (module.externalLink) {
         $menu.append('<div class="module-action" data-action="view"><i class="fa-solid fa-arrow-up-right-from-square"></i> View More</div>');
     }
-    if (module.contentType !== 'rss') {
+    if (!isRSSPage) {
         $menu.append('<div class="module-action" data-action="info"><i class="fa-solid fa-circle-info"></i> Module Info</div>');
         try {
             const states = JSON.parse(localStorage.getItem('moduleStates') || '[]');
@@ -620,7 +621,6 @@ function createHeaderButtons(module) {
     // Add handlers once
     $menu.on('click', '.module-action', function () {
         const $thisModule = $(this).closest('.module');
-        const isRSSPage = $thisModule.hasClass('rss-module');
         const action = $(this).data('action');
         let $thisPage;
         if (isRSSPage) {

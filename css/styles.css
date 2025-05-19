@@ -337,9 +337,13 @@ body>.backImg {
         &.selected {
             border-color: transparent;
             box-shadow: var(--bxsh-border);
-            color: black;
             background-color: white;
             font-weight: bold;
+            color: black;
+
+            & * {
+                color: black !important;
+            }
         }
 
         &[for="search"] {
