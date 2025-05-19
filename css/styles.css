@@ -190,8 +190,8 @@ body>.backImg {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    width: 100vw;
-    height: 100%;
+    width: calc(100% - 40px);
+    height: fit-content;
 
     overflow: visible;
 
@@ -206,6 +206,26 @@ body>.backImg {
 
     position: relative;
     z-index: 10;
+
+    backdrop-filter: blur(20px);
+    border-radius: 35px 35px 0 0;
+
+    &::after {
+        content: '';
+        width: 100%;
+        height: 100%;
+
+        background: linear-gradient(to bottom, var(--root-back-alpha), var(--root-back));
+        box-shadow: var(--bxsh-border);
+
+        position: absolute;
+        top: 0;
+        z-index: -1;
+        border-radius: inherit;
+
+        transition: .3s;
+        opacity: 1;
+    }
 
     &.tempHide {
         opacity: 0;
@@ -240,10 +260,7 @@ body>.backImg {
 
     overflow: visible;
 
-    backdrop-filter: blur(20px);
-    border-radius: 35px 35px 0 0;
-
-    width: 100%;
+    width: max-content;
     height: fit-content;
     min-height: 100%;
 
@@ -262,23 +279,6 @@ body>.backImg {
 
     &:has(.module.resizing) .module:not(.resizing) {
         pointer-events: none !important;
-    }
-
-    &::after {
-        content: '';
-        width: 100%;
-        height: 100%;
-
-        background: linear-gradient(to bottom, var(--root-back-alpha), var(--root-back));
-        box-shadow: var(--bxsh-border);
-
-        position: absolute;
-        top: 0;
-        z-index: -1;
-        border-radius: inherit;
-
-        transition: .3s;
-        opacity: 1;
     }
 }
 
@@ -384,7 +384,7 @@ body>.backImg {
     margin: 0 auto;
 
     box-sizing: border-box;
-    padding: 30px 30px 40px 30px;
+    padding: 30px 15px 40px 15px;
 
     transition: .2s;
 

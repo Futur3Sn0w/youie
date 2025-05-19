@@ -14,7 +14,7 @@
     border-radius: 35px 35px 0 0;
 
     width: 100vw;
-    height: 100%;
+    height: calc(100% - 20vh);
 
     margin: auto;
     margin-bottom: 0;
