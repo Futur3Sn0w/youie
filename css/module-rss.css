@@ -196,6 +196,7 @@
             box-sizing: border-box;
             padding: 0 5px;
 
+            pointer-events: none;
             opacity: .5;
 
             overflow-y: scroll;
