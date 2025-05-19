@@ -1270,7 +1270,7 @@ function updatePageBar() {
 
     // Add "Modules" button always first (after Search)
     $('<button>')
-        .addClass('selected')
+        .attr('for', 'modules')
         .text('Modules')
         .on('click', function () {
             if ($('.rss-page').hasClass('visible')) {
@@ -1323,6 +1323,8 @@ function updatePageBar() {
             }
         })
         .prependTo($bar);
+
+    $(`.page-bar button[for="modules"]`).click();
 }
 
 function createRssInputForm() {
