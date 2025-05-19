@@ -1227,7 +1227,7 @@ function updatePageBar() {
                     $bar.children('button').removeClass('selected');
                     $(this).addClass('selected')
 
-                    $('.rss-page').children('li').removeClass('selected');
+                    $('li').removeClass('selected');
                     $('.rss-image').remove();
                     $('.rss-meta').remove();
                     $('.article-body').remove();
