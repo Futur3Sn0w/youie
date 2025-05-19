@@ -94,7 +94,8 @@ body {
 }
 
 .main-header {
-    position: relative;
+    position: sticky;
+    top: calc(-25vh + 70px);
     z-index: 20;
 
     width: 100vw;
@@ -281,7 +282,9 @@ body>.backImg {
 .page-bar {
     display: flex;
     gap: 5px;
-    position: relative;
+
+    position: sticky;
+    top: 100%;
     z-index: 49;
 
     width: max-content;
