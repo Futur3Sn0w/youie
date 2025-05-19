@@ -90,10 +90,6 @@ body {
             box-shadow: 0 30px 30px #00000022;
             transform: scale(1.25);
         }
-
-        /* *:not(#autocompleteResults) {
-            overflow: hidden !important;
-        } */
     }
 }
 
