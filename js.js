@@ -1281,6 +1281,7 @@ function updatePageBar() {
                 $('.scroller').addClass('tempHide');
                 setTimeout(() => {
                     $('.rss-page').removeClass('visible');
+                    $('.container').addClass('visible');
                     $('.searchTxt').addClass('visible');
                     $('#autocompleteResults').addClass('visible').show();
                     $bar.children('button').removeClass('selected');
@@ -1289,6 +1290,7 @@ function updatePageBar() {
                     $('.scroller').removeClass('tempHide');
                 }, 200);
             } else {
+                $('.container').addClass('visible');
                 $('.searchTxt').addClass('visible');
                 $('#autocompleteResults').addClass('visible').show();
                 $bar.children('button').removeClass('selected');
