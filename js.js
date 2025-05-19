@@ -253,6 +253,8 @@ $(document).ready(function () {
             });
         });
     });
+
+    updatePageBar();
 });
 
 // Wallpaper
@@ -1209,10 +1211,8 @@ function updatePageBar() {
     const $bar = $('.page-bar');
     $bar.empty();
 
-    // if ($pages.length <= 1) return;
-
+    // Add RSS page buttons
     $pages.each(function () {
-        console.log(this);
         const pageId = $(this).attr('id');
         const label = $(this).find('.title').text().trim() || $(this).attr('id')?.replace('page-', '') || 'Untitled';
 
@@ -1223,6 +1223,7 @@ function updatePageBar() {
                 $('.scroller').addClass('tempHide')
                 setTimeout(() => {
                     $('.rss-page').removeClass('visible');
+                    $('.container').removeClass('visible');
                     $(`#${pageId}`).addClass('visible');
                     $bar.children('button').removeClass('selected');
                     $(this).addClass('selected')
@@ -1232,6 +1233,9 @@ function updatePageBar() {
                     $('.rss-meta').remove();
                     $('.article-body').remove();
 
+                    $('.searchTxt').removeClass('visible');
+                    $('#autocompleteResults').removeClass('visible');
+
                     $('.scroller').removeClass('tempHide');
                 }, 200);
             });
@@ -1239,18 +1243,36 @@ function updatePageBar() {
         $bar.append($btn);
     });
 
+    // Add "Modules" button always first (after Search)
     $('<button>')
-        .attr('class', 'selected')
+        .addClass('selected')
         .text('Modules')
         .on('click', function () {
-            $('.scroller').addClass('tempHide')
-            setTimeout(() => {
-                $('.rss-page').removeClass('visible');
-                $(`.container`).addClass('visible');
-                $bar.children('button').removeClass('selected');
-                $(this).addClass('selected')
-                $('.scroller').removeClass('tempHide');
-            }, 200);
+            $('.rss-page').removeClass('visible');
+            $('.container').addClass('visible');
+
+            $('.searchTxt').removeClass('visible');
+            $('#autocompleteResults').removeClass('visible');
+
+            $bar.children('button').removeClass('selected');
+            $(this).addClass('selected');
+
+        })
+        .prependTo($bar);
+
+    // Add "Search" button always first
+    $('<button>')
+        .html('<i class="fas fa-search"></i>')
+        .on('click', function () {
+
+
+            $('.rss-page').removeClass('visible');
+            $('.searchTxt').addClass('visible');
+            $('#autocompleteResults').addClass('visible').show();
+            $bar.children('button').removeClass('selected');
+            $(this).addClass('selected')
+
+
         })
         .prependTo($bar);
 }
