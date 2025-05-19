@@ -70,6 +70,10 @@ body {
             }
         }
 
+        .rss-image {
+            opacity: 0;
+        }
+
         .module {
             transform: translateY(30px) !important;
             opacity: 0 !important;

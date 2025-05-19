@@ -48,16 +48,21 @@
 
 .rss-image {
     display: flex;
+
     position: absolute;
     top: 0;
     left: 0;
     z-index: 0;
+
     height: 100%;
     width: 100%;
+
     object-fit: cover;
     mask-image: linear-gradient(to top, black, transparent);
     opacity: .25;
+
     pointer-events: none;
+    transition: .2s;
 }
 
 .rss-module {
@@ -124,8 +129,8 @@
             list-style: none;
 
             box-sizing: border-box;
-            width: 100%;
             flex-shrink: 0;
+            width: 50%;
             height: 100%;
 
             transition: .2s;
@@ -171,14 +176,9 @@
         }
 
         &:has(li.selected) {
-            ul {
-                width: 50%;
-            }
-
             .rss-detail {
                 opacity: 1 !important;
                 pointer-events: all;
-                transform: translateX(0) !important;
             }
         }
 
@@ -195,8 +195,8 @@
 
             box-sizing: border-box;
             padding: 0 5px;
-            pointer-events: none;
-            opacity: 0;
+
+            opacity: .5;
 
             overflow-y: scroll;
 
