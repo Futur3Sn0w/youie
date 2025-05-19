@@ -627,12 +627,11 @@ function createHeaderButtons(module) {
         } else if (action === 'delete') {
             const moduleId = module.id;
             if ($thisModule.hasClass('rss-module')) {
+                let $thisPage = $(`#page-${moduleId}`);
                 $('.scroller').addClass('tempHide');
                 $('.page-bar').addClass('tempHide');
                 setTimeout(() => {
-                    $thisModule.parent().remove();
-
-                    $('.page-bar').find(`button[for="${moduleId}"]`).remove();
+                    $thisPage.remove();
                     // Remove from selectedModules (if present)
                     const selectedModules = JSON.parse(localStorage.getItem('selectedModules') || '[]');
                     const updatedSelected = selectedModules.filter(id => id !== moduleId);
@@ -645,6 +644,7 @@ function createHeaderButtons(module) {
 
                     forceRebuildMasonry();
                     saveWidgetStates();
+                    updatePageBar();
                     $('.page-bar').removeClass('tempHide');
                     $('.scroller').removeClass('tempHide');
                 }, 200);
