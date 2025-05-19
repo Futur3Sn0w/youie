@@ -336,6 +336,12 @@ body>.backImg {
         transition: .15s;
         cursor: pointer;
 
+        position: relative;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
         background-color: transparent;
 
         &:hover {
@@ -350,6 +356,24 @@ body>.backImg {
             color: black;
             background-color: white;
             font-weight: bold;
+        }
+
+        &[for="search"] {
+            margin-right: 7px;
+
+            &::after {
+                content: '';
+
+                position: absolute;
+                right: -7px;
+
+                width: 2px;
+                height: 50%;
+                background-color: var(--root-text);
+                opacity: .33;
+
+                pointer-events: none;
+            }
         }
     }
 }
