@@ -624,7 +624,7 @@ function createHeaderButtons(module) {
         const action = $(this).data('action');
         let $thisPage;
         if (isRSSPage) {
-            $thisPage = $(`#page-${moduleId}`);
+            $thisPage = $(`#page-${module.id}`);
         }
         if (action === 'view') {
             window.open(module.externalLink, '_blank');
