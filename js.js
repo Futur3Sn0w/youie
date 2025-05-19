@@ -556,19 +556,21 @@ function createHeaderButtons(module) {
     let isRSSPage = module.contentType == 'rss';
 
     // Standard icons
-    $('<i class="header-icon refresh-icon fa-solid fa-rotate" hoverTxt="Refresh">')
-        .on("mouseover", function () {
-            $(this).closest('.module').find('.title').text($(this).attr('hoverTxt'));
-        }).on('mouseout', function () {
-            $(this).closest('.module').find('.title').text(module.name);
-        }).appendTo($modActions);
+    if (!isRSSPage) {
+        $('<i class="header-icon refresh-icon fa-solid fa-rotate" hoverTxt="Refresh">')
+            .on("mouseover", function () {
+                $(this).closest('.module').find('.title').text($(this).attr('hoverTxt'));
+            }).on('mouseout', function () {
+                $(this).closest('.module').find('.title').text(module.name);
+            }).appendTo($modActions);
 
-    $('<i class="header-icon minimize-icon fa-solid fa-minimize" hoverTxt="Minimize">')
-        .on("mouseover", function () {
-            $(this).closest('.module').find('.title').text($(this).attr('hoverTxt'));
-        }).on('mouseout', function () {
-            $(this).closest('.module').find('.title').text(module.name);
-        }).appendTo($modActions);
+        $('<i class="header-icon minimize-icon fa-solid fa-minimize" hoverTxt="Minimize">')
+            .on("mouseover", function () {
+                $(this).closest('.module').find('.title').text($(this).attr('hoverTxt'));
+            }).on('mouseout', function () {
+                $(this).closest('.module').find('.title').text(module.name);
+            }).appendTo($modActions);
+    }
 
     // Menu toggle icon
     $('<i class="header-icon menu-icon fa-solid fa-ellipsis-vertical" hoverTxt="Menu">')
