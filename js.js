@@ -1226,6 +1226,12 @@ function updatePageBar() {
                     $(`#${pageId}`).addClass('visible');
                     $bar.children('button').removeClass('selected');
                     $(this).addClass('selected')
+
+                    $('.rss-page').children('li').removeClass('selected');
+                    $('.rss-image').remove();
+                    $('.rss-meta').remove();
+                    $('.article-body').remove();
+
                     $('.scroller').removeClass('tempHide');
                 }, 200);
             });
