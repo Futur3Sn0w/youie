@@ -203,13 +203,14 @@
             transition: .2s;
 
             width: fit-content;
+            height: fit-content;
             max-width: 102px;
+            min-width: 25px;
+            max-height: calc(100% - 4px);
+
             background-color: var(--module-back);
             box-shadow: var(--bxsh-border);
             border-radius: 14px;
-            min-width: 25px;
-            height: fit-content;
-            max-height: calc(100% - 4px);
 
             & .header-icon {
                 font-size: 12px;
@@ -287,6 +288,8 @@
 
                 transition: .2s;
                 height: fit-content;
+                width: fit-content;
+                max-width: 0;
                 max-height: 0;
                 pointer-events: none;
                 opacity: 0;
@@ -298,6 +301,7 @@
                     pointer-events: all;
                     padding: 3px;
                     max-height: 300px;
+                    max-width: 200px;
                 }
 
                 &:has(.module-action[data-action="move-top"]) .mt-sep {
