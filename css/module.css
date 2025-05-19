@@ -357,7 +357,7 @@
         }
     }
 
-    &:has(.module-menu.visible) {
+    &:not(.rss-module):has(.module-menu.visible) {
         .module-content {
             filter: blur(2px) grayscale(.3);
             transform: scale(.966);
