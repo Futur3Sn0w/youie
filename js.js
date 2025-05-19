@@ -35,12 +35,18 @@ $(document).ready(function () {
         } else if (action === 'add-feed') {
             $('.settingsBtn').click();
             $('.settingsWindow').find('.tabBtn').first().click();
-            $('.rss-add-btn').click();
+            setTimeout(() => {
+                $('.rss-add-btn').click();
+            }, 200);
         }
         forceRebuildMasonry(true);
 
         $('.mainMenu').removeClass('visible');
         saveWidgetStates();
+    });
+
+    $('.rss-add-btn').on('click', function () {
+        showGlobalPopup('Add RSS Feed', createRssInputForm());
     });
 
     $(window).on('load resize', markOverflowingElements);
@@ -1064,9 +1070,6 @@ function loadModules() {
 
 function openModuleSelector(modules) {
     const $popup = $('.module-selector-popup');
-    const $rssButton = $('<button class="rss-add-btn">+ Add RSS Feed...</button>').on('click', function () {
-        showGlobalPopup('Add RSS Feed', createRssInputForm());
-    });
     const $moduleList = $('<ul>').addClass('module-list');
     const $filterContainer = $('<div class="category-filters">');
     const allCategories = [...new Set(modules.flatMap(m => m.category || []))].sort();
@@ -1154,9 +1157,6 @@ function openModuleSelector(modules) {
         }
     });
 
-    $popup.addClass('visible');
-
-
     const $cancelButton = $('.actionBtn.cancel');
     $cancelButton.off('click').on('click', function () {
         addToTabTitle('Home');
@@ -1164,8 +1164,8 @@ function openModuleSelector(modules) {
         $('*').blur();
     });
 
-    $popup.empty();
-    $popup.append($filterContainer, $moduleList, $rssButton);
+    $popup.children("*:not(.rss-add-btn)").remove();
+    $popup.append($filterContainer, $moduleList);
 
     $settings.addClass('visible');
 }
