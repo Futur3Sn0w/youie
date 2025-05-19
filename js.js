@@ -35,7 +35,7 @@ $(document).ready(function () {
         } else if (action === 'add-feed') {
             $('.settingsBtn').click();
             $('.settingsWindow').find('.tabBtn').first().click();
-            $('.settingsWindow').find('.rss-add-btn').click();
+            $('.rss-add-btn').click();
         }
         forceRebuildMasonry(true);
 
