@@ -89,7 +89,7 @@ $(document).ready(function () {
 
         if (!e.target.closest('.searchTxt') && !e.target.closest('#autocompleteResults')) {
             $('#searchBox').val('');
-            $("#autocompleteResults").empty().hide();
+            $("#autocompleteResults").empty().removeClass('visible');
         }
 
         if (!e.target.closest('.module-menu') && !e.target.closest('.menu-icon')) {
@@ -489,14 +489,14 @@ $(document).ready(function () {
                         $.each(data[1], function (index, suggestion) {
                             $("#autocompleteResults").append("<div class='autocomplete-item'>" + suggestion + "</div>");
                         });
-                        $("#autocompleteResults").show();
+                        $("#autocompleteResults").addClass('visible');
                     } else {
-                        $("#autocompleteResults").hide();
+                        $("#autocompleteResults").removeClass('visible');
                     }
                 }
             });
         } else {
-            $("#autocompleteResults").empty().hide();
+            $("#autocompleteResults").empty().removeClass('visible');
         }
     });
 
@@ -1283,7 +1283,7 @@ function updatePageBar() {
                     $('.rss-page').removeClass('visible');
                     $('.container').addClass('visible');
                     $('.searchTxt').addClass('visible');
-                    $('#autocompleteResults').addClass('visible').show();
+                    $('#autocompleteResults').addClass('visible');
                     $bar.children('button').removeClass('selected');
                     $(this).addClass('selected')
 
@@ -1292,7 +1292,7 @@ function updatePageBar() {
             } else {
                 $('.container').addClass('visible');
                 $('.searchTxt').addClass('visible');
-                $('#autocompleteResults').addClass('visible').show();
+                $('#autocompleteResults').addClass('visible');
                 $bar.children('button').removeClass('selected');
                 $(this).addClass('selected')
             }
