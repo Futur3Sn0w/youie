@@ -568,11 +568,11 @@ function createHeaderButtons(module) {
             $menu.toggleClass('visible');
         })
         .on("mouseover", function () {
-            if (!$(this).closest('.module').hasClass('.rss-module')) {
+            if (!$(this).closest('.module').hasClass('rss-module')) {
                 $(this).closest('.module').find('.title').text($(this).attr('hoverTxt'));
             }
         }).on('mouseout', function () {
-            if (!$(this).closest('.module').hasClass('.rss-module')) {
+            if (!$(this).closest('.module').hasClass('rss-module')) {
                 $(this).closest('.module').find('.title').text(module.name);
             }
         }).appendTo($modActions);
@@ -1303,21 +1303,9 @@ function createRssInputForm() {
         };
 
         if (existingMatch) {
-            showGlobalPopup("Duplicate Feed Detected", `
-                <p>A feed with the same ${existingMatch.feedUrl === url ? "URL" : "title"} already exists.</p>
-                <p>Do you want to add it anyway?</p>
-                <button class="popup-confirm">Yes, Add Anyway</button>
-                <button class="popup-cancel">Cancel</button>
-            `);
-
-            $('.popup-confirm').on('click', () => {
-                $('#globalPopup').removeClass('visible');
+            if (confirm(`A feed with the same ${existingMatch.feedUrl === url ? "URL" : "title"} already exists.\nDo you want to add it anyway?`)) {
                 proceedToAdd();
-            });
-
-            $('.popup-cancel').on('click', () => {
-                $('#globalPopup').removeClass('visible');
-            });
+            }
         } else {
             proceedToAdd();
         }
@@ -1355,28 +1343,14 @@ function createRssInputForm() {
         const title = $feedSelect.find('option:selected').text();
 
         // Only perform duplicate check if not forceAdd (to prevent infinite loop)
-        if (!forceAdd) {
-            const existingStarter = JSON.parse(localStorage.getItem('customModules') || '[]')
-                .find(m => m.feedUrl === feedUrl);
+        const existingStarter = JSON.parse(localStorage.getItem('customModules') || '[]')
+            .find(m => m.feedUrl === feedUrl);
 
-            if (existingStarter) {
-                showGlobalPopup("Starter Feed Already Added", `
-                    <p>The feed "${title}" is already added.</p>
-                    <p>Do you want to add it again anyway?</p>
-                    <button class="popup-confirm">Yes, Add Anyway</button>
-                    <button class="popup-cancel">Cancel</button>
-                `);
-
-                $('.popup-confirm').on('click', () => {
-                    $('#globalPopup').removeClass('visible');
-                    // Call again with forceAdd = true to skip duplicate check
-                    $starterBtn.trigger('click', [true]);
-                });
-
-                $('.popup-cancel').on('click', () => {
-                    $('#globalPopup').removeClass('visible');
-                });
-
+        if (!forceAdd && existingStarter) {
+            if (confirm(`The feed "${title}" is already added.\nDo you want to add it again anyway?`)) {
+                $starterBtn.trigger('click', [true]);
+                return;
+            } else {
                 return;
             }
         }
