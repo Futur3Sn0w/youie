@@ -360,22 +360,24 @@ body>.backImg {
         appearance: none;
         padding: 7px 12px;
         border-radius: 100px;
-        box-shadow: var(--bxsh-border);
+        box-shadow: transparent;
         color: var(--root-text);
         font-size: 14px;
         margin-left: auto;
         transition: .15s;
 
-        background-color: var(--surface-button);
+        background-color: transparent;
 
-        &:hover,
-        &.selected {
-            background-color: white;
-            color: black;
+        &:hover {
             border-color: transparent;
+            box-shadow: var(--bxsh-border);
+            background-color: var(--surface-button);
         }
 
         &.selected {
+            border-color: transparent;
+            color: black;
+            background-color: white;
             font-weight: bold;
         }
     }
