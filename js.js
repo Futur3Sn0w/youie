@@ -646,6 +646,8 @@ function createHeaderButtons(module) {
                     forceRebuildMasonry();
                     saveWidgetStates();
                     updatePageBar();
+                    $('.rss-page').removeClass('visible');
+                    $('.container').addClass('visible');
                     $(`.page-bar button[for="modules"]`).click();
                     $('.page-bar').removeClass('tempHide');
                     $('.scroller').removeClass('tempHide');
