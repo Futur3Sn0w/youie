@@ -255,6 +255,7 @@ $(document).ready(function () {
     });
 
     updatePageBar();
+    $(`.page-bar button[for="modules"]`).click();
 });
 
 // Wallpaper
@@ -645,6 +646,7 @@ function createHeaderButtons(module) {
                     forceRebuildMasonry();
                     saveWidgetStates();
                     updatePageBar();
+                    $(`.page-bar button[for="modules"]`).click();
                     $('.page-bar').removeClass('tempHide');
                     $('.scroller').removeClass('tempHide');
                 }, 200);
@@ -1323,8 +1325,6 @@ function updatePageBar() {
             }
         })
         .prependTo($bar);
-
-    $(`.page-bar button[for="modules"]`).click();
 }
 
 function createRssInputForm() {
