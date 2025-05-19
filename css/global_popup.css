@@ -38,6 +38,7 @@
         color: var(--root-text);
         margin-left: auto;
         transition: .15s;
+        cursor: pointer;
 
         background-color: var(--surface-button);
 
@@ -106,12 +107,14 @@
             position: absolute;
             bottom: 15px;
             left: 15px;
+            cursor: pointer;
         }
 
         & .popup-cancel {
             position: absolute;
             bottom: 15px;
             right: 15px;
+            cursor: pointer;
         }
     }
 
@@ -172,6 +175,7 @@
                 box-shadow: var(--bxsh-border);
                 border: none;
                 transition: .15s;
+                cursor: pointer;
 
                 position: relative;
                 display: flex;
@@ -195,6 +199,7 @@
 
             & button {
                 order: 3;
+                cursor: pointer;
             }
         }
 

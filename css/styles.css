@@ -326,6 +326,7 @@ body>.backImg {
         font-size: 14px;
         margin-left: auto;
         transition: .15s;
+        cursor: pointer;
 
         background-color: transparent;
 
