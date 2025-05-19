@@ -2,6 +2,11 @@ body {
     margin: 0;
     padding: 0;
     background-color: var(--root-back);
+
+    display: flex;
+    flex-direction: column;
+
+    overflow-y: scroll;
     overflow-x: hidden;
 
     width: 100vw;
@@ -102,8 +107,8 @@ body {
     z-index: 20;
 
     width: 100vw;
-    height: calc(30vh + 70px);
-    flex-shrink: 1;
+    height: calc(25vh);
+    flex-shrink: 0;
 
     display: flex;
     flex-direction: column;
@@ -190,9 +195,9 @@ body>.backImg {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    flex-shrink: 1;
     width: 100vw;
-    height: fit-content;
-    min-height: calc(70vh - 70px);
+    height: 100%;
 
     overflow: visible;
 
@@ -261,12 +266,12 @@ body>.backImg {
     backdrop-filter: blur(20px);
     border-radius: 35px 35px 0 0;
 
-    width: 100vw;
+    width: 100%;
     height: fit-content;
-    min-height: 200px;
+    min-height: 100%;
+    flex-shrink: 1;
 
-    margin: auto;
-    margin-bottom: 0;
+    margin: 0 auto;
 
     box-sizing: border-box;
     padding: 30px 30px 40px 30px;
@@ -311,27 +316,27 @@ body>.backImg {
     height: max-content;
     flex-shrink: 0;
 
-    background: var(--root-back);
+    background: var(--root-back-alpha);
     backdrop-filter: blur(10px);
     box-shadow:
         var(--bxsh-border),
-        0 20px 20px #00000022;
+        0 10px 20px #00000022;
 
     border-radius: 100px;
 
     transition: .3s;
 
-    padding: 5px;
+    padding: 7px;
 
     margin: 10px 0;
 
     &>button {
         appearance: none;
-        padding: 7px 12px;
+        padding: 9px 14px;
         border-radius: 100px;
-        box-shadow: transparent;
+        box-shadow: none;
         color: var(--root-text);
-        font-size: 14px;
+        font-size: 16px;
         margin-left: auto;
         transition: .15s;
         cursor: pointer;
