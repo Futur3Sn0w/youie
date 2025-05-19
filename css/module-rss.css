@@ -46,9 +46,26 @@
     }
 }
 
+.rss-image {
+    display: flex;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    mask-image: linear-gradient(to top, black, transparent);
+    opacity: .25;
+    pointer-events: none;
+}
+
 .rss-module {
     width: 100% !important;
     height: 100% !important;
+
+    position: relative;
+    z-index: 10000;
 
     background-color: transparent !important;
     border: none !important;
@@ -60,20 +77,33 @@
         box-shadow: none !important;
     }
 
-    .modHeadBtns {
+    .header {
+        height: 45px;
 
-        &:has(.module-menu:not(.visible)) {
-            background-color: transparent !important;
-            box-shadow: none !important;
+        & .title {
+            font-size: 25px;
+            margin-left: 15px;
         }
 
-        .header-icon {
-            border-radius: 1000px !important;
+        & .icon {
+            display: none;
         }
 
-        .header-icon:first-of-type,
-        .header-icon:nth-of-type(2) {
-            display: none !important;
+        & .modHeadBtns {
+
+            &:has(.module-menu:not(.visible)) {
+                background-color: transparent !important;
+                box-shadow: none !important;
+            }
+
+            & .header-icon {
+                border-radius: 1000px !important;
+            }
+
+            & .header-icon:first-of-type,
+            & .header-icon:nth-of-type(2) {
+                display: none !important;
+            }
         }
     }
 
@@ -192,7 +222,6 @@
                 border-radius: 10px;
                 background: var(--module-back);
                 box-shadow: var(--bxsh-border);
-                backdrop-filter: blur(10px);
 
                 >* {
                     appearance: none;
@@ -226,19 +255,6 @@
 
                 & img:not(.rss-image) {
                     display: none;
-                }
-
-                .rss-image {
-                    display: flex;
-                    position: absolute;
-                    top: -40px;
-                    right: -20px;
-                    height: calc(100% + 80px);
-                    width: calc(100% + 20px);
-                    object-fit: cover;
-                    mask-image: linear-gradient(to right, black, transparent);
-                    opacity: .25;
-                    z-index: 0;
                 }
 
                 &:has(.article-body:empty) {

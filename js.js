@@ -1511,17 +1511,21 @@ function renderRssModule(module, items, feedLink = '') {
             $('li').removeClass('selected');
             $li.addClass('selected');
 
+            let articleImg = $(`<img class="rss-image" src="${item.thumbnail}" alt="" style="max-width:100%;">`);
+
             $detail.find('.rss-detail-content').html(`
                 <div class="rss-meta">
                     ${author ? `<span class="rss-author">${author}</span>` : ''}
                     <h3 class="article-title">${item.title}</h3>
                     ${date ? `<span class="rss-date">${date}</span>` : ''}
                 </div>
-                <img class="rss-image" src="${item.thumbnail}" alt="" style="max-width:100%;">
                 <div class="article-body">${item.description}</div>
             `);
             $detail.find('.rss-full-link').attr('href', item.link);
             $detail.addClass('visible');
+
+            $('.rss-image').remove();
+            $rssPage.append(articleImg);
         });
         $list.append($li);
     });
