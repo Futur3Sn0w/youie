@@ -32,6 +32,10 @@ $(document).ready(function () {
         } else if (action === 'add-new') {
             $('.settingsBtn').click();
             $('.settingsWindow').find('.tabBtn').first().click();
+        } else if (action === 'add-feed') {
+            $('.settingsBtn').click();
+            $('.settingsWindow').find('.tabBtn').first().click();
+            $('.settingsWindow').find('.rss-add-btn').click();
         }
         forceRebuildMasonry(true);
 
@@ -587,8 +591,8 @@ function createHeaderButtons(module) {
     if (module.externalLink) {
         $menu.append('<div class="module-action" data-action="view"><i class="fa-solid fa-arrow-up-right-from-square"></i> View More</div>');
     }
-    $menu.append('<div class="module-action" data-action="info"><i class="fa-solid fa-circle-info"></i> Module Info</div>');
     if (module.contentType !== 'rss') {
+        $menu.append('<div class="module-action" data-action="info"><i class="fa-solid fa-circle-info"></i> Module Info</div>');
         try {
             const states = JSON.parse(localStorage.getItem('moduleStates') || '[]');
             const firstModuleId = states.length > 0 ? states[0].id : null;
@@ -599,14 +603,23 @@ function createHeaderButtons(module) {
         } catch (e) {
             console.error('Failed to check moduleStates:', e);
         }
+        $menu.append('<div class="sep"></div>');
+        $menu.append('<div class="module-action" data-action="delete"><i class="fa-solid fa-eye-slash"></i> Remove Module</div>');
+    } else {
+        $menu.append('<div class="module-action" data-action="info"><i class="fa-solid fa-circle-info"></i> RSS Info</div>');
+        $menu.append('<div class="sep"></div>');
+        $menu.append('<div class="module-action" data-action="delete"><i class="fa-solid fa-eye-slash"></i> Remove RSS Feed</div>');
     }
-    $menu.append('<div class="sep"></div>');
-    $menu.append('<div class="module-action" data-action="delete"><i class="fa-solid fa-eye-slash"></i> Remove Module</div>');
 
     // Add handlers once
     $menu.on('click', '.module-action', function () {
         const $thisModule = $(this).closest('.module');
+        const isRSSPage = $thisModule.hasClass('rss-module');
         const action = $(this).data('action');
+        let $thisPage;
+        if (isRSSPage) {
+            $thisPage = $(`#page-${moduleId}`);
+        }
         if (action === 'view') {
             window.open(module.externalLink, '_blank');
         } else if (action === 'info') {
@@ -627,8 +640,7 @@ function createHeaderButtons(module) {
             showGlobalPopup(module.name, info);
         } else if (action === 'delete') {
             const moduleId = module.id;
-            if ($thisModule.hasClass('rss-module')) {
-                let $thisPage = $(`#page-${moduleId}`);
+            if (isRSSPage) {
                 $('.scroller').addClass('tempHide');
                 $('.page-bar').addClass('tempHide');
                 setTimeout(() => {
@@ -1052,7 +1064,7 @@ function loadModules() {
 
 function openModuleSelector(modules) {
     const $popup = $('.module-selector-popup');
-    const $rssButton = $('<button class="rss-add-btn">+ Add RSS Feed</button>').on('click', function () {
+    const $rssButton = $('<button class="rss-add-btn">+ Add RSS Feed...</button>').on('click', function () {
         showGlobalPopup('Add RSS Feed', createRssInputForm());
     });
     const $moduleList = $('<ul>').addClass('module-list');
