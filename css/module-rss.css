@@ -156,7 +156,7 @@
             position: relative;
             /* right: 0; */
 
-            width: calc(50%);
+            width: calc(100%);
             height: calc(100%);
 
             display: flex;
@@ -165,7 +165,6 @@
 
             box-sizing: border-box;
             padding: 0 5px;
-            transform: translateX(100px);
             pointer-events: none;
             opacity: 0;
 
@@ -179,7 +178,8 @@
                 z-index: 10;
 
                 width: 100%;
-                height: 56px;
+                height: max-content;
+                flex-shrink: 0;
 
                 margin: 0 5px;
                 box-sizing: border-box;
@@ -231,11 +231,12 @@
                 .rss-image {
                     display: flex;
                     position: absolute;
-                    top: 0;
-                    height: 100%;
-                    width: 100%;
+                    top: -40px;
+                    right: -20px;
+                    height: calc(100% + 80px);
+                    width: calc(100% + 20px);
                     object-fit: cover;
-                    mask-image: linear-gradient(to top, black, transparent);
+                    mask-image: linear-gradient(to right, black, transparent);
                     opacity: .25;
                     z-index: 0;
                 }
@@ -253,17 +254,17 @@
                     align-items: center;
                     justify-content: center;
                     flex-direction: column;
-                    gap: 3px;
+                    gap: 5px;
                     flex-shrink: 0;
 
                     position: relative;
                     z-index: 10;
 
-                    padding: 3px 0;
+                    padding: 5px 0;
                     margin: 0;
 
                     & span {
-                        font-size: 12px;
+                        font-size: 13px;
                         opacity: .5;
                         width: 100%;
                         text-align: center;
@@ -289,7 +290,7 @@
                         text-align: center;
                         padding: 0 10px;
                         margin: 0;
-                        font-size: 17px;
+                        font-size: 20px;
                     }
                 }
 

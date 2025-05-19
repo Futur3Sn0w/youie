@@ -581,15 +581,17 @@ function createHeaderButtons(module) {
         $menu.append('<div class="module-action" data-action="view"><i class="fa-solid fa-arrow-up-right-from-square"></i> View More</div>');
     }
     $menu.append('<div class="module-action" data-action="info"><i class="fa-solid fa-circle-info"></i> Module Info</div>');
-    try {
-        const states = JSON.parse(localStorage.getItem('moduleStates') || '[]');
-        const firstModuleId = states.length > 0 ? states[0].id : null;
-        if (module.id !== firstModuleId) {
-            $menu.append('<div class="sep mt-sep"></div>');
-            $menu.append('<div class="module-action" data-action="move-top"><i class="fa-solid fa-arrow-up"></i> Move to Top</div>');
+    if (module.contentType !== 'rss') {
+        try {
+            const states = JSON.parse(localStorage.getItem('moduleStates') || '[]');
+            const firstModuleId = states.length > 0 ? states[0].id : null;
+            if (module.id !== firstModuleId) {
+                $menu.append('<div class="sep mt-sep"></div>');
+                $menu.append('<div class="module-action" data-action="move-top"><i class="fa-solid fa-arrow-up"></i> Move to Top</div>');
+            }
+        } catch (e) {
+            console.error('Failed to check moduleStates:', e);
         }
-    } catch (e) {
-        console.error('Failed to check moduleStates:', e);
     }
     $menu.append('<div class="sep"></div>');
     $menu.append('<div class="module-action" data-action="delete"><i class="fa-solid fa-eye-slash"></i> Remove Module</div>');
