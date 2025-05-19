@@ -568,9 +568,13 @@ function createHeaderButtons(module) {
             $menu.toggleClass('visible');
         })
         .on("mouseover", function () {
-            $(this).closest('.module').find('.title').text($(this).attr('hoverTxt'));
+            if (!$(this).closest('.module').hasClass('.rss-module')) {
+                $(this).closest('.module').find('.title').text($(this).attr('hoverTxt'));
+            }
         }).on('mouseout', function () {
-            $(this).closest('.module').find('.title').text(module.name);
+            if (!$(this).closest('.module').hasClass('.rss-module')) {
+                $(this).closest('.module').find('.title').text(module.name);
+            }
         }).appendTo($modActions);
 
     $modActions.appendTo($modHead);
@@ -1250,6 +1254,7 @@ function createRssInputForm() {
     $form.append('<p>Enter details manually:</p>');
     $form.append('<input type="text" class="rss-title" placeholder="Enter Title">');
     $form.append('<input type="url" class="rss-url" placeholder="Enter RSS Feed URL">');
+    // Refactored $submit button with duplicate check and confirmation popup
     const $submit = $('<button>Add Feed</button>').on('click', async function () {
         const title = $form.find('.rss-title').val().trim();
         const url = $form.find('.rss-url').val().trim();
@@ -1259,45 +1264,64 @@ function createRssInputForm() {
             return;
         }
 
-        try {
-            const rssData = await fetchRssFeed(url);
-            if (!rssData.items || rssData.items.length === 0) {
-                alert('No RSS items found or invalid feed.');
-                return;
+        const customModules = JSON.parse(localStorage.getItem('customModules') || '[]');
+        const existingMatch = customModules.find(m => m.feedUrl === url || m.name === title);
+
+        const proceedToAdd = async () => {
+            try {
+                const rssData = await fetchRssFeed(url);
+                if (!rssData.items || rssData.items.length === 0) {
+                    alert('No RSS items found or invalid feed.');
+                    return;
+                }
+
+                const id = `rss-${btoa(url).replace(/[^a-zA-Z0-9]/g, '')}-${Date.now()}`;
+                const module = {
+                    id,
+                    name: title,
+                    description: `RSS Feed: ${title}`,
+                    category: ['Custom', 'Web'],
+                    mode: 'internal',
+                    icon: 'fa-solid fa-rss',
+                    contentType: 'rss',
+                    feedUrl: url
+                };
+
+                customModules.push(module);
+                localStorage.setItem('customModules', JSON.stringify(customModules));
+
+                const $rssPage = renderRssModule(module, rssData.items, rssData.feedLink);
+                $('.scroller').append($rssPage);
+                forceRebuildMasonry();
+                setTimeout(updatePageBar, 100);
+                $('#globalPopup').removeClass('visible');
+            } catch (e) {
+                console.error('Error loading RSS:', e);
+                alert('Failed to load RSS feed.');
             }
+            saveWidgetStates();
+        };
 
-            const id = `rss-${btoa(feedUrl).replace(/[^a-zA-Z0-9]/g, '')}-${Date.now()}`;
-            const module = {
-                id,
-                name: title,
-                description: `RSS Feed: ${title}`,
-                category: ['Custom', 'Web'],
-                mode: 'internal',
-                icon: 'fa-solid fa-rss',
-                contentType: 'rss',
-                feedUrl: url
-            };
+        if (existingMatch) {
+            showGlobalPopup("Duplicate Feed Detected", `
+                <p>A feed with the same ${existingMatch.feedUrl === url ? "URL" : "title"} already exists.</p>
+                <p>Do you want to add it anyway?</p>
+                <button class="popup-confirm">Yes, Add Anyway</button>
+                <button class="popup-cancel">Cancel</button>
+            `);
 
-            const customModules = JSON.parse(localStorage.getItem('customModules') || '[]');
-            customModules.push(module);
-            localStorage.setItem('customModules', JSON.stringify(customModules));
+            $('.popup-confirm').on('click', () => {
+                $('#globalPopup').removeClass('visible');
+                proceedToAdd();
+            });
 
-            // const $module = renderRssModule(module, rssData.items);
-            // $('.container').prepend($module);
-            const $rssPage = renderRssModule(module, rssData.items, rssData.feedLink);
-            $('.scroller').append($rssPage);
-            forceRebuildMasonry();
-            setTimeout(() => {
-                updatePageBar(); // Function to refresh the button bar
-            }, 100);
-            $('#globalPopup').removeClass('visible');
-        } catch (e) {
-            console.error('Error loading RSS:', e);
-            alert('Failed to load RSS feed.');
+            $('.popup-cancel').on('click', () => {
+                $('#globalPopup').removeClass('visible');
+            });
+        } else {
+            proceedToAdd();
         }
-        saveWidgetStates();
     });
-
     $form.append($submit);
 
     // Divider and starter feed section
@@ -1326,9 +1350,36 @@ function createRssInputForm() {
         $starterBtn.prop('disabled', !$(this).val());
     });
 
-    $starterBtn.on('click', async function () {
+    $starterBtn.on('click', async function starterClickHandler(e, forceAdd) {
         const feedUrl = $feedSelect.val();
         const title = $feedSelect.find('option:selected').text();
+
+        // Only perform duplicate check if not forceAdd (to prevent infinite loop)
+        if (!forceAdd) {
+            const existingStarter = JSON.parse(localStorage.getItem('customModules') || '[]')
+                .find(m => m.feedUrl === feedUrl);
+
+            if (existingStarter) {
+                showGlobalPopup("Starter Feed Already Added", `
+                    <p>The feed "${title}" is already added.</p>
+                    <p>Do you want to add it again anyway?</p>
+                    <button class="popup-confirm">Yes, Add Anyway</button>
+                    <button class="popup-cancel">Cancel</button>
+                `);
+
+                $('.popup-confirm').on('click', () => {
+                    $('#globalPopup').removeClass('visible');
+                    // Call again with forceAdd = true to skip duplicate check
+                    $starterBtn.trigger('click', [true]);
+                });
+
+                $('.popup-cancel').on('click', () => {
+                    $('#globalPopup').removeClass('visible');
+                });
+
+                return;
+            }
+        }
 
         try {
             const rssData = await fetchRssFeed(feedUrl);
@@ -1353,8 +1404,6 @@ function createRssInputForm() {
             customModules.push(module);
             localStorage.setItem('customModules', JSON.stringify(customModules));
 
-            // const $module = renderRssModule(module, rssData.items);
-            // $('.container').prepend($module);
             const $rssPage = renderRssModule(module, rssData.items, rssData.feedLink);
             $('.scroller').append($rssPage);
             forceRebuildMasonry();
