@@ -626,22 +626,47 @@ function createHeaderButtons(module) {
             showGlobalPopup(module.name, info);
         } else if (action === 'delete') {
             const moduleId = module.id;
-            $thisModule.fadeOut(200, function () {
-                $thisModule.remove();
+            if ($thisModule.hasClass('rss-module')) {
+                $('.scroller').addClass('tempHide');
+                $('.page-bar').addClass('tempHide');
+                setTimeout(() => {
+                    $thisModule.parent().remove();
 
-                // Remove from selectedModules (if present)
-                const selectedModules = JSON.parse(localStorage.getItem('selectedModules') || '[]');
-                const updatedSelected = selectedModules.filter(id => id !== moduleId);
-                localStorage.setItem('selectedModules', JSON.stringify(updatedSelected));
+                    $('.page-bar').find(`button[for="${moduleId}"]`).remove();
+                    // Remove from selectedModules (if present)
+                    const selectedModules = JSON.parse(localStorage.getItem('selectedModules') || '[]');
+                    const updatedSelected = selectedModules.filter(id => id !== moduleId);
+                    localStorage.setItem('selectedModules', JSON.stringify(updatedSelected));
 
-                // Remove from customModules (if applicable)
-                const customModules = JSON.parse(localStorage.getItem('customModules') || '[]');
-                const updatedCustoms = customModules.filter(m => m.id !== moduleId);
-                localStorage.setItem('customModules', JSON.stringify(updatedCustoms));
+                    // Remove from customModules (if applicable)
+                    const customModules = JSON.parse(localStorage.getItem('customModules') || '[]');
+                    const updatedCustoms = customModules.filter(m => m.id !== moduleId);
+                    localStorage.setItem('customModules', JSON.stringify(updatedCustoms));
 
-                forceRebuildMasonry();
-                saveWidgetStates();
-            });
+                    forceRebuildMasonry();
+                    saveWidgetStates();
+                    $('.page-bar').removeClass('tempHide');
+                    $('.scroller').removeClass('tempHide');
+                }, 200);
+
+            } else {
+                $thisModule.fadeOut(200, function () {
+                    $thisModule.remove();
+
+                    // Remove from selectedModules (if present)
+                    const selectedModules = JSON.parse(localStorage.getItem('selectedModules') || '[]');
+                    const updatedSelected = selectedModules.filter(id => id !== moduleId);
+                    localStorage.setItem('selectedModules', JSON.stringify(updatedSelected));
+
+                    // Remove from customModules (if applicable)
+                    const customModules = JSON.parse(localStorage.getItem('customModules') || '[]');
+                    const updatedCustoms = customModules.filter(m => m.id !== moduleId);
+                    localStorage.setItem('customModules', JSON.stringify(updatedCustoms));
+
+                    forceRebuildMasonry();
+                    saveWidgetStates();
+                });
+            }
         } else if (action === 'move-top') {
             const $container = $('.container');
             const previousFirstId = $container.children('.module').first().attr('id');
