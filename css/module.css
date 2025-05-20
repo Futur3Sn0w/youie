@@ -212,6 +212,24 @@
             box-shadow: var(--bxsh-border);
             border-radius: 14px;
 
+            &:has(.module-menu.visible) {
+                max-height: 200px;
+                max-width: 200px;
+                gap: 3px;
+
+                border-radius: 13px 13px 15px 15px;
+                background-color: var(--root-back);
+                box-shadow:
+                    inset 0 0 0 1px var(--module-border),
+                    0 5px 10px rgba(0, 0, 0, 0.2);
+
+                & .header-icon[hovertxt="Menu"] {
+                    border-radius: 30px !important;
+                    background-color: white !important;
+                    color: black !important;
+                }
+            }
+
             & .header-icon {
                 font-size: 12px;
                 cursor: pointer;
@@ -266,7 +284,7 @@
             }
 
             & .modActions {
-                width: 102px;
+                width: fit-content;
                 display: flex;
                 align-items: center;
                 justify-content: flex-end;
@@ -293,8 +311,6 @@
                 max-height: 0;
                 pointer-events: none;
                 opacity: 0;
-
-                min-width: 120px;
 
                 &.visible {
                     opacity: 1;
@@ -345,18 +361,6 @@
                         color: var(--root-text);
                     }
                 }
-            }
-
-            &:has(.module-menu.visible) {
-                max-height: 200px;
-                max-width: 200px;
-                gap: 3px;
-
-                border-radius: 13px 13px 15px 15px;
-                background-color: var(--root-back);
-                box-shadow:
-                    inset 0 0 0 1px var(--module-border),
-                    0 5px 10px rgba(0, 0, 0, 0.2);
             }
         }
     }
