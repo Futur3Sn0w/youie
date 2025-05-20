@@ -79,7 +79,8 @@
             max-width: unset;
             max-height: unset;
 
-            & .mod-actions {
+            & .mod-actions,
+            & .header-icon {
                 display: none;
             }
 
@@ -88,6 +89,7 @@
                 opacity: 1;
                 pointer-events: all;
                 gap: 3px;
+                padding: 3px;
                 max-height: unset;
                 max-width: unset;
                 height: 100%;
