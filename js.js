@@ -615,9 +615,9 @@ function createHeaderButtons(module) {
         $menu.append('<div class="sep"></div>');
         $menu.append('<div class="module-action" data-action="delete"><i class="fa-solid fa-eye-slash"></i> Remove Module</div>');
     } else {
-        $menu.append('<div class="module-action" data-action="info"><i class="fa-solid fa-circle-info"></i> RSS Info</div>');
+        $menu.append('<div class="module-action" data-action="info"><i class="fa-solid fa-circle-info"></i> Info</div>');
         $menu.append('<div class="sep"></div>');
-        $menu.append('<div class="module-action" data-action="delete"><i class="fa-solid fa-eye-slash"></i> Remove RSS Feed</div>');
+        $menu.append('<div class="module-action" data-action="delete"><i class="fa-solid fa-eye-slash"></i> Remove Feed</div>');
     }
 
     // Add handlers once

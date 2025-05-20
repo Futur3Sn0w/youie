@@ -118,6 +118,10 @@
                         background-color: white;
                         color: black !important;
                         border-color: transparent;
+
+                        & * {
+                            color: black !important;
+                        }
                     }
                 }
             }
