@@ -80,7 +80,7 @@
             max-height: unset;
             padding: 3px;
 
-            & .mod-actions,
+            & .modActions,
             & .header-icon {
                 display: none !important;
             }
@@ -95,9 +95,7 @@
                 height: 100%;
 
                 & .sep {
-                    width: 1px;
-                    height: 90%;
-                    margin: auto 3px;
+                    display: none !important;
                 }
 
                 & .module-action {
