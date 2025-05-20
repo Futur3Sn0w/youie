@@ -77,6 +77,15 @@
 
         & .modHeadBtns {
 
+            & .module-menu {
+                flex-direction: row;
+                opacity: 1;
+                pointer-events: all;
+                gap: 3px;
+                max-height: 100px;
+                max-width: 500px;
+            }
+
             /* &:has(.module-menu:not(.visible)) {
                 width: 25px;
             } */
