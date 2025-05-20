@@ -104,6 +104,10 @@
                     transition: .15s;
                     border-radius: 6px;
 
+                    & i {
+                        transition: .15s;
+                    }
+
                     &:first-of-type {
                         border-top-left-radius: 12px;
                         border-bottom-left-radius: 12px;
