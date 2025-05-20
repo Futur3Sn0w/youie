@@ -83,8 +83,9 @@
                 opacity: 1;
                 pointer-events: all;
                 gap: 3px;
-                max-height: 100px;
-                max-width: 500px;
+                max-height: unset;
+                max-width: unset;
+                height: 100%;
 
                 & .sep {
                     width: 1px;
@@ -95,6 +96,8 @@
                 & .module-action {
                     color: var(--root-text);
                     background-color: var(--surface-button);
+                    transition: .15s;
+                    border-radius: 6px;
 
                     &:first-of-type {
                         border-top-left-radius: 12px;
