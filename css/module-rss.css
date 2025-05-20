@@ -76,6 +76,7 @@
         }
 
         & .modHeadBtns {
+            max-width: unset;
 
             & .module-menu {
                 flex-direction: row;
@@ -84,6 +85,33 @@
                 gap: 3px;
                 max-height: 100px;
                 max-width: 500px;
+
+                & .sep {
+                    width: 1px;
+                    height: 90%;
+                    margin: auto 3px;
+                }
+
+                & .module-action {
+                    color: var(--root-text);
+                    background-color: var(--surface-button);
+
+                    &:first-of-type {
+                        border-top-left-radius: 12px;
+                        border-bottom-left-radius: 12px;
+                    }
+
+                    &:last-of-type {
+                        border-top-right-radius: 12px;
+                        border-bottom-right-radius: 12px;
+                    }
+
+                    &:hover {
+                        background-color: white;
+                        color: black !important;
+                        border-color: transparent;
+                    }
+                }
             }
 
             /* &:has(.module-menu:not(.visible)) {
@@ -91,7 +119,7 @@
             } */
 
             & .header-icon {
-                border-radius: 1000px !important;
+                display: none;
             }
         }
     }
