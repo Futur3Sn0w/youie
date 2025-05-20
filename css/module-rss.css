@@ -77,6 +77,11 @@
 
         & .modHeadBtns {
             max-width: unset;
+            max-height: unset;
+
+            & .mod-actions {
+                display: none;
+            }
 
             & .module-menu {
                 flex-direction: row;
@@ -115,14 +120,6 @@
                         border-color: transparent;
                     }
                 }
-            }
-
-            /* &:has(.module-menu:not(.visible)) {
-                width: 25px;
-            } */
-
-            & .header-icon {
-                display: none;
             }
         }
     }
