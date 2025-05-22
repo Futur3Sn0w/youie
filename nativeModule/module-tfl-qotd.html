@@ -37,7 +37,7 @@
 
             #qotd-quote {
                 width: 100%;
-                height: 100%;
+                height: calc(100% - 40px);
                 text-align: center;
 
                 display: flex;
@@ -64,6 +64,8 @@
 
             #sep {
                 display: flex;
+                position: absolute;
+                bottom: 25px;
             }
 
             #qotd-author {
@@ -72,10 +74,11 @@
                 opacity: .6;
 
                 display: flex;
+                flex-direction: column;
                 flex-shrink: 0;
 
                 position: absolute;
-                bottom: 5px;
+                bottom: 10px;
             }
         }
 
@@ -134,11 +137,23 @@
                 return;
             }
 
+            function autoResizeText($el, minSize = 12) {
+                let fontSize = parseInt($el.css("font-size"));
+                const maxHeight = $el.height();
+                const maxWidth = $el.width();
+
+                while ((($el[0].scrollHeight > maxHeight || $el[0].scrollWidth > maxWidth) && fontSize > minSize)) {
+                    fontSize--;
+                    $el.css("font-size", fontSize + "px");
+                }
+            }
+
             function renderQOTD(dataObj) {
                 const { title, link, imgSrc, quoteText, discussHref } = dataObj;
 
                 $("#qotd-author").text(title);
                 $("#qotd-quote").text(quoteText);
+                autoResizeText($("#qotd-quote"));
 
                 if (imgSrc) {
                     $("#qotd-image").attr("src", imgSrc).show();
