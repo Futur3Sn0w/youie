@@ -39,7 +39,12 @@
 
             #qotd-quote {
                 width: 100%;
+                height: 100%;
                 text-align: center;
+
+                display: flex;
+                align-items: center;
+                justify-content: center;
 
                 box-sizing: border-box;
                 padding: 0 15px;
@@ -49,14 +54,14 @@
 
                 overflow-y: scroll;
 
-                &::before,
+                /* &::before,
                 &::after {
                     content: '"';
                     font-size: 28px;
                     font-style: italic;
                     font-weight: normal;
                     opacity: .5;
-                }
+                } */
             }
 
             #sep {
@@ -67,6 +72,9 @@
                 font-size: 15px;
                 font-weight: 500;
                 opacity: .6;
+
+                display: flex;
+                flex-shrink: 0;
 
                 position: absolute;
                 bottom: 5px;
