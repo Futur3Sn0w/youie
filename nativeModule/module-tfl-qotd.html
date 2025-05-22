@@ -67,6 +67,9 @@
                 font-size: 15px;
                 font-weight: 500;
                 opacity: .6;
+
+                position: absolute;
+                bottom: 5px;
             }
         }
 
@@ -167,20 +170,6 @@
 
                 if (imgSrc) {
                     $("#qotd-image").attr("src", imgSrc).show();
-                }
-
-                if (link) {
-                    $("#qotd-link").on("click", () => window.open(link, "_blank")).show();
-                }
-
-                if (discussHref) {
-                    const $discuss = $('<a>')
-                        .attr('href', discussHref)
-                        .attr('target', '_blank')
-                        .addClass('discuss-link')
-                        .attr('id', 'discuss')
-                        .text('Discuss...');
-                    $("#qotd-module").parent().append($discuss);
                 }
             }
 
