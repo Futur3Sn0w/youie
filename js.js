@@ -1586,8 +1586,7 @@ function renderRssModule(module, items, feedLink = '') {
 
     const $favicon = $('<img>')
         .addClass('rss-favicon')
-        .attr('alt', 'favicon')
-        .css({ width: '20px', height: '20px', marginRight: '8px' });
+        .attr('alt', 'favicon');
 
     if (domain) {
         $favicon.attr('src', `https://www.google.com/s2/favicons?sz=64&domain=${domain}`);
