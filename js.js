@@ -1575,7 +1575,25 @@ function renderRssModule(module, items, feedLink = '') {
     if (feedLink) {
         module.externalLink = feedLink;
     }
-    $('<i>').addClass('icon').addClass(module.icon).appendTo($header);
+    const feedUrl = module.feedUrl || '';
+    let domain = '';
+    try {
+        const parsedUrl = new URL(feedUrl);
+        domain = parsedUrl.hostname;
+    } catch (e) {
+        console.warn('Invalid feed URL for favicon:', feedUrl);
+    }
+
+    const $favicon = $('<img>')
+        .addClass('rss-favicon')
+        .attr('alt', 'favicon')
+        .css({ width: '20px', height: '20px', marginRight: '8px' });
+
+    if (domain) {
+        $favicon.attr('src', `https://www.google.com/s2/favicons?sz=64&domain=${domain}`);
+    }
+
+    $header.append($favicon);
     $(`<h2 class="title">${module.name}</h2>`).appendTo($header);
     $header.append(createHeaderButtons(module));
     $moduleDiv.append($header);

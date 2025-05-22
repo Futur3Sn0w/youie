@@ -29,36 +29,30 @@ body {
         position: relative;
     }
 
-    &:has(.settingsWindow.visible),
     &:has(.global-popup.visible) {
         overflow: hidden !important;
 
-        .toolbar {
-            pointer-events: none;
-            opacity: .5;
-            filter: blur(10px);
-            transform: translateY(-50px);
-        }
-
+        .toolbar,
         .scroller,
         .main-header {
             pointer-events: none;
-        }
-
-        &>.backImg {
-            transform: scale(1.05);
-            filter: blur(10px);
-            opacity: .25;
         }
     }
 
     &:has(.settingsWindow.visible) {
 
         .scroller,
-        .main-header {
+        .page-bar,
+        .toolbar {
             pointer-events: none;
             opacity: .75;
             filter: blur(10px);
+        }
+
+        &>.backImg {
+            transform: scale(1.05);
+            filter: blur(10px);
+            opacity: .25;
         }
     }
 
