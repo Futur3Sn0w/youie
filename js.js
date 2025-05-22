@@ -1579,7 +1579,20 @@ function renderRssModule(module, items, feedLink = '') {
     let domain = '';
     try {
         const parsedUrl = new URL(feedUrl);
-        domain = parsedUrl.hostname;
+        let hostname = parsedUrl.hostname;
+
+        // Ensure 'www.' subdomain is used
+        if (!hostname.startsWith('www.')) {
+            const parts = hostname.split('.');
+            if (parts.length > 2) {
+                // Remove existing subdomain and prepend 'www.'
+                hostname = 'www.' + parts.slice(-2).join('.');
+            } else {
+                hostname = 'www.' + hostname;
+            }
+        }
+
+        domain = hostname;
     } catch (e) {
         console.warn('Invalid feed URL for favicon:', feedUrl);
     }
