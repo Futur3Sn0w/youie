@@ -83,37 +83,7 @@
 
         #qotd-link,
         #discuss {
-            appearance: none;
-            padding: 7px 12px;
-
-            color: var(--root-text);
-            font-size: 13px;
-            font-weight: 500;
-
-            border-radius: 100px;
-            box-shadow: var(--bxsh-border);
-
-            cursor: pointer;
-            transition: .15s;
-
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-
-            background-color: var(--root-back-alpha);
-
-            &:hover {
-                background-color: white;
-                color: black;
-                border-color: transparent;
-            }
-        }
-
-        #discuss {
-            margin: 0;
-
-            right: unset;
-            left: 10px;
+            display: none !important;
         }
 
         #qotd-image {
@@ -130,10 +100,6 @@
 
             object-fit: cover;
             object-position: top center;
-        }
-
-        @keyframes imgSlide {
-            0% {}
         }
     </style>
 </head>
@@ -178,6 +144,20 @@
 
                 if (imgSrc) {
                     $("#qotd-image").attr("src", imgSrc).show();
+                }
+
+                if (link) {
+                    $("#qotd-link").on("click", () => window.open(link, "_blank")).show();
+                }
+
+                if (discussHref) {
+                    const $discuss = $('<a>')
+                        .attr('href', discussHref)
+                        .attr('target', '_blank')
+                        .addClass('discuss-link')
+                        .attr('id', 'discuss')
+                        .text('Discuss...');
+                    $("#qotd-module").parent().append($discuss);
                 }
             }
 
