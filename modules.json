@@ -179,6 +179,7 @@
             "mode": "internal",
             "id": "module-thenews",
             "icon": "fa-solid fa-newspaper",
+            "noShow": true,
             "height": "297",
             "contentType": "iframe"
         },

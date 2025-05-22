@@ -3,6 +3,7 @@
         --root-back: #fefefe;
         --root-back-alpha: #eeeeee99;
         --root-back-alpha-b: #ffffffa9;
+        --root-back-overlay: #ffffff88;
         --root-text: black;
         --root-link-text: blue;
         --surface-button: #22222208;
@@ -12,8 +13,8 @@
         --module-back-focus: #ffffffee;
         --module-border: #00000022;
 
-        --youie-blue: rgb(12, 48, 207);
-        --youie-red: rgb(215, 40, 40);
+        --youie-blue: rgb(12, 54, 207);
+        --youie-red: rgb(226, 41, 41);
 
         --gmenu-a: #E9EEF6;
         --gmenu-b: #F8FAFE;
@@ -29,6 +30,7 @@
         --root-back: #222;
         --root-back-alpha: #22222299;
         --root-back-alpha-b: #bababa99;
+        --root-back-overlay: #ffffff11;
         --root-text: white;
         --root-link-text: skyblue;
         --surface-button: #ffffff22;
@@ -39,7 +41,7 @@
         --module-border: #ffffff66;
 
         --youie-blue: rgb(40, 152, 237);
-        --youie-red: rgb(236, 63, 63);
+        --youie-red: rgb(222, 53, 90);
 
         --gmenu-a: #282A2C;
         --gmenu-b: #1B1B1B;

@@ -27,6 +27,15 @@
     &:has(.mainMenu.visible) {
         max-height: 300px;
         border-radius: 14px;
+        border-top-right-radius: 20px;
+
+        & .mainMenuBtn {
+            background-color: white !important;
+
+            & i {
+                color: black !important;
+            }
+        }
     }
 
     & .bar {

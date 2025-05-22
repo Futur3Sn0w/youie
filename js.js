@@ -34,19 +34,12 @@ $(document).ready(function () {
             $('.settingsWindow').find('.tabBtn').first().click();
         } else if (action === 'add-feed') {
             $('.settingsBtn').click();
-            $('.settingsWindow').find('.tabBtn').first().click();
-            setTimeout(() => {
-                $('.rss-add-btn').click();
-            }, 200);
+            $('.settingsWindow').find('.tabBtn[tab="RSS Feeds"]').click();
         }
         forceRebuildMasonry(true);
 
         $('.mainMenu').removeClass('visible');
         saveWidgetStates();
-    });
-
-    $('.rss-add-btn').on('click', function () {
-        showGlobalPopup('Add RSS Feed', createRssInputForm());
     });
 
     $(window).on('load resize', markOverflowingElements);
@@ -1073,34 +1066,45 @@ function loadModules() {
 function openModuleSelector(modules) {
     const $popup = $('.module-selector-popup');
     const $moduleList = $('<ul>').addClass('module-list');
-    const $filterContainer = $('<div class="category-filters">');
-    const allCategories = [...new Set(modules.flatMap(m => m.category || []))].sort();
-
-    const $clearBtn = $('<button class="filter-btn clear selected" style="order: 999; margin-left: auto;">Clear</button>').on('click', function () {
-        $('.filter-btn').removeClass('selected');
-        $(this).addClass('selected');
-        $moduleList.children().show();
-    });
-    $filterContainer.append($clearBtn);
-
-    allCategories.forEach(category => {
-        const $btn = $(`<button class="filter-btn">${category}</button>`).on('click', function () {
-            // Remove selected class from all filter buttons
-            $('.filter-btn').removeClass('selected');
-            // Add selected class to the clicked button
-            $(this).addClass('selected');
-
-            $moduleList.children().hide().filter((_, el) => {
-                const categories = ($(el).data('categories') || "").split(',');
-                return categories.includes(category);
-            }).show();
-        });
-        $filterContainer.append($btn);
-    });
 
     const $settings = $('.settingsWindow');
 
     const selectedModuleIds = JSON.parse(localStorage.getItem('selectedModules')) || [];
+
+    // --- Insert Select All / Deselect All buttons and logic ---
+    const $selectAllBtn = $('.select-all-modules');
+    const $deselectAllBtn = $('.deselect-all-modules');
+
+    function updateSelectButtons() {
+        const totalModules = $moduleList.find('.module-item').length;
+        const selectedCount = $moduleList.find('.module-item.selected').length;
+        $selectAllBtn.prop('disabled', selectedCount === totalModules);
+        $deselectAllBtn.prop('disabled', selectedCount === 0);
+    }
+
+    $selectAllBtn.on('click', function () {
+        $moduleList.find('.module-item').addClass('selected');
+        saveModuleSelections();
+        updateSelectButtons();
+        loadModules();
+        saveWidgetStates();
+    });
+
+    $deselectAllBtn.on('click', function () {
+        $moduleList.find('.module-item').removeClass('selected');
+        saveModuleSelections();
+        updateSelectButtons();
+        loadModules();
+        saveWidgetStates();
+    });
+
+    function saveModuleSelections() {
+        const selectedIds = $moduleList.find('.module-item.selected')
+            .map((_, el) => $(el).data('module-id'))
+            .get();
+        localStorage.setItem('selectedModules', JSON.stringify(selectedIds));
+    }
+    // --- End Select All / Deselect All logic ---
 
     // Sort the modules array alphabetically by name
     modules.sort((a, b) => {
@@ -1153,6 +1157,7 @@ function openModuleSelector(modules) {
                 loadModules();
 
                 saveWidgetStates();
+                updateSelectButtons();
             });
 
             $moduleList.append($listItem);
@@ -1166,8 +1171,9 @@ function openModuleSelector(modules) {
         $('*').blur();
     });
 
-    $popup.children("*:not(.rss-add-btn)").remove();
-    $popup.append($filterContainer, $moduleList);
+    $('.settingsWindow .module-list').remove();
+    $popup.append($moduleList);
+    updateSelectButtons();
 
     $settings.addClass('visible');
 }
@@ -1182,6 +1188,12 @@ function openSettingsWindow(modules) {
             console.error('Failed to refresh modules before opening settings.');
             openModuleSelector(modules); // fallback to original
         });
+
+    const $rfc = $('.settingsWindow .rss-feed-creation');
+    $rfc.find('.rss-title').val('');
+    $rfc.find('.rss-url').val('');
+    $rfc.find('.rss-starter-select').val('');
+    $rfc.find('.rss-starter-submit').prop('disabled', true);
 
     $('.settingsWindow').each(function () {
         var $settingsWindow = $(this);
@@ -1198,6 +1210,7 @@ function openSettingsWindow(modules) {
                             $('.tabBtn.selected').removeClass('selected');
                             $(`.tab[tab="${tabAttribute}"]`).addClass('selected');
                             $(`.tabBtn[tab="${tabAttribute}"]`).addClass('selected');
+                            $('.settingsWindow .tabs').attr('tabDesc', $(`.tab.selected`).attr('tabDesc'))
                         })
                         .prepend(`<i class="fa-solid ${$(this).attr('icon')}">`);
 
@@ -1238,6 +1251,7 @@ function openSettingsWindow(modules) {
     const vpWidth = window.innerWidth;
     const vpHeight = window.innerHeight;
     $('#aboutViewport').text(`${vpWidth} × ${vpHeight}`);
+    $('.settingsWindow .tabs').attr('tabDesc', $(`.tab.selected`).attr('tabDesc'))
 }
 
 function addToTabTitle(suffix) {
@@ -1343,24 +1357,19 @@ function updatePageBar() {
         .prependTo($bar);
 }
 
-function createRssInputForm() {
-    const $form = $('<div class="rss-form">');
-    $form.append('<p>Enter details manually:</p>');
-    $form.append('<input type="text" class="rss-title" placeholder="Enter Title">');
-    $form.append('<input type="url" class="rss-url" placeholder="Enter RSS Feed URL">');
-    // Refactored $submit button with duplicate check and confirmation popup
-    const $submit = $('<button>Add Feed</button>').on('click', async function () {
+// RSS Feed Creation Handlers
+$(document).ready(function () {
+    // Manual RSS feed submit
+    $(document).on('click', '.rss-manual-submit', async function () {
+        const $form = $(this).closest('.rss-form');
         const title = $form.find('.rss-title').val().trim();
         const url = $form.find('.rss-url').val().trim();
-
         if (!title || !url) {
             alert('Please enter both a title and RSS URL.');
             return;
         }
-
         const customModules = JSON.parse(localStorage.getItem('customModules') || '[]');
         const existingMatch = customModules.find(m => m.feedUrl === url || m.name === title);
-
         const proceedToAdd = async () => {
             try {
                 const rssData = await fetchRssFeed(url);
@@ -1368,7 +1377,6 @@ function createRssInputForm() {
                     alert('No RSS items found or invalid feed.');
                     return;
                 }
-
                 const id = `rss-${btoa(url).replace(/[^a-zA-Z0-9]/g, '')}-${Date.now()}`;
                 const module = {
                     id,
@@ -1380,22 +1388,18 @@ function createRssInputForm() {
                     contentType: 'rss',
                     feedUrl: url
                 };
-
                 customModules.push(module);
                 localStorage.setItem('customModules', JSON.stringify(customModules));
-
                 const $rssPage = renderRssModule(module, rssData.items, rssData.feedLink);
                 $('.scroller').append($rssPage);
                 forceRebuildMasonry();
                 setTimeout(updatePageBar, 100);
-                $('#globalPopup').removeClass('visible');
             } catch (e) {
                 console.error('Error loading RSS:', e);
                 alert('Failed to load RSS feed.');
             }
             saveWidgetStates();
         };
-
         if (existingMatch) {
             if (confirm(`A feed with the same ${existingMatch.feedUrl === url ? "URL" : "title"} already exists.\nDo you want to add it anyway?`)) {
                 proceedToAdd();
@@ -1404,58 +1408,40 @@ function createRssInputForm() {
             proceedToAdd();
         }
     });
-    $form.append($submit);
 
-    // Divider and starter feed section
-    $form.append('<div class="sep">');
-    $form.append('<p>Or choose an RSS feed to get you started:</p>');
-
-    let $feedSelectForm = $('<div class="feedForm">');
-
-    const starterFeeds = {
-        "Yahoo News": "https://news.yahoo.com/rss/",
-        "A Frugal Chick": "https://www.afrugalchick.com/feed/",
-        "Pilot Online": "https://www.pilotonline.com/feed/",
-        "HuffPost": "https://chaski.huffpost.com/us/auto/vertical/us-news",
-        "BleepingComputer": "https://www.bleepingcomputer.com/feed/",
-        "MakeUseOf": "https://www.makeuseof.com/feed/"
-    };
-
-    const $feedSelect = $('<select><option value="" hidden>-- Select a feed --</option></select>');
-    Object.entries(starterFeeds).forEach(([label, url]) => {
-        $feedSelect.append(`<option value="${url}">${label}</option>`);
+    // Starter feed select: enable/disable the button
+    $(document).on('change', '.rss-starter-select', function () {
+        const $form = $(this).closest('.rss-form');
+        $form.find('.rss-starter-submit').prop('disabled', !$(this).val());
     });
 
-    const $starterBtn = $('<button disabled>Add Feed</button>');
-
-    $feedSelect.on('change', function () {
-        $starterBtn.prop('disabled', !$(this).val());
-    });
-
-    $starterBtn.on('click', async function starterClickHandler(e, forceAdd) {
-        const feedUrl = $feedSelect.val();
-        const title = $feedSelect.find('option:selected').text();
-
+    // Starter feed submit
+    $(document).on('click', '.rss-starter-submit', async function (e) {
+        const $form = $(this).closest('.rss-form');
+        const $select = $form.find('.rss-starter-select');
+        const feedUrl = $select.val();
+        const title = $select.find('option:selected').text();
+        if (!feedUrl) return;
         // Only perform duplicate check if not forceAdd (to prevent infinite loop)
         const existingStarter = JSON.parse(localStorage.getItem('customModules') || '[]')
             .find(m => m.feedUrl === feedUrl);
-
-        if (!forceAdd && existingStarter) {
+        if (!e.originalEvent?.forceAdd && existingStarter) {
             if (confirm(`The feed "${title}" is already added.\nDo you want to add it again anyway?`)) {
-                $starterBtn.trigger('click', [true]);
+                // Re-trigger click with forceAdd
+                const evt = $.Event('click');
+                evt.forceAdd = true;
+                $(this).trigger(evt);
                 return;
             } else {
                 return;
             }
         }
-
         try {
             const rssData = await fetchRssFeed(feedUrl);
             if (!rssData.items || rssData.items.length === 0) {
                 alert('No RSS items found or invalid feed.');
                 return;
             }
-
             const id = `rss-${btoa(feedUrl).replace(/[^a-zA-Z0-9]/g, '')}-${Date.now()}`;
             const module = {
                 id,
@@ -1467,31 +1453,23 @@ function createRssInputForm() {
                 contentType: 'rss',
                 feedUrl: feedUrl
             };
-
             const customModules = JSON.parse(localStorage.getItem('customModules') || '[]');
             customModules.push(module);
             localStorage.setItem('customModules', JSON.stringify(customModules));
-
             const $rssPage = renderRssModule(module, rssData.items, rssData.feedLink);
             $('.scroller').append($rssPage);
             forceRebuildMasonry();
             setTimeout(() => {
-                updatePageBar(); // Function to refresh the button bar
+                updatePageBar();
             }, 100);
-            alert(`"${title}" feed added!`)
+            alert(`"${title}" feed added!`);
         } catch (e) {
             console.error('Error loading starter RSS feed:', e);
             alert('Failed to load starter RSS feed.');
         }
         saveWidgetStates();
     });
-
-    $feedSelectForm.append($feedSelect, $starterBtn);
-    $form.append($feedSelectForm);
-    $form.append('<a href="https://getrssfeed.com/" target="_blank">Need some help?</a>');
-
-    return $form;
-}
+});
 
 async function fetchRssFeed(url) {
     try {

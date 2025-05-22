@@ -60,7 +60,7 @@ body {
         }
     }
 
-    &:has(.searchTxt.visible),
+    &:has(button[for="search"].selected),
     &:has(#autocompleteResults:not(:empty)) {
         .scroller {
             overflow: hidden;
@@ -89,6 +89,10 @@ body {
             filter: blur(10px);
             box-shadow: 0 30px 30px #00000022;
             transform: scale(1.25);
+        }
+
+        #autocompleteResults {
+            opacity: 1;
         }
     }
 }
@@ -188,7 +192,8 @@ body>.backImg {
     flex-direction: column;
     justify-content: center;
     width: calc(100% - 40px);
-    height: fit-content;
+    height: 100%;
+    min-height: max-content;
 
     overflow: visible;
 
@@ -233,6 +238,14 @@ body>.backImg {
             display: none;
         }
     }
+
+    &:has(.container.visible) {
+        backdrop-filter: blur(0px);
+
+        &::after {
+            opacity: 0;
+        }
+    }
 }
 
 .sortable-placeholder {
@@ -258,13 +271,13 @@ body>.backImg {
     overflow: visible;
 
     width: max-content;
-    height: fit-content;
-    min-height: 100%;
+    height: calc(100% - 25vh);
+    min-height: fit-content;
 
     margin: 0 auto;
 
     box-sizing: border-box;
-    padding: 30px 20px 40px 20px;
+    padding: 30px 30px 40px 30px;
 
     transition: .2s;
 
@@ -276,6 +289,25 @@ body>.backImg {
 
     &:has(.module.resizing) .module:not(.resizing) {
         pointer-events: none !important;
+    }
+
+    &::after {
+        content: '';
+        width: 100%;
+        height: calc(100% + 40px);
+
+        background: linear-gradient(to bottom, var(--root-back-alpha), var(--root-back));
+        box-shadow: var(--bxsh-border);
+
+        backdrop-filter: blur(20px);
+        border-radius: 35px 35px 0 0;
+
+        position: absolute;
+        top: 0;
+        z-index: -1;
+
+        transition: .3s;
+        opacity: 1;
     }
 }
 

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="version" content="v0.7.0">
+    <meta name="version" content="v0.8.0-a">
     <title>Youie</title>
 
     <script src="resc/ext/jquery-3.7.1.js"></script>
@@ -61,72 +61,101 @@
             </button>
         </div>
     </div>
-    <img class="backImg">
+    <img class="backImg" />
 
 
     <div class="settingsWindow">
         <!-- <img class="backImg"> -->
         <button class="actionBtn cancel">✕</button>
-        <div class="module-selector-popup tab selected" tab="Modules" icon="fa-table-list">
-            <button class="rss-add-btn">+ Add RSS Feed...</button>
-        </div>
-        <div class="wallpaperTab tab" tab="Wallpaper" icon="fa-image">
-            <div class="optGroup" title="Wallpaper source">
-                <label><input type="radio" name="wallpaperSource" value="upload" checked> Upload</label>
-                <label><input type="radio" name="wallpaperSource" value="bing">From the Web</label>
-                <label><input type="radio" name="wallpaperSource" value="url"> From a URL</label>
-            </div>
-
-            <img id="imageDisplay" src="" alt="Selected Image">
-
-            <div id="urlInputWrapper" style="display:none;">
-                <input type="url" id="wallpaperUrlInput" class="wallActionBtn" placeholder="Enter image URL">
-            </div>
-
-            <button class="wallActionBtn" id="refreshBingBtn" style="display:none;">Get New Image</button>
-            <input class="wallActionBtn" type="file" id="fileInput" accept="image/*">
-        </div>
-
-        <div class="appearanceTab tab" tab="Appearance" icon="fa-palette">
-            <div class="optGroupWrapper" title="Toolbar position">
-                <div class="optGroup">
-                    <label>
-                        <input type="radio" name="toolbar-position" value="left"> Left
-                    </label>
-                    <label>
-                        <input type="radio" name="toolbar-position" value="center"> Center
-                    </label>
-                    <label>
-                        <input type="radio" name="toolbar-position" value="right" checked> Right
-                    </label>
+        <div class="tabs">
+            <div class="module-selector-popup tab selected" tab="Modules" tabDesc="Choose your modules"
+                icon="fa-table-list">
+                <div class="module-selector-actions">
+                    <button class="select-all-modules" disabled>Select All</button>
+                    <button class="deselect-all-modules" disabled>Deselect All</button>
                 </div>
             </div>
-        </div>
+            <div class="rss-feed-creation tab" tab="RSS Feeds" tabDesc="Add an RSS feed" icon="fa-rss">
+                <div class="rss-form">
+                    <p>Enter details manually:</p>
+                    <input type="text" class="rss-title" placeholder="Enter Title">
+                    <input type="url" class="rss-url" placeholder="Enter RSS Feed URL">
+                    <button class="rss-manual-submit">Add Feed</button>
+                    <div class="sep"></div>
+                    <p>Or choose an RSS feed to get you started:</p>
+                    <div class="feedForm">
+                        <select class="rss-starter-select">
+                            <option value="" hidden>-- Select a feed --</option>
+                            <option value="https://news.yahoo.com/rss/">Yahoo News</option>
+                            <option value="https://www.afrugalchick.com/feed/">A Frugal Chick</option>
+                            <option value="https://www.pilotonline.com/feed/">Pilot Online</option>
+                            <option value="https://chaski.huffpost.com/us/auto/vertical/us-news">HuffPost</option>
+                            <option value="https://www.bleepingcomputer.com/feed/">BleepingComputer</option>
+                            <option value="https://www.makeuseof.com/feed/">MakeUseOf</option>
+                        </select>
+                        <button class="rss-starter-submit" disabled>Add Feed</button>
+                    </div>
+                    <a href="https://getrssfeed.com/" target="_blank">Need some help?</a>
+                </div>
+            </div>
+            <div class="wallpaperTab tab" tab="Wallpaper" tabDesc="Change your background" icon="fa-image">
+                <div class="optGroup" title="Wallpaper source">
+                    <label><input type="radio" name="wallpaperSource" value="upload" checked> Upload</label>
+                    <label><input type="radio" name="wallpaperSource" value="bing">From the Web</label>
+                    <label><input type="radio" name="wallpaperSource" value="url"> From a URL</label>
+                </div>
 
-        <div class="aboutTab tab" tab="About Youie" icon="fa-circle-info">
-            <div class="about-content">
-                <div class="aboutGroup" for="Youie">
-                    <p class="aboutCard"><strong>Version</strong> <span id="aboutVersion">Loading...</span></p>
+                <img id="imageDisplay" src="" alt="Selected Image">
+
+                <div id="urlInputWrapper" style="display:none;">
+                    <input type="url" id="wallpaperUrlInput" class="wallActionBtn" placeholder="Enter image URL">
                 </div>
-                <div class="aboutGroup" for="Modules">
-                    <p class="aboutCard"><strong>Added</strong> <span id="aboutModuleAdded">Loading...</span></p>
-                    <p class="aboutCard"><strong>RSS</strong> <span id="aboutModuleRSS">Loading...</span></p>
-                    <p class="aboutCard"><strong>Total</strong> <span id="aboutModuleTotal">Loading...</span></p>
+
+                <button class="wallActionBtn" id="refreshBingBtn" style="display:none;">Get New Image</button>
+                <input class="wallActionBtn" type="file" id="fileInput" accept="image/*">
+            </div>
+
+            <div class="appearanceTab tab" tab="Appearance" tabDesc="Change Youie's layout" icon="fa-palette">
+                <div class="optGroupWrapper" title="Toolbar position">
+                    <div class="optGroup">
+                        <label>
+                            <input type="radio" name="toolbar-position" value="left"> Left
+                        </label>
+                        <label>
+                            <input type="radio" name="toolbar-position" value="center"> Center
+                        </label>
+                        <label>
+                            <input type="radio" name="toolbar-position" value="right" checked> Right
+                        </label>
+                    </div>
                 </div>
-                <div class="aboutGroup" for="Session">
-                    <p class="aboutCard"><strong>Browser</strong> <span id="aboutBrowser">Loading...</span></p>
-                    <p class="aboutCard"><strong>Platform</strong> <span id="aboutPlatform">Loading...</span></p>
-                    <p class="aboutCard"><strong>Memory</strong> <span id="aboutMemory">Loading...</span></p>
-                    <p class="aboutCard"><strong>Viewport</strong> <span id="aboutViewport">Loading...</span></p>
-                </div>
-                <div class="aboutGroup" for="Your Data">
-                    <p>Youie allows you to import, export, or completely reset and remove your data.</p>
-                    <p>Choose from an option below to get started.</p>
-                    <div class="dataButtons">
-                        <button class="dataBtn" id="exportDataBtn">Export Data</button>
-                        <button class="dataBtn" id="importDataBtn">Import Data</button>
-                        <button class="dataBtn" id="resetDataBtn">Reset Data</button>
-                        <input type="file" id="importDataFile" accept="application/json" style="display:none;">
+            </div>
+
+            <div class="aboutTab tab" tab="About Youie" tabDesc="More info about Youie" icon="fa-circle-info">
+                <div class="about-content">
+                    <div class="aboutGroup" for="Youie">
+                        <p class="aboutCard"><strong>Version</strong> <span id="aboutVersion">Loading...</span></p>
+                    </div>
+                    <div class="aboutGroup" for="Modules">
+                        <p class="aboutCard"><strong>Added</strong> <span id="aboutModuleAdded">Loading...</span></p>
+                        <p class="aboutCard"><strong>RSS</strong> <span id="aboutModuleRSS">Loading...</span></p>
+                        <p class="aboutCard"><strong>Total</strong> <span id="aboutModuleTotal">Loading...</span></p>
+                    </div>
+                    <div class="aboutGroup" for="Session">
+                        <p class="aboutCard"><strong>Browser</strong> <span id="aboutBrowser">Loading...</span></p>
+                        <p class="aboutCard"><strong>Platform</strong> <span id="aboutPlatform">Loading...</span></p>
+                        <p class="aboutCard"><strong>Memory</strong> <span id="aboutMemory">Loading...</span></p>
+                        <p class="aboutCard"><strong>Viewport</strong> <span id="aboutViewport">Loading...</span></p>
+                    </div>
+                    <div class="aboutGroup" for="Your Data">
+                        <p>Youie allows you to import, export, or completely reset and remove your data.</p>
+                        <p>Choose from an option below to get started.</p>
+                        <div class="dataButtons">
+                            <button class="dataBtn" id="exportDataBtn">Export Data</button>
+                            <button class="dataBtn" id="importDataBtn">Import Data</button>
+                            <button class="dataBtn" id="resetDataBtn">Reset Data</button>
+                            <input type="file" id="importDataFile" accept="application/json" style="display:none;">
+                        </div>
                     </div>
                 </div>
             </div>
