@@ -46,6 +46,9 @@
             <button class="mainMenu-action" data-action="add-feed" title="Add RSS Feed">
                 <i class="fa-solid fa-rss"></i>
             </button>
+            <button class="mainMenu-action" data-action="change-bg" title="Change Background">
+                <i class="fa-solid fa-image"></i>
+            </button>
             <button class="mainMenu-action settingsBtn editModulesBtn" data-action="settings" title="Settings">
                 <i class="fa-solid fa-gear"></i>
             </button>
@@ -68,37 +71,45 @@
         <!-- <img class="backImg"> -->
         <button class="actionBtn cancel">✕</button>
         <div class="tabs">
-            <div class="module-selector-popup tab selected" tab="Modules" tabDesc="Choose your modules"
-                icon="fa-table-list">
+            <div class="module-selector-popup tab selected" tab="Modules" tabDesc="Choose modules" icon="fa-table-list">
                 <div class="module-selector-actions">
                     <button class="select-all-modules" disabled>Select All</button>
                     <button class="deselect-all-modules" disabled>Deselect All</button>
                 </div>
             </div>
-            <div class="rss-feed-creation tab" tab="RSS Feeds" tabDesc="Add an RSS feed" icon="fa-rss">
+            <div class="rss-feed-creation tab" tab="RSS" tabDesc="RSS Feeds" icon="fa-rss">
                 <div class="rss-form">
-                    <p>Enter details manually:</p>
-                    <input type="text" class="rss-title" placeholder="Enter Title">
-                    <input type="url" class="rss-url" placeholder="Enter RSS Feed URL">
-                    <button class="rss-manual-submit">Add Feed</button>
-                    <div class="sep"></div>
-                    <p>Or choose an RSS feed to get you started:</p>
-                    <div class="feedForm">
-                        <select class="rss-starter-select">
-                            <option value="" hidden>-- Select a feed --</option>
-                            <option value="https://news.yahoo.com/rss/">Yahoo News</option>
-                            <option value="https://www.afrugalchick.com/feed/">A Frugal Chick</option>
-                            <option value="https://www.pilotonline.com/feed/">Pilot Online</option>
-                            <option value="https://chaski.huffpost.com/us/auto/vertical/us-news">HuffPost</option>
-                            <option value="https://www.bleepingcomputer.com/feed/">BleepingComputer</option>
-                            <option value="https://www.makeuseof.com/feed/">MakeUseOf</option>
-                        </select>
-                        <button class="rss-starter-submit" disabled>Add Feed</button>
+                    <div class="left half">
+                        <div class="cont">
+                            <p class="halfHead">Enter details manually:</p>
+                            <input type="text" class="rss-title" placeholder="Enter Title">
+                            <input type="url" class="rss-url" placeholder="Enter RSS Feed URL">
+                            <button class="rss-manual-submit">Add Feed</button>
+                        </div>
                     </div>
-                    <a href="https://getrssfeed.com/" target="_blank">Need some help?</a>
+                    <div class="sep"></div>
+                    <div class="right half">
+                        <div class="cont">
+                            <p class="halfHead">Choose from an existing feed:</p>
+                            <div class="feedForm">
+                                <select class="rss-starter-select">
+                                    <option value="" hidden>-- Select a feed --</option>
+                                    <option value="https://news.yahoo.com/rss/">Yahoo News</option>
+                                    <option value="https://www.afrugalchick.com/feed/">A Frugal Chick</option>
+                                    <option value="https://www.pilotonline.com/feed/">Pilot Online</option>
+                                    <option value="https://chaski.huffpost.com/us/auto/vertical/us-news">HuffPost
+                                    </option>
+                                    <option value="https://www.bleepingcomputer.com/feed/">BleepingComputer</option>
+                                    <option value="https://www.makeuseof.com/feed/">MakeUseOf</option>
+                                </select>
+                                <button class="rss-starter-submit" disabled>Add Feed</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+                <a href="https://getrssfeed.com/" target="_blank">Need some help?</a>
             </div>
-            <div class="wallpaperTab tab" tab="Wallpaper" tabDesc="Change your background" icon="fa-image">
+            <div class="wallpaperTab tab" tab="Wallpaper" tabDesc="Change Background" icon="fa-image">
                 <div class="optGroup" title="Wallpaper source">
                     <label><input type="radio" name="wallpaperSource" value="upload" checked> Upload</label>
                     <label><input type="radio" name="wallpaperSource" value="bing">From the Web</label>
@@ -115,7 +126,7 @@
                 <input class="wallActionBtn" type="file" id="fileInput" accept="image/*">
             </div>
 
-            <div class="appearanceTab tab" tab="Appearance" tabDesc="Change Youie's layout" icon="fa-palette">
+            <div class="appearanceTab tab" tab="Appearance" tabDesc="Adjust Layout" icon="fa-palette">
                 <div class="optGroupWrapper" title="Toolbar position">
                     <div class="optGroup">
                         <label>
@@ -131,7 +142,7 @@
                 </div>
             </div>
 
-            <div class="aboutTab tab" tab="About Youie" tabDesc="More info about Youie" icon="fa-circle-info">
+            <div class="aboutTab tab" tab="About" tabDesc="Info & Data" icon="fa-circle-info">
                 <div class="about-content">
                     <div class="aboutGroup" for="Youie">
                         <p class="aboutCard"><strong>Version</strong> <span id="aboutVersion">Loading...</span></p>

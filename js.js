@@ -32,9 +32,12 @@ $(document).ready(function () {
         } else if (action === 'add-new') {
             $('.settingsBtn').click();
             $('.settingsWindow').find('.tabBtn').first().click();
+        } else if (action === 'change-bg') {
+            $('.settingsBtn').click();
+            $('.settingsWindow').find('.tabBtn[tab="Wallpaper"]').first().click();
         } else if (action === 'add-feed') {
             $('.settingsBtn').click();
-            $('.settingsWindow').find('.tabBtn[tab="RSS Feeds"]').click();
+            $('.settingsWindow').find('.tabBtn[tab="RSS"]').click();
         }
         forceRebuildMasonry(true);
 
@@ -1133,7 +1136,10 @@ function openModuleSelector(modules) {
                 .addClass('name')
                 .text(module.name);
 
-            $listItem.append($icon, $nameText, $description);
+            const $addRemBtn = $('<button>')
+                .addClass('addRemBtn');
+
+            $listItem.append($icon, $nameText, $description, $addRemBtn);
 
             $listItem.attr('data-module-id', module.id);
             $listItem.attr('data-categories', (module.category || []).join(','));

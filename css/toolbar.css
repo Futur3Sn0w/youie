@@ -7,7 +7,8 @@
     background-color: var(--root-back-alpha);
     backdrop-filter: blur(15px);
     box-shadow:
-        var(--bxsh-border);
+        var(--bxsh-border),
+        0 10px 20px #00000022;
     font-size: 13px;
 
     box-sizing: border-box;
@@ -25,7 +26,7 @@
     z-index: 100;
 
     &:has(.mainMenu.visible) {
-        max-height: 300px;
+        max-height: 350px;
         border-radius: 14px;
         border-top-right-radius: 20px;
 

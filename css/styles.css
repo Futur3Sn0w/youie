@@ -165,6 +165,93 @@ body {
             font-size: 50px;
         }
     }
+
+    .page-bar {
+        display: flex;
+        gap: 5px;
+
+        position: sticky;
+        top: 100%;
+        z-index: 49;
+
+        width: max-content;
+        height: max-content;
+        flex-shrink: 0;
+
+        background: var(--root-back-alpha);
+        backdrop-filter: blur(10px);
+        box-shadow:
+            var(--bxsh-border),
+            0 10px 20px #00000022;
+
+        border-radius: 100px;
+
+        transition: .3s;
+
+        padding: 7px;
+
+        margin: 10px 0;
+
+        &.tempHide {
+            opacity: 0;
+        }
+
+        &>button {
+            appearance: none;
+            padding: 9px 14px;
+            border-radius: 100px;
+            box-shadow: none;
+            color: var(--root-text);
+            font-size: 16px;
+            margin-left: auto;
+            transition: .15s;
+            cursor: pointer;
+
+            position: relative;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background-color: transparent;
+
+            &:hover {
+                border-color: transparent;
+                box-shadow: var(--bxsh-border);
+                background-color: var(--surface-button);
+            }
+
+            &.selected {
+                border-color: transparent;
+                box-shadow: var(--bxsh-border);
+                background-color: white;
+                font-weight: bold;
+                color: black;
+
+                & * {
+                    color: black !important;
+                }
+            }
+
+            &[for="search"] {
+                margin-right: 7px;
+
+                &::after {
+                    content: '';
+
+                    position: absolute;
+                    right: -7px;
+
+                    width: 2px;
+                    height: 50%;
+                    background-color: var(--root-text);
+                    opacity: .33;
+
+                    pointer-events: none;
+                }
+            }
+        }
+    }
 }
 
 body>.backImg {
@@ -279,93 +366,6 @@ body>.backImg {
 
     &:has(.module.resizing) .module:not(.resizing) {
         pointer-events: none !important;
-    }
-}
-
-.page-bar {
-    display: flex;
-    gap: 5px;
-
-    position: sticky;
-    top: 100%;
-    z-index: 49;
-
-    width: max-content;
-    height: max-content;
-    flex-shrink: 0;
-
-    background: var(--root-back-alpha);
-    backdrop-filter: blur(10px);
-    box-shadow:
-        var(--bxsh-border),
-        0 10px 20px #00000022;
-
-    border-radius: 100px;
-
-    transition: .3s;
-
-    padding: 7px;
-
-    margin: 10px 0;
-
-    &.tempHide {
-        opacity: 0;
-    }
-
-    &>button {
-        appearance: none;
-        padding: 9px 14px;
-        border-radius: 100px;
-        box-shadow: none;
-        color: var(--root-text);
-        font-size: 16px;
-        margin-left: auto;
-        transition: .15s;
-        cursor: pointer;
-
-        position: relative;
-
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        background-color: transparent;
-
-        &:hover {
-            border-color: transparent;
-            box-shadow: var(--bxsh-border);
-            background-color: var(--surface-button);
-        }
-
-        &.selected {
-            border-color: transparent;
-            box-shadow: var(--bxsh-border);
-            background-color: white;
-            font-weight: bold;
-            color: black;
-
-            & * {
-                color: black !important;
-            }
-        }
-
-        &[for="search"] {
-            margin-right: 7px;
-
-            &::after {
-                content: '';
-
-                position: absolute;
-                right: -7px;
-
-                width: 2px;
-                height: 50%;
-                background-color: var(--root-text);
-                opacity: .33;
-
-                pointer-events: none;
-            }
-        }
     }
 }
 
