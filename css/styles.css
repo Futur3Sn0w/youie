@@ -217,7 +217,7 @@ body {
             border-radius: 100px;
             box-shadow: none;
             color: var(--root-text);
-            font-size: 14px;
+            font-size: 13px;
             margin-left: auto;
             transition: .15s;
             cursor: pointer;
@@ -227,7 +227,7 @@ body {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 7px;
+            gap: 8px;
 
             background-color: transparent;
 
@@ -243,7 +243,7 @@ body {
                 background-color: white;
                 font-weight: bold;
                 color: black;
-                font-size: 15px;
+                font-size: 14px;
 
                 & * {
                     color: black !important;
@@ -251,18 +251,18 @@ body {
             }
 
             &:has(img) {
-                padding: 2px 14px;
-                padding-left: 6px;
-                gap: 9px;
+                padding: 2.5px 14px;
+                padding-left: 7px;
+                gap: 10px;
             }
 
             & i {
-                font-size: 13px;
+                font-size: 14px;
             }
 
             & img {
-                width: 26px;
-                height: 26px;
+                width: 25px;
+                height: 25px;
                 background-color: var(--surface-button);
                 border-radius: 100px;
             }
