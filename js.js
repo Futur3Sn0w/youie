@@ -1320,7 +1320,10 @@ function updatePageBar() {
         const label = $page.find('.title').text().trim() || $page.attr('id')?.replace('page-', '') || 'Untitled';
 
         // Extract favicon domain from data-feed-url
-        const feedUrl = $page.data('feed-url') || '';
+        const moduleId = pageId.replace(/^page-/, '');
+        const customModules = JSON.parse(localStorage.getItem('customModules') || '[]');
+        const module = customModules.find(m => m.id === moduleId);
+        const feedUrl = module?.feedUrl || '';
         let domain = '';
         try {
             const parsedUrl = new URL(feedUrl);
@@ -1342,7 +1345,7 @@ function updatePageBar() {
         if ($bar.find(`button[for="${pageId}"]`).length === 0) {
             const $btn = $('<button>')
                 .text(label)
-                .prepend(`<img src="${faviconUrl}" alt="favicon" class="rss-favicon">`)
+                .prepend(`<img src="${faviconUrl}" class="rss-favicon">`)
                 .attr('for', pageId)
                 .on('click', function () {
                     $('.scroller').addClass('tempHide')

@@ -239,6 +239,13 @@ body {
                 font-size: 13px;
             }
 
+            & img {
+                width: 16px;
+                height: 16px;
+                background-color: orange;
+                border-radius: 100px;
+            }
+
             &[for="search"] {
                 margin-right: 7px;
 
