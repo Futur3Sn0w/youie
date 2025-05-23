@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0">
+  <channel>
+    <title>Youie Test Feed</title>
+    <link>https://youie.test</link>
+    <description>This is a local test RSS feed for Youie development.</description>
+    <item>
+      <title>Sample Entry 1</title>
+      <link>https://youie.test/sample-entry-1</link>
+      <description>This is the first sample entry for the test feed.</description>
+      <pubDate>Thu, 23 May 2024 09:00:00 GMT</pubDate>
+      <author>test1@youie.test</author>
+    </item>
+    <item>
+      <title>Sample Entry 2</title>
+      <link>https://youie.test/sample-entry-2</link>
+      <description>This is the second sample entry for the test feed.</description>
+      <pubDate>Fri, 24 May 2024 14:30:00 GMT</pubDate>
+      <author>test2@youie.test</author>
+    </item>
+  </channel>
+</rss>

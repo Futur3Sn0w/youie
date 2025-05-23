@@ -57,6 +57,20 @@ body {
         }
     }
 
+    &:has(.container.visible):not(:has(button[for="search"].selected)) {
+        .page-bar button[for="modules"] {
+            border-color: transparent;
+            box-shadow: var(--bxsh-border);
+            background-color: white;
+            font-weight: bold;
+            color: black;
+
+            & * {
+                color: black !important;
+            }
+        }
+    }
+
     &:has(button[for="search"].selected),
     &:has(#autocompleteResults:not(:empty)) {
         .scroller {
@@ -203,7 +217,7 @@ body {
             border-radius: 100px;
             box-shadow: none;
             color: var(--root-text);
-            font-size: 16px;
+            font-size: 15px;
             margin-left: auto;
             transition: .15s;
             cursor: pointer;

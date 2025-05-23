@@ -78,6 +78,9 @@
             object-fit: scale-down;
             box-sizing: border-box;
             padding: 5px;
+
+            background-color: var(--surface-button);
+            border-radius: 5px;
         }
 
         & .modHeadBtns {

@@ -1011,21 +1011,46 @@ function loadModules() {
 
                 // Then load and render RSS modules
                 rssModules.forEach(module => {
-                    fetchRssFeed(module.feedUrl)
-                        .then(rssData => {
-                            const $rssPage = renderRssModule(module, rssData.items, rssData.feedLink);
-                            $('.scroller').append($rssPage);
-                            forceRebuildMasonry();
-                            setTimeout(() => {
-                                updatePageBar(); // Function to refresh the button bar
-                            }, 100);
-                        })
-                        .catch(err => {
-                            const $errorModule = $('<div>').addClass('module').css('width', 350)
-                                .html(`<p>Error loading RSS: ${err.message}</p>`);
-                            $errorModule.addClass('loaded');
-                            $('.container').append($errorModule);
-                        });
+                    if (module.feedUrl && typeof module.feedUrl === 'string' && module.feedUrl.toLowerCase().includes("youie")) {
+                        fetch('./test-feed.xml')
+                            .then(res => res.text())
+                            .then(text => {
+                                const parser = new DOMParser();
+                                const xmlDoc = parser.parseFromString(text, "application/xml");
+                                const items = Array.from(xmlDoc.querySelectorAll("item")).map(item => ({
+                                    title: item.querySelector("title")?.textContent || "Untitled",
+                                    link: item.querySelector("link")?.textContent || "#",
+                                    pubDate: item.querySelector("pubDate")?.textContent || "",
+                                    author: item.querySelector("author")?.textContent || "",
+                                    description: item.querySelector("description")?.textContent || "",
+                                    thumbnail: ""
+                                }));
+                                const $rssPage = renderRssModule(module, items, '');
+                                $('.scroller').append($rssPage);
+                                forceRebuildMasonry();
+                                setTimeout(updatePageBar, 100);
+                            })
+                            .catch(err => {
+                                const $errorModule = $('<div>').addClass('module').css('width', 350)
+                                    .html(`<p>Error loading test RSS: ${err.message}</p>`);
+                                $errorModule.addClass('loaded');
+                                $('.container').append($errorModule);
+                            });
+                    } else {
+                        fetchRssFeed(module.feedUrl)
+                            .then(rssData => {
+                                const $rssPage = renderRssModule(module, rssData.items, rssData.feedLink);
+                                $('.scroller').append($rssPage);
+                                forceRebuildMasonry();
+                                setTimeout(updatePageBar, 100);
+                            })
+                            .catch(err => {
+                                const $errorModule = $('<div>').addClass('module').css('width', 350)
+                                    .html(`<p>Error loading RSS: ${err.message}</p>`);
+                                $errorModule.addClass('loaded');
+                                $('.container').append($errorModule);
+                            });
+                    }
                 });
 
                 // Initialize Masonry after modules are added
@@ -1239,6 +1264,7 @@ function openSettingsWindow(modules) {
     $rfc.find('.rss-url').val('');
     $rfc.find('.rss-starter-select').val('');
     $rfc.find('.rss-starter-submit').prop('disabled', true);
+    $rfc.find('.rss-manual-submit').prop('disabled', true);
 
     $('.settingsWindow').each(function () {
         var $settingsWindow = $(this);
@@ -1436,6 +1462,14 @@ function updatePageBar() {
 
 // RSS Feed Creation Handlers
 $(document).ready(function () {
+    // Enable rss-manual-submit if both title and URL fields contain text
+    $(document).on('input', '.rss-title, .rss-url', function () {
+        const $form = $(this).closest('.rss-form');
+        const hasTitle = $form.find('.rss-title').val().trim() !== '';
+        const hasUrl = $form.find('.rss-url').val().trim() !== '';
+        $form.find('.rss-manual-submit').prop('disabled', !(hasTitle && hasUrl));
+    });
+
     // Manual RSS feed submit
     $(document).on('click', '.rss-manual-submit', async function () {
         const $form = $(this).closest('.rss-form');
@@ -1447,6 +1481,64 @@ $(document).ready(function () {
         }
         const customModules = JSON.parse(localStorage.getItem('customModules') || '[]');
         const existingMatch = customModules.find(m => m.feedUrl === url || m.name === title);
+
+        // Special test feed logic: both title and url must include "youie"
+        const isTestFeed = title.toLowerCase().includes('youie') && url.toLowerCase().includes('youie');
+        if (isTestFeed) {
+            try {
+                const response = await fetch('./test-feed.xml');
+                const text = await response.text();
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(text, "application/xml");
+
+                const items = Array.from(xmlDoc.querySelectorAll("item")).map(item => ({
+                    title: item.querySelector("title")?.textContent || "Untitled",
+                    link: item.querySelector("link")?.textContent || "#",
+                    pubDate: item.querySelector("pubDate")?.textContent || "",
+                    author: item.querySelector("author")?.textContent || "",
+                    description: item.querySelector("description")?.textContent || "",
+                    thumbnail: ""
+                }));
+
+                const id = `rss-youie-${Date.now()}`;
+                const module = {
+                    id,
+                    name: title,
+                    description: `Test RSS Feed: ${title}`,
+                    category: ['Custom', 'Web'],
+                    mode: 'internal',
+                    icon: 'fa-solid fa-rss',
+                    contentType: 'rss',
+                    feedUrl: url
+                };
+
+                customModules.push(module);
+                localStorage.setItem('customModules', JSON.stringify(customModules));
+                const $rssPage = renderRssModule(module, items, '');
+                $('.scroller').append($rssPage);
+                forceRebuildMasonry();
+                setTimeout(updatePageBar, 100);
+                showToast({
+                    time: 10000,
+                    iconClass: 'fa-check',
+                    title: 'Success',
+                    message: `Added "${title}" test feed`
+                });
+                saveWidgetStates();
+                return;
+            } catch (e) {
+                console.error('Error loading test RSS feed:', e);
+                showToast({
+                    time: 10000,
+                    iconClass: 'fa-close',
+                    title: 'Failed to load test RSS feed',
+                    message: `Check console for more details`
+                });
+                saveWidgetStates();
+                return;
+            }
+        }
+
         const proceedToAdd = async () => {
             try {
                 const rssData = await fetchRssFeed(url);
