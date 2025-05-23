@@ -203,7 +203,7 @@ body {
 
         transition: .3s;
 
-        padding: 7px;
+        padding: 5px;
 
         margin: 10px 0;
 
@@ -213,7 +213,7 @@ body {
 
         &>button {
             appearance: none;
-            padding: 9px 14px;
+            padding: 10px 15px;
             border-radius: 100px;
             box-shadow: none;
             color: var(--root-text);
@@ -243,6 +243,7 @@ body {
                 background-color: white;
                 font-weight: bold;
                 color: black;
+                font-size: 15px;
 
                 & * {
                     color: black !important;
