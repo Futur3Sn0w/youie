@@ -1445,7 +1445,7 @@ $(document).ready(function () {
             } catch (e) {
                 console.error('Error loading RSS:', e);
                 showToast({
-                    time: 5000,
+                    time: 10000,
                     iconClass: 'fa-close',
                     title: 'Failed to load RSS feed',
                     message: `Check console for more details`
@@ -1518,13 +1518,13 @@ $(document).ready(function () {
             showToast({
                 time: 10000,
                 iconClass: 'fa-check',
-                title: 'New RSS Feed',
+                title: 'Success',
                 message: `Added "${title}" feed`
             })
         } catch (e) {
             console.error('Error loading starter RSS feed:', e);
             showToast({
-                time: 5000,
+                time: 10000,
                 iconClass: 'fa-close',
                 title: 'Failed to load RSS feed',
                 message: `Check console for more details`
