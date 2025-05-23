@@ -61,8 +61,6 @@ $(document).ready(function () {
         saveWidgetStates();
     });
 
-    $(window).on('load resize', markOverflowingElements);
-
     addToTabTitle('Home');
 
     $.getJSON('modules.json')
@@ -86,7 +84,6 @@ $(document).ready(function () {
                 console.error(`Error: Could not load modules. Invalid data.`);
                 $('.container').html('<p class="error">Could not load modules.</p>');
             }
-            markOverflowingElements();
 
         })
         .fail(function (jqXHR, textStatus, errorThrown) {
@@ -247,7 +244,6 @@ $(document).ready(function () {
                         });
                     }
                 }
-                markOverflowingElements();
             });
     });
     $(document).on("click", ".external-icon", function () { window.open($(this).attr('external')) })
@@ -262,7 +258,6 @@ $(document).ready(function () {
         let fallbackTimer = setTimeout(() => {
             // forceRebuildMasonry();
             softRebuildMasonry();
-            markOverflowingElements();
             saveWidgetStates();
         }, 300);
 
@@ -864,32 +859,6 @@ function renderModule(module) {
     return $moduleDiv;
 }
 
-function markOverflowingElements() {
-    $('.module').each(function () {
-        const $module = $(this);
-        let hasOverflow = false;
-
-        // Check module itself
-        const el = $module[0];
-        if (el.scrollHeight > el.clientHeight || el.scrollWidth > el.clientWidth) {
-            hasOverflow = true;
-        }
-
-        // Check children
-        if (!hasOverflow) {
-            $module.find('*').each(function () {
-                const child = this;
-                if (child.scrollHeight > child.clientHeight || child.scrollWidth > child.clientWidth) {
-                    hasOverflow = true;
-                    return false; // Break out of .each loop
-                }
-            });
-        }
-
-        $module.toggleClass('has-scroll', hasOverflow);
-    });
-}
-
 function applyToolbarPosition(position) {
     $('.toolbar').attr('tpos', position);
 }
@@ -1028,34 +997,8 @@ function loadModules() {
                 // First load and render non-RSS modules
                 nonRssModules.forEach((module, index) => {
                     if (!module.noShow) {
-                        const $skeleton = $('<div>')
-                            .addClass('module skeleton-module')
-                            .attr('id', `skeleton-${module.id}`)
-                            .css({ width: moduleWidth, height: 350 })
-                            .html(`
-                                    <div class="header">
-                                        <div class="skeleton-icon"></div>
-                                        <h2 class="skeleton-title"></h2>
-                                        <div class="modHeadBtns">
-                                            <div class="modActions">
-                                                <i class="header-icon"></i>
-                                                <i class="header-icon"></i>
-                                                <i class="header-icon"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="module-content module-content-standard">
-                                        <ul class="rss-list">
-                                            <li class="skeleton-line"></li>
-                                            <li class="skeleton-line"></li>
-                                            <li class="skeleton-line"></li>
-                                        </ul>
-                                    </div>
-                                `);
-                        $('.container').append($skeleton);
                         const $moduleDiv = renderModule(module);
-
-                        $(`#skeleton-${module.id}`).replaceWith($moduleDiv);
+                        $('.container').append($moduleDiv);
                     }
                 });
 
@@ -1395,61 +1338,65 @@ function updatePageBar() {
         $bar.append($btn);
     });
 
-    // Add "Modules" button always first (after Search)
-    $('<button>')
-        .attr('for', 'modules')
-        .text('Modules')
-        .on('click', function () {
-            if ($('.rss-page').hasClass('visible')) {
-                $('.scroller').addClass('tempHide');
-                setTimeout(() => {
-                    $('.rss-page').removeClass('visible');
-                    $('.container').addClass('visible');
+    // Add "Modules" button only if not present
+    if ($bar.find('button[for="modules"]').length === 0) {
+        $('<button>')
+            .attr('for', 'modules')
+            .text('Modules')
+            .on('click', function () {
+                if ($('.rss-page').hasClass('visible')) {
+                    $('.scroller').addClass('tempHide');
+                    setTimeout(() => {
+                        $('.rss-page').removeClass('visible');
+                        $('.container').addClass('visible');
 
+                        $('.searchTxt').removeClass('visible');
+                        $('#autocompleteResults').removeClass('visible');
+
+                        $bar.children('button').removeClass('selected');
+                        $(this).addClass('selected');
+
+                        $('.scroller').removeClass('tempHide');
+                    }, 200);
+                } else {
                     $('.searchTxt').removeClass('visible');
                     $('#autocompleteResults').removeClass('visible');
 
                     $bar.children('button').removeClass('selected');
                     $(this).addClass('selected');
+                }
+            })
+            .prependTo($bar);
+    }
 
-                    $('.scroller').removeClass('tempHide');
-                }, 200);
-            } else {
-                $('.searchTxt').removeClass('visible');
-                $('#autocompleteResults').removeClass('visible');
+    // Add "Search" button only if not present
+    if ($bar.find('button[for="search"]').length === 0) {
+        $('<button>')
+            .attr('for', 'search')
+            .html('<i class="fas fa-search"></i>')
+            .on('click', function () {
+                if ($('.rss-page').hasClass('visible')) {
+                    $('.scroller').addClass('tempHide');
+                    setTimeout(() => {
+                        $('.rss-page').removeClass('visible');
+                        $('.container').addClass('visible');
+                        $('.searchTxt').addClass('visible');
+                        $('#autocompleteResults').addClass('visible');
+                        $bar.children('button').removeClass('selected');
+                        $(this).addClass('selected')
 
-                $bar.children('button').removeClass('selected');
-                $(this).addClass('selected');
-            }
-        })
-        .prependTo($bar);
-
-    // Add "Search" button always first
-    $('<button>')
-        .attr('for', 'search')
-        .html('<i class="fas fa-search"></i>')
-        .on('click', function () {
-            if ($('.rss-page').hasClass('visible')) {
-                $('.scroller').addClass('tempHide');
-                setTimeout(() => {
-                    $('.rss-page').removeClass('visible');
+                        $('.scroller').removeClass('tempHide');
+                    }, 200);
+                } else {
                     $('.container').addClass('visible');
                     $('.searchTxt').addClass('visible');
                     $('#autocompleteResults').addClass('visible');
                     $bar.children('button').removeClass('selected');
                     $(this).addClass('selected')
-
-                    $('.scroller').removeClass('tempHide');
-                }, 200);
-            } else {
-                $('.container').addClass('visible');
-                $('.searchTxt').addClass('visible');
-                $('#autocompleteResults').addClass('visible');
-                $bar.children('button').removeClass('selected');
-                $(this).addClass('selected')
-            }
-        })
-        .prependTo($bar);
+                }
+            })
+            .prependTo($bar);
+    }
 }
 
 // RSS Feed Creation Handlers
@@ -1492,7 +1439,7 @@ $(document).ready(function () {
                 showToast({
                     time: 10000,
                     iconClass: 'fa-check',
-                    title: 'New RSS Feed',
+                    title: 'Success',
                     message: `Added "${title}" feed`
                 })
             } catch (e) {

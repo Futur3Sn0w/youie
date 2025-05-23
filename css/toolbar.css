@@ -32,6 +32,7 @@
 
         & .mainMenuBtn {
             background-color: white !important;
+            box-shadow: var(--bxsh-border);
 
             & i {
                 color: black !important;
