@@ -213,7 +213,7 @@ body {
 
         &>button {
             appearance: none;
-            padding: 10px 15px;
+            padding: 10px 13px;
             border-radius: 100px;
             box-shadow: none;
             color: var(--root-text);
@@ -252,7 +252,7 @@ body {
 
             &:has(img) {
                 padding: 2.5px 14px;
-                padding-left: 7px;
+                padding-left: 6px;
                 gap: 10px;
             }
 
