@@ -22,13 +22,22 @@ $(document).ready(function () {
                 .find('.minimize-icon')
                 .attr('hoverTxt', 'Maximize')
                 .removeClass('fa-minimize')
-                .addClass('fa-maximize');
+            showToast({
+                time: 5000,
+                iconClass: 'fa-check',
+                message: `Minimized all modules`
+            });
         } else if (action === 'maximize-all') {
             $modules.removeClass('minimized')
                 .find('.minimize-icon')
                 .attr('hoverTxt', 'Minimize')
                 .addClass('fa-minimize')
                 .removeClass('fa-maximize');
+            showToast({
+                time: 5000,
+                iconClass: 'fa-check',
+                message: `Maximized all modules`
+            });
         } else if (action === 'add-new') {
             $('.settingsBtn').click();
             $('.settingsWindow').find('.tabBtn').first().click();
@@ -38,6 +47,13 @@ $(document).ready(function () {
         } else if (action === 'add-feed') {
             $('.settingsBtn').click();
             $('.settingsWindow').find('.tabBtn[tab="RSS"]').click();
+        } else if (action === 'refresh-layout') {
+            showToast({
+                time: 5000,
+                iconClass: 'fa-refresh',
+                title: 'Success',
+                message: `Reloaded all feeds`
+            });
         }
         forceRebuildMasonry(true);
 
@@ -533,6 +549,54 @@ $(document).ready(function () {
 
 // functions
 
+/**
+ * Displays a toast notification in the .statusMsgs container.
+ * @param {Object} options
+ * @param {number} [options.time=10000] - How long to show the toast (ms)
+ * @param {string} options.iconClass - FontAwesome icon class (e.g. "fa-check-circle")
+ * @param {string} [options.title] - Optional title
+ * @param {string} options.message - Main message text
+ */
+function showToast({ time = 10000, iconClass, title = '', message }) {
+    if (!iconClass || !message) {
+        console.error("showToast requires both an iconClass and a message.");
+        return;
+    }
+
+    const toastId = `toast-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
+    const $toast = $('<div>')
+        .addClass('toast')
+        .attr('id', toastId);
+
+    // Add class based on title
+    if (title && typeof title === 'string') {
+        if (title.toLowerCase().includes('success')) {
+            $toast.addClass('success');
+        } else if (title.toLowerCase().includes('failed')) {
+            $toast.addClass('failed');
+        }
+    }
+
+    const $icon = $('<i>')
+        .addClass('fas')
+        .addClass(iconClass);
+
+    const $statusText = $('<div>').addClass('statusText');
+    if (title) {
+        $statusText.append($('<p>').addClass('title').text(title));
+    }
+    $statusText.append($('<p>').addClass('message').text(message));
+
+    $toast.append($icon, $statusText);
+    $('.statusMsgs').append($toast);
+
+    setTimeout(() => {
+        $toast.fadeOut(500, () => {
+            $toast.remove();
+        });
+    }, time);
+}
+
 function showGlobalPopup(title, body) {
     const $popup = $('#globalPopup');
     $popup.find('.popup-title').text(title);
@@ -644,6 +708,7 @@ function createHeaderButtons(module) {
             showGlobalPopup(module.name, info);
         } else if (action === 'delete') {
             const moduleId = module.id;
+            let modName = module.name;
             if (isRSSPage) {
                 $('.scroller').addClass('tempHide');
                 $('.page-bar').addClass('tempHide');
@@ -687,6 +752,12 @@ function createHeaderButtons(module) {
                     saveWidgetStates();
                 });
             }
+
+            showToast({
+                time: 5000,
+                iconClass: 'fa-check',
+                message: `Removed ${modName}`
+            });
         } else if (action === 'move-top') {
             const $container = $('.container');
             const previousFirstId = $container.children('.module').first().attr('id');
@@ -707,6 +778,13 @@ function createHeaderButtons(module) {
 
                 forceRebuildMasonry();
                 saveWidgetStates();
+            });
+
+            showToast({
+                time: 5000,
+                iconClass: 'fa-check',
+                title: 'Success',
+                message: `Moved ${module.name} to top`
             });
         }
         $menu.removeClass('visible');
@@ -1162,6 +1240,17 @@ function openModuleSelector(modules) {
                 // Load modules fresh from localStorage and JSON
                 loadModules();
 
+                let pref = 'Added';
+                if (!$(this).hasClass('selected')) {
+                    pref = 'Removed';
+                }
+                showToast({
+                    time: 5000,
+                    iconClass: 'fa-check',
+                    title: 'Success',
+                    message: `${pref} "${$(this).find('p.name').text()}" module`
+                });
+
                 saveWidgetStates();
                 updateSelectButtons();
             });
@@ -1400,9 +1489,20 @@ $(document).ready(function () {
                 $('.scroller').append($rssPage);
                 forceRebuildMasonry();
                 setTimeout(updatePageBar, 100);
+                showToast({
+                    time: 10000,
+                    iconClass: 'fa-check',
+                    title: 'New RSS Feed',
+                    message: `Added "${title}" feed`
+                })
             } catch (e) {
                 console.error('Error loading RSS:', e);
-                alert('Failed to load RSS feed.');
+                showToast({
+                    time: 5000,
+                    iconClass: 'fa-close',
+                    title: 'Failed to load RSS feed',
+                    message: `Check console for more details`
+                });
             }
             saveWidgetStates();
         };
@@ -1468,10 +1568,20 @@ $(document).ready(function () {
             setTimeout(() => {
                 updatePageBar();
             }, 100);
-            alert(`"${title}" feed added!`);
+            showToast({
+                time: 10000,
+                iconClass: 'fa-check',
+                title: 'New RSS Feed',
+                message: `Added "${title}" feed`
+            })
         } catch (e) {
             console.error('Error loading starter RSS feed:', e);
-            alert('Failed to load starter RSS feed.');
+            showToast({
+                time: 5000,
+                iconClass: 'fa-close',
+                title: 'Failed to load RSS feed',
+                message: `Check console for more details`
+            });
         }
         saveWidgetStates();
     });
