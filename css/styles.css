@@ -237,7 +237,7 @@ body {
 
             &:has(img) {
                 padding: 3px 14px;
-                padding-left: 11px;
+                padding-left: 8px;
             }
 
             & i {
@@ -247,7 +247,7 @@ body {
             & img {
                 width: 24px;
                 height: 24px;
-                background-color: orange;
+                background-color: var(--surface-button);
                 border-radius: 100px;
             }
 
