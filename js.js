@@ -590,7 +590,7 @@ function showToast({ time = 10000, iconClass, title = '', message }) {
     $statusText.append($('<p>').addClass('message').text(message));
 
     $toast.append($icon, $statusText);
-    $('.statusMsgs').append($toast);
+    $('.statusMsgs').prepend($toast);
 
     setTimeout(() => {
         $toast.fadeOut(500, () => {
