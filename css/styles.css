@@ -251,8 +251,8 @@ body {
             }
 
             &:has(img) {
-                padding: 1px 14px;
-                padding-left: 4px;
+                padding: 2px 14px;
+                padding-left: 6px;
                 gap: 9px;
             }
 
@@ -261,8 +261,8 @@ body {
             }
 
             & img {
-                width: 28px;
-                height: 28px;
+                width: 26px;
+                height: 26px;
                 background-color: var(--surface-button);
                 border-radius: 100px;
             }
