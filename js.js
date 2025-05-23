@@ -1306,36 +1306,38 @@ function updatePageBar() {
     const $bar = $('.page-bar');
     $bar.empty();
 
-    // Add RSS page buttons
+    // Add RSS page buttons only if not already present
     $pages.each(function () {
         const pageId = $(this).attr('id');
         const label = $(this).find('.title').text().trim() || $(this).attr('id')?.replace('page-', '') || 'Untitled';
 
-        const $btn = $('<button>')
-            .text(label)
-            .attr('for', pageId)
-            .on('click', function () {
-                $('.scroller').addClass('tempHide')
-                setTimeout(() => {
-                    $('.rss-page').removeClass('visible');
-                    $('.container').removeClass('visible');
-                    $(`#${pageId}`).addClass('visible');
-                    $bar.children('button').removeClass('selected');
-                    $(this).addClass('selected')
+        if ($bar.find(`button[for="${pageId}"]`).length === 0) {
+            const $btn = $('<button>')
+                .text(label)
+                .attr('for', pageId)
+                .on('click', function () {
+                    $('.scroller').addClass('tempHide')
+                    setTimeout(() => {
+                        $('.rss-page').removeClass('visible');
+                        $('.container').removeClass('visible');
+                        $(`#${pageId}`).addClass('visible');
+                        $bar.children('button').removeClass('selected');
+                        $(this).addClass('selected');
 
-                    $('li').removeClass('selected');
-                    $('.rss-image').remove();
-                    $('.rss-meta').remove();
-                    $('.article-body').remove();
+                        $('li').removeClass('selected');
+                        $('.rss-image').remove();
+                        $('.rss-meta').remove();
+                        $('.article-body').remove();
 
-                    $('.searchTxt').removeClass('visible');
-                    $('#autocompleteResults').removeClass('visible');
+                        $('.searchTxt').removeClass('visible');
+                        $('#autocompleteResults').removeClass('visible');
 
-                    $('.scroller').removeClass('tempHide');
-                }, 200);
-            });
+                        $('.scroller').removeClass('tempHide');
+                    }, 200);
+                });
 
-        $bar.append($btn);
+            $bar.append($btn);
+        }
     });
 
     // Add "Modules" button only if not present
