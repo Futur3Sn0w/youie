@@ -213,7 +213,7 @@ body {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 5px;
+            gap: 7px;
 
             background-color: transparent;
 
@@ -235,13 +235,18 @@ body {
                 }
             }
 
+            &:has(img) {
+                padding: 3px 14px;
+                padding-left: 11px;
+            }
+
             & i {
                 font-size: 13px;
             }
 
             & img {
-                width: 16px;
-                height: 16px;
+                width: 24px;
+                height: 24px;
                 background-color: orange;
                 border-radius: 100px;
             }
