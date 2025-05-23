@@ -213,6 +213,7 @@ body {
             display: flex;
             align-items: center;
             justify-content: center;
+            gap: 5px;
 
             background-color: transparent;
 
@@ -232,6 +233,10 @@ body {
                 & * {
                     color: black !important;
                 }
+            }
+
+            & i {
+                font-size: 13px;
             }
 
             &[for="search"] {
@@ -276,6 +281,11 @@ body>.backImg {
     top: 0;
     z-index: 99999999999;
 
+    width: 100%;
+    height: 40vh;
+    overflow: hidden;
+    mask-image: linear-gradient(to bottom, black 20vh, transparent);
+
     padding: 10px;
     gap: 10px;
 
@@ -290,6 +300,10 @@ body>.backImg {
         align-items: center;
         justify-content: center;
         gap: 10px;
+        flex-shrink: 0;
+
+        height: max-content;
+        width: max-content;
 
         background-color: var(--root-back);
         border-radius: 100px;
@@ -300,6 +314,7 @@ body>.backImg {
         overflow: hidden;
         position: relative;
 
+        box-sizing: border-box;
         padding: 10px 20px;
 
         &.success {
@@ -316,7 +331,11 @@ body>.backImg {
 
         &:has(.title) {
             border-radius: 15px;
-            gap: 15px;
+            padding-left: 12px;
+
+            i {
+                font-size: 18px;
+            }
 
             .message {
                 font-weight: normal !important;
@@ -328,8 +347,8 @@ body>.backImg {
             content: '';
             background-color: rgba(0, 136, 255, 0.15);
 
-            width: 100%;
-            height: 100%;
+            width: 150%;
+            height: 150%;
 
             position: absolute;
             z-index: 0;
@@ -337,6 +356,8 @@ body>.backImg {
 
         & i {
             display: flex;
+            align-items: center;
+            justify-content: center;
             flex-shrink: 0;
             height: 100%;
             aspect-ratio: 1/1;

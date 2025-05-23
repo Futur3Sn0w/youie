@@ -229,9 +229,6 @@
             height: 30px;
             flex-shrink: 0;
 
-            font-size: 14px;
-            font-weight: bold;
-
             display: flex;
             align-items: center;
 
@@ -240,8 +237,9 @@
             padding-bottom: 1px;
 
             color: var(--root-text);
-            background-color: transparent;
+            background-color: var(--surface-button);
             border-radius: 10px;
+            box-shadow: none;
 
             transition: .1s;
             cursor: pointer;
@@ -250,6 +248,8 @@
 
             &::after {
                 content: attr(title);
+                font-size: 13px;
+                font-weight: bold;
             }
 
             & i {
@@ -267,6 +267,7 @@
             &:hover {
                 background-color: white;
                 color: black;
+                box-shadow: var(--bxsh-border);
 
                 & i {
                     color: black;

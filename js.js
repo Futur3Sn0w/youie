@@ -145,6 +145,13 @@ $(document).ready(function () {
         a.download = 'youie_data_backup.json';
         a.click();
         URL.revokeObjectURL(url);
+
+        showToast({
+            time: 10000,
+            iconClass: 'fa-download',
+            title: 'Success',
+            message: `Your Youie data is now downloading.`
+        })
     });
 
     // IMPORT
@@ -1308,12 +1315,34 @@ function updatePageBar() {
 
     // Add RSS page buttons only if not already present
     $pages.each(function () {
-        const pageId = $(this).attr('id');
-        const label = $(this).find('.title').text().trim() || $(this).attr('id')?.replace('page-', '') || 'Untitled';
+        const $page = $(this);
+        const pageId = $page.attr('id');
+        const label = $page.find('.title').text().trim() || $page.attr('id')?.replace('page-', '') || 'Untitled';
+
+        // Extract favicon domain from data-feed-url
+        const feedUrl = $page.data('feed-url') || '';
+        let domain = '';
+        try {
+            const parsedUrl = new URL(feedUrl);
+            let hostname = parsedUrl.hostname;
+            if (!hostname.startsWith('www.')) {
+                const parts = hostname.split('.');
+                if (parts.length > 2) {
+                    hostname = 'www.' + parts.slice(-2).join('.');
+                } else {
+                    hostname = 'www.' + hostname;
+                }
+            }
+            domain = hostname;
+        } catch (e) {
+            console.warn('Invalid feed URL for favicon:', feedUrl);
+        }
+        const faviconUrl = domain ? `https://www.google.com/s2/favicons?sz=64&domain=${domain}` : '';
 
         if ($bar.find(`button[for="${pageId}"]`).length === 0) {
             const $btn = $('<button>')
                 .text(label)
+                .prepend(`<img src="${faviconUrl}" alt="favicon" class="rss-favicon">`)
                 .attr('for', pageId)
                 .on('click', function () {
                     $('.scroller').addClass('tempHide')
@@ -1345,6 +1374,7 @@ function updatePageBar() {
         $('<button>')
             .attr('for', 'modules')
             .text('Modules')
+            .prepend('<i class="fa-solid fa-house"></i>')
             .on('click', function () {
                 if ($('.rss-page').hasClass('visible')) {
                     $('.scroller').addClass('tempHide');
