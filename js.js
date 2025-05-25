@@ -711,54 +711,65 @@ function createHeaderButtons(module) {
         } else if (action === 'delete') {
             const moduleId = module.id;
             let modName = module.name;
-            if (isRSSPage) {
-                $('.scroller').addClass('tempHide');
-                $('.page-bar').addClass('tempHide');
-                setTimeout(() => {
-                    $thisPage.remove();
-                    // Remove from selectedModules (if present)
-                    const selectedModules = JSON.parse(localStorage.getItem('selectedModules') || '[]');
-                    const updatedSelected = selectedModules.filter(id => id !== moduleId);
-                    localStorage.setItem('selectedModules', JSON.stringify(updatedSelected));
 
-                    // Remove from customModules (if applicable)
-                    const customModules = JSON.parse(localStorage.getItem('customModules') || '[]');
-                    const updatedCustoms = customModules.filter(m => m.id !== moduleId);
-                    localStorage.setItem('customModules', JSON.stringify(updatedCustoms));
+            showGlobalPopup("Remove Feed", `
+                <p>Are you sure you want to remove the feed <strong>${modName}</strong>?</p>
+                <button class="popup-confirm">Yes, Remove</button>
+                <button class="popup-cancel">Cancel</button>
+            `);
 
-                    forceRebuildMasonry();
-                    saveWidgetStates();
-                    updatePageBar();
-                    $('.rss-page').removeClass('visible');
-                    $('.container').addClass('visible');
-                    $(`.page-bar button[for="modules"]`).click();
-                    $('.page-bar').removeClass('tempHide');
-                    $('.scroller').removeClass('tempHide');
-                }, 200);
+            $('.popup-confirm').on('click', function () {
+                $('.popup-close').click(); // Close popup
 
-            } else {
-                $thisModule.fadeOut(200, function () {
-                    $thisModule.remove();
+                if (isRSSPage) {
+                    $('.scroller').addClass('tempHide');
+                    $('.page-bar').addClass('tempHide');
+                    setTimeout(() => {
+                        $thisPage.remove();
 
-                    // Remove from selectedModules (if present)
-                    const selectedModules = JSON.parse(localStorage.getItem('selectedModules') || '[]');
-                    const updatedSelected = selectedModules.filter(id => id !== moduleId);
-                    localStorage.setItem('selectedModules', JSON.stringify(updatedSelected));
+                        const selectedModules = JSON.parse(localStorage.getItem('selectedModules') || '[]');
+                        const updatedSelected = selectedModules.filter(id => id !== moduleId);
+                        localStorage.setItem('selectedModules', JSON.stringify(updatedSelected));
 
-                    // Remove from customModules (if applicable)
-                    const customModules = JSON.parse(localStorage.getItem('customModules') || '[]');
-                    const updatedCustoms = customModules.filter(m => m.id !== moduleId);
-                    localStorage.setItem('customModules', JSON.stringify(updatedCustoms));
+                        const customModules = JSON.parse(localStorage.getItem('customModules') || '[]');
+                        const updatedCustoms = customModules.filter(m => m.id !== moduleId);
+                        localStorage.setItem('customModules', JSON.stringify(updatedCustoms));
 
-                    forceRebuildMasonry();
-                    saveWidgetStates();
+                        forceRebuildMasonry();
+                        saveWidgetStates();
+                        updatePageBar();
+                        $('.rss-page').removeClass('visible');
+                        $('.container').addClass('visible');
+                        $(`.page-bar button[for="modules"]`).click();
+                        $('.page-bar').removeClass('tempHide');
+                        $('.scroller').removeClass('tempHide');
+                    }, 200);
+                } else {
+                    $thisModule.fadeOut(200, function () {
+                        $thisModule.remove();
+
+                        const selectedModules = JSON.parse(localStorage.getItem('selectedModules') || '[]');
+                        const updatedSelected = selectedModules.filter(id => id !== moduleId);
+                        localStorage.setItem('selectedModules', JSON.stringify(updatedSelected));
+
+                        const customModules = JSON.parse(localStorage.getItem('customModules') || '[]');
+                        const updatedCustoms = customModules.filter(m => m.id !== moduleId);
+                        localStorage.setItem('customModules', JSON.stringify(updatedCustoms));
+
+                        forceRebuildMasonry();
+                        saveWidgetStates();
+                    });
+                }
+
+                showToast({
+                    time: 5000,
+                    iconClass: 'fa-check',
+                    message: `Removed ${modName}`
                 });
-            }
+            });
 
-            showToast({
-                time: 5000,
-                iconClass: 'fa-check',
-                message: `Removed ${modName}`
+            $('.popup-cancel').on('click', function () {
+                $('.popup-close').click();
             });
         } else if (action === 'move-top') {
             const $container = $('.container');
@@ -1337,6 +1348,7 @@ function addToTabTitle(suffix) {
 function updatePageBar() {
     const $pages = $('.rss-page');
     const $bar = $('.page-bar');
+    let pill;
     $bar.empty();
 
     // Add RSS page buttons only if not already present
@@ -1430,8 +1442,17 @@ function updatePageBar() {
             .prependTo($bar);
     }
 
+    // Add pill highlighter; only if not present
+    if ($bar.find('.pill-highlight').length === 0) {
+        pill = $('<div>', { class: 'pill-highlight' }).appendTo($bar);
+    }
+
     // Add "Search" button only if not present
     if ($bar.find('button[for="search"]').length === 0) {
+        $('<div>')
+            .addClass('sep')
+            .prependTo($bar);
+
         $('<button>')
             .attr('for', 'search')
             .html('<i class="fas fa-search"></i>')
@@ -1458,6 +1479,42 @@ function updatePageBar() {
             })
             .prependTo($bar);
     }
+
+    if ($('.container').hasClass('visible') && !$('.page-bar button[for="search"]').hasClass('selected')) {
+        $('.page-bar button[for="modules"]').addClass('selected');
+    }
+
+    $(document).on('click', '.page-bar button', function () {
+        setTimeout(() => {
+            const selected = $(this);
+            const offset = selected.position();
+            const newWidth = selected.outerWidth();
+            pill.css({
+                left: offset.left,
+                width: newWidth
+            });
+        }, 200);
+    });
+
+    $(document).on('mouseover', '.page-bar button', function () {
+        const hovered = $(this);
+        const offsetH = hovered.position();
+        const newWidth = hovered.outerWidth();
+        pill.css({
+            left: offsetH.left,
+            width: newWidth
+        });
+    });
+
+    $(document).on('mouseout', '.page-bar', function () {
+        const selected = $(this).find('button.selected');
+        const offsetH = selected.position();
+        const newWidth = selected.outerWidth();
+        pill.css({
+            left: offsetH.left,
+            width: newWidth
+        });
+    });
 }
 
 // RSS Feed Creation Handlers

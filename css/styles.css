@@ -64,6 +64,7 @@ body {
             background-color: white;
             font-weight: bold;
             color: black;
+            font-size: 14px;
 
             & * {
                 color: black !important;
@@ -183,6 +184,7 @@ body {
 
     .page-bar {
         display: flex;
+        align-items: center;
         gap: 5px;
 
         position: sticky;
@@ -190,7 +192,8 @@ body {
         z-index: 49;
 
         width: max-content;
-        height: max-content;
+        overflow: hidden;
+        height: 55px;
         flex-shrink: 0;
 
         background: var(--root-back-alpha);
@@ -211,18 +214,56 @@ body {
             opacity: 0;
         }
 
+        &>.sep {
+            position: relative;
+            margin: auto 3px;
+
+            width: 2px;
+            height: 50%;
+            background-color: var(--root-text);
+            opacity: .33;
+
+            pointer-events: none;
+        }
+
+        &:not(:has(button:not(.selected):hover)) .pill-highlight {
+            opacity: 0;
+            width: 0px;
+            filter: blur(0);
+        }
+
+        & .pill-highlight {
+            position: absolute;
+            left: 0;
+            z-index: 1;
+
+            height: calc(100% - 10px);
+
+            filter: blur(10px);
+            background-color: var(--glow);
+            border-radius: 50px;
+            opacity: 1;
+
+            pointer-events: none;
+            transition: .3s;
+        }
+
         &>button {
             appearance: none;
-            padding: 10px 13px;
+            padding: 11px 16px;
             border-radius: 100px;
             box-shadow: none;
             color: var(--root-text);
-            font-size: 13px;
+            font-size: 14px;
             margin-left: auto;
-            transition: .15s;
+            transition: .2s;
             cursor: pointer;
 
             position: relative;
+            z-index: 10;
+
+            width: fit-content;
+            height: 100%;
 
             display: flex;
             align-items: center;
@@ -233,8 +274,7 @@ body {
 
             &:hover {
                 border-color: transparent;
-                box-shadow: var(--bxsh-border);
-                background-color: var(--surface-button);
+                font-weight: 500;
             }
 
             &.selected {
@@ -243,7 +283,7 @@ body {
                 background-color: white;
                 font-weight: bold;
                 color: black;
-                font-size: 14px;
+                font-size: 15px;
 
                 & * {
                     color: black !important;
@@ -252,8 +292,16 @@ body {
 
             &:has(img) {
                 padding: 2.5px 14px;
-                padding-left: 6px;
+                padding-left: 9px;
                 gap: 10px;
+            }
+
+            &[for="search"] {
+                height: 100% !important;
+                width: unset !important;
+                aspect-ratio: 1/1 !important;
+                padding: 0 !important;
+                margin: 0 !important;
             }
 
             & i {
@@ -265,24 +313,6 @@ body {
                 height: 25px;
                 background-color: var(--surface-button);
                 border-radius: 100px;
-            }
-
-            &[for="search"] {
-                margin-right: 7px;
-
-                &::after {
-                    content: '';
-
-                    position: absolute;
-                    right: -7px;
-
-                    width: 2px;
-                    height: 50%;
-                    background-color: var(--root-text);
-                    opacity: .33;
-
-                    pointer-events: none;
-                }
             }
         }
     }
@@ -310,7 +340,7 @@ body>.backImg {
     z-index: 99999999999;
 
     width: 100%;
-    height: 40vh;
+    height: 30vh;
     overflow: hidden;
     mask-image: linear-gradient(to bottom, black 20vh, transparent);
 
@@ -330,7 +360,7 @@ body>.backImg {
         gap: 10px;
         flex-shrink: 0;
 
-        height: max-content;
+        height: 54.5px;
         width: max-content;
 
         background-color: var(--root-back);
@@ -344,10 +374,15 @@ body>.backImg {
 
         box-sizing: border-box;
         padding: 10px 20px;
+        padding-left: 12px;
 
         &.success {
             &::after {
                 background-color: rgba(0, 200, 0, 0.333);
+            }
+
+            & i {
+                color: green;
             }
         }
 
@@ -355,19 +390,17 @@ body>.backImg {
             &::after {
                 background-color: rgba(255, 0, 0, 0.333);
             }
+
+            & i {
+                color: red;
+            }
         }
 
         &:has(.title) {
-            border-radius: 15px;
-            padding-left: 12px;
-
-            i {
-                font-size: 18px;
-            }
-
             .message {
                 font-weight: normal !important;
-                font-size: 13px;
+                font-size: 13px !important;
+                opacity: .75;
             }
         }
 
@@ -388,7 +421,13 @@ body>.backImg {
             justify-content: center;
             flex-shrink: 0;
             height: 100%;
+            font-size: 18px;
             aspect-ratio: 1/1;
+
+            position: relative;
+            z-index: 1000;
+
+            color: #447dd3;
         }
 
         & .statusText {
@@ -401,6 +440,7 @@ body>.backImg {
 
                 &.title {
                     font-weight: bold;
+                    font-size: 15px;
                 }
 
                 &.message {

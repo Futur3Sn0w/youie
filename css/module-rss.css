@@ -66,6 +66,7 @@
     .header {
         height: 45px;
         display: flex;
+        align-items: center;
         gap: 5px;
 
         & .title {
@@ -86,7 +87,15 @@
         & .modHeadBtns {
             max-width: unset;
             max-height: unset;
-            padding: 3px;
+            height: fit-content;
+
+            margin-left: auto;
+            border-radius: 100px;
+
+            position: relative;
+            top: unset;
+            left: unset;
+            right: unset;
 
             & .modActions,
             & .header-icon {
@@ -95,12 +104,18 @@
 
             & .module-menu {
                 flex-direction: row;
+                align-items: center;
+                justify-content: center;
+
                 opacity: 1;
                 pointer-events: all;
                 gap: 3px;
+
+                padding: 5px;
+
                 max-height: unset;
                 max-width: unset;
-                height: 100%;
+                height: fit-content;
 
                 & .sep {
                     display: none !important;
@@ -109,21 +124,29 @@
                 & .module-action {
                     color: var(--root-text);
                     background-color: var(--surface-button);
+                    box-shadow: var(--bxsh-border);
                     transition: .15s;
-                    border-radius: 6px;
+                    border-radius: 100px;
+
+                    width: fit-content;
+                    height: fit-content;
+
+                    padding: 7px 5px;
+                    padding-right: 15px;
+
+                    font-size: 14px;
 
                     & i {
                         transition: .15s;
                     }
 
-                    &:first-of-type {
-                        border-top-left-radius: 12px;
-                        border-bottom-left-radius: 12px;
-                    }
+                    &[data-action="delete"]:hover {
+                        background-color: red;
+                        color: white !important;
 
-                    &:last-of-type {
-                        border-top-right-radius: 12px;
-                        border-bottom-right-radius: 12px;
+                        & * {
+                            color: white !important;
+                        }
                     }
 
                     &:hover {

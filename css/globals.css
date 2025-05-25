@@ -13,6 +13,8 @@
         --module-back-focus: #ffffffee;
         --module-border: #00000022;
 
+        --glow: #ffffff;
+
         --youie-blue: rgb(12, 54, 207);
         --youie-red: rgb(226, 41, 41);
 
@@ -39,6 +41,8 @@
         --module-back: #62626266;
         --module-back-focus: #7f7f7faa;
         --module-border: #ffffff66;
+
+        --glow: rgba(255, 255, 255, 0.33);
 
         --youie-blue: rgb(40, 152, 237);
         --youie-red: rgb(222, 53, 90);
