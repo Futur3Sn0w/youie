@@ -24,7 +24,7 @@ $(document).ready(function () {
                 .removeClass('fa-minimize')
             showToast({
                 time: 5000,
-                iconClass: 'fa-check',
+                type: 'pass',
                 message: `Minimized all modules`
             });
         } else if (action === 'maximize-all') {
@@ -35,7 +35,7 @@ $(document).ready(function () {
                 .removeClass('fa-maximize');
             showToast({
                 time: 5000,
-                iconClass: 'fa-check',
+                type: 'pass',
                 message: `Maximized all modules`
             });
         } else if (action === 'add-new') {
@@ -51,7 +51,7 @@ $(document).ready(function () {
             showToast({
                 time: 5000,
                 iconClass: 'fa-refresh',
-                title: 'Success',
+                type: 'pass',
                 message: `Reloaded all feeds`
             });
         }
@@ -149,7 +149,7 @@ $(document).ready(function () {
         showToast({
             time: 10000,
             iconClass: 'fa-download',
-            title: 'Success',
+            type: 'pass',
             message: `Your Youie data is now downloading.`
         })
     });
@@ -555,33 +555,39 @@ $(document).ready(function () {
  * Displays a toast notification in the .statusMsgs container.
  * @param {Object} options
  * @param {number} [options.time=10000] - How long to show the toast (ms)
- * @param {string} options.iconClass - FontAwesome icon class (e.g. "fa-check-circle")
+ * @param {string} [options.iconClass='fa-check-circle'] - FontAwesome icon class (e.g. "fa-check-circle")
  * @param {string} [options.title] - Optional title
  * @param {string} options.message - Main message text
+ * @param {string} [options.type] - Optional type: 'pass' or 'fail'
  */
-function showToast({ time = 10000, iconClass, title = '', message }) {
-    if (!iconClass || !message) {
-        console.error("showToast requires both an iconClass and a message.");
+function showToast({ time = 10000, iconClass, title = '', message, type }) {
+    if (!message && !type) {
+        console.error("showToast requires at least a message or a type.");
         return;
     }
 
     const toastId = `toast-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
     const $toast = $('<div>')
-        .addClass('toast')
+        .addClass('toast tempHide')
         .attr('id', toastId);
 
-    // Add class based on title
-    if (title && typeof title === 'string') {
-        if (title.toLowerCase().includes('success')) {
-            $toast.addClass('success');
-        } else if (title.toLowerCase().includes('failed')) {
-            $toast.addClass('failed');
-        }
+    // Add class and icon based on type, if provided
+    if (type === 'pass') {
+        $toast.addClass('success');
+        if (!iconClass) iconClass = 'fa-check-circle';
+        if (!title) title = 'Success';
+    } else if (type === 'fail') {
+        $toast.addClass('failed');
+        if (!iconClass) iconClass = 'fa-circle-xmark';
+        if (!title) title = 'Failed';
     }
+
+    // Remove logic that adds class based on title
+    // (removed per instructions)
 
     const $icon = $('<i>')
         .addClass('fas')
-        .addClass(iconClass);
+        .addClass(iconClass || 'fa-check-circle');
 
     const $statusText = $('<div>').addClass('statusText');
     if (title) {
@@ -591,11 +597,15 @@ function showToast({ time = 10000, iconClass, title = '', message }) {
 
     $toast.append($icon, $statusText);
     $('.statusMsgs').prepend($toast);
+    setTimeout(() => {
+        $toast.removeClass('tempHide')
+    }, 50);
 
     setTimeout(() => {
-        $toast.fadeOut(500, () => {
+        $toast.addClass('tempHide')
+        setTimeout(() => {
             $toast.remove();
-        });
+        }, 300);
     }, time);
 }
 
@@ -763,7 +773,7 @@ function createHeaderButtons(module) {
 
                 showToast({
                     time: 5000,
-                    iconClass: 'fa-check',
+                    type: 'pass',
                     message: `Removed ${modName}`
                 });
             });
@@ -795,8 +805,7 @@ function createHeaderButtons(module) {
 
             showToast({
                 time: 5000,
-                iconClass: 'fa-check',
-                title: 'Success',
+                type: 'pass',
                 message: `Moved ${module.name} to top`
             });
         }
@@ -1232,8 +1241,7 @@ function openModuleSelector(modules) {
                 }
                 showToast({
                     time: 5000,
-                    iconClass: 'fa-check',
-                    title: 'Success',
+                    type: 'pass',
                     message: `${pref} "${$(this).find('p.name').text()}" module`
                 });
 
@@ -1577,8 +1585,7 @@ $(document).ready(function () {
                 setTimeout(updatePageBar, 100);
                 showToast({
                     time: 10000,
-                    iconClass: 'fa-check',
-                    title: 'Success',
+                    type: 'pass',
                     message: `Added "${title}" test feed`
                 });
                 saveWidgetStates();
@@ -1587,7 +1594,7 @@ $(document).ready(function () {
                 console.error('Error loading test RSS feed:', e);
                 showToast({
                     time: 10000,
-                    iconClass: 'fa-close',
+                    type: 'fail',
                     title: 'Failed to load test RSS feed',
                     message: `Check console for more details`
                 });
@@ -1622,15 +1629,14 @@ $(document).ready(function () {
                 setTimeout(updatePageBar, 100);
                 showToast({
                     time: 10000,
-                    iconClass: 'fa-check',
-                    title: 'Success',
+                    type: 'pass',
                     message: `Added "${title}" feed`
                 })
             } catch (e) {
                 console.error('Error loading RSS:', e);
                 showToast({
                     time: 10000,
-                    iconClass: 'fa-close',
+                    type: 'fail',
                     title: 'Failed to load RSS feed',
                     message: `Check console for more details`
                 });
@@ -1701,15 +1707,14 @@ $(document).ready(function () {
             }, 100);
             showToast({
                 time: 10000,
-                iconClass: 'fa-check',
-                title: 'Success',
+                type: 'pass',
                 message: `Added "${title}" feed`
             })
         } catch (e) {
             console.error('Error loading starter RSS feed:', e);
             showToast({
                 time: 10000,
-                iconClass: 'fa-close',
+                type: 'fail',
                 title: 'Failed to load RSS feed',
                 message: `Check console for more details`
             });
